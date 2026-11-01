@@ -1,0 +1,67 @@
+{
+  "name": "project-legacy-launcher",
+  "version": "4.2.0",
+  "description": "Project Legacy community launcher",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis --publish never",
+    "dist:portable": "electron-builder --win portable --publish never"
+  },
+  "dependencies": {
+    "node-unrar-js": "^2.0.0",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "gg.projectlegacy.launcher",
+    "productName": "Project Legacy Launcher",
+    "asar": false,
+    "files": [
+      "main.js",
+      "endpoints.json",
+      "preload.js",
+      "extract-worker.js",
+      "lib/**",
+      "index.html",
+      "assets/**",
+      "bin/**",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false,
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "legacyfn",
+        "repo": "launcher",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "author": "Project Legacy",
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/legacyfn/launcher.git"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
