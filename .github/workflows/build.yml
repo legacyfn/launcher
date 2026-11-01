@@ -3,11 +3,16 @@ name: Build launcher
 on:
   push:
     tags:
-      - "v*"          # bv. v4.2.0 -> bouwt en publiceert een release
-  workflow_dispatch:   # handmatig starten via het Actions-tabblad (alleen bouwen)
+      - "v*"           # optioneel: tag pushen publiceert ook
+  workflow_dispatch:    # knop "Run workflow" op GitHub (web)
+    inputs:
+      publish:
+        description: "Publiceren naar GitHub Releases (versie uit package.json)"
+        type: boolean
+        default: true
 
 permissions:
-  contents: write      # nodig om een release aan te maken / bestanden te uploaden
+  contents: write       # nodig om een release aan te maken / bestanden te uploaden
 
 jobs:
   build:
@@ -30,16 +35,14 @@ jobs:
       - name: Dependencies installeren
         run: npm install
 
-      # Tag gepusht: bouwen + uploaden naar GitHub Release (.exe, .blockmap, latest.yml)
       - name: Bouwen en publiceren
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: ${{ startsWith(github.ref, 'refs/tags/v') || inputs.publish }}
         run: npx electron-builder --win nsis --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Handmatig gestart: alleen bouwen
       - name: Bouwen (zonder publiceren)
-        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        if: ${{ !(startsWith(github.ref, 'refs/tags/v') || inputs.publish) }}
         run: npm run dist
 
       - name: Build als artifact bewaren
