@@ -67,6 +67,14 @@ const STUB_EXES = [
 /* ------------------------------------------------------------------ */
 
 let mainWindow;
+
+// UI language (sent by the page) - only used for native dialogs; the page translates its own text.
+let uiLang = "en";
+const DIALOG_TITLES = {
+  en: "Choose your game folder",
+  fr: "Choisissez votre dossier de jeu",
+  nl: "Kies je spelmap"
+};
 let eventRequest;
 
 let config = {
@@ -493,6 +501,7 @@ ipcMain.handle("reset-game-settings", () => {
   }
 });
 
+ipcMain.handle("set-lang", (_e, l) => { if (typeof l === "string" && DIALOG_TITLES[l]) uiLang = l; return uiLang; });
 ipcMain.handle("get-compat", () => config.compat);
 ipcMain.handle("set-compat", (_e, on) => { config.compat = Boolean(on); saveConfig(); return config.compat; });
 
@@ -1032,7 +1041,7 @@ ipcMain.handle("get-state", () => ({
 ipcMain.handle("choose-folder", async () => {
   if (installBusy) return null;
   const result = await dialog.showOpenDialog(mainWindow, {
-    title: "Choose your game folder",
+    title: DIALOG_TITLES[uiLang] || DIALOG_TITLES.en,
     properties: ["openDirectory", "createDirectory"]
   });
   if (result.canceled || !result.filePaths[0]) return null;

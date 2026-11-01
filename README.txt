@@ -53,3 +53,15 @@ RELEASE VIA GITHUB ACTIONS (depot legacyfn/launcher)
   - Le depot doit etre public. Sans nouvelle version dans package.json, aucune mise a jour n'est vue.
   - Pour tester sans publier : Run workflow en decochant "Publiceren" (le .exe est dans les artifacts).
   - La premiere installation (4.x) se fait a la main avec le Setup .exe.
+
+
+TRADUCTIONS (en / fr / nl)
+  Le texte du code est en anglais. Tout texte affiche (boutons, messages, erreurs, fenetres de
+  confirmation, placeholders) est traduit a l'affichage via le bloc I18N_ROWS / I18N_PATTERNS
+  dans index.html (cherche "I18N_ROWS"). Un texte sans entree reste simplement en anglais.
+  - Texte fixe : ajoute une ligne  ["English", "Francais", "Nederlands"]
+  - Message avec variables (nombres, noms) : ajoute un motif  [/^regex$/, "fr", "nl"]
+    ($1 = texte capture tel quel, {1} = texte capture et traduit aussi)
+  - Si tu changes un message anglais dans main.js, change aussi sa cle dans I18N_ROWS.
+  - Nouvelle langue : ajoute une colonne a chaque ligne/motif + une <option> dans #langSelect.
+  Les logs (COPY LOGS) restent en anglais, pour le support.

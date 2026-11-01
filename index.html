@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -964,9 +964,7 @@ button:focus-visible {
                 <div class="eyebrow">THE CLASSIC EXPERIENCE</div>
                 <h1>WELCOME BACK<br>TO <span>LEGACY.</span></h1>
                 <p class="hero-description">
-                    Replongez dans l'univers de Fortnite Chapter 1.
-                    Retrouvez l'expérience classique et rejoignez
-                    la communauté Project Legacy.
+                    Relive the world of Fortnite Chapter 1. Find the classic experience and join the Project Legacy community.
                 </p>
                 <div class="actions">
                     <button class="button primary play" id="playButton">LOADING…</button>
@@ -1308,29 +1306,540 @@ const state = {
     game: { state: "idle", message: "" }
 };
 
-const I18N = {fr: {"DASHBOARD": "TABLEAU DE BORD", "Dashboard": "Tableau de bord", "Community": "Communauté", "Downloads": "Téléchargements", "Settings": "Paramètres", "Profile": "Profil", "PLAYER PROFILE": "PROFIL JOUEUR", "FRIENDS": "AMIS", "MAIN MENU": "MENU PRINCIPAL", "WELCOME BACK": "BIENVENUE", "TO": "DANS", "THE CLASSIC EXPERIENCE": "L'EXPÉRIENCE CLASSIQUE", "JOIN DISCORD": "REJOINDRE DISCORD", "PLAYERS ONLINE": "JOUEURS EN LIGNE", "CURRENT BUILD": "BUILD ACTUELLE", "NETWORK STATUS": "ÉTAT DU RÉSEAU", "NETWORK ACTIVITY": "ACTIVITÉ RÉSEAU", "LATEST NEWS": "DERNIÈRES NEWS", "No news available right now.": "Aucune news pour le moment.", "LAUNCHER SETTINGS": "PARAMÈTRES DU LAUNCHER", "Manage your local installation.": "Gérez votre installation locale.", "CONFIGURATION": "CONFIGURATION", "Installation folder": "Dossier d'installation", "CHOOSE": "CHOISIR", "SAVE": "ENREGISTRER", "VERIFY": "VÉRIFIER", "CHECK": "TESTER", "OPEN": "OUVRIR", "PAUSE": "PAUSE", "RESUME": "REPRENDRE", "CANCEL": "ANNULER", "DOWNLOAD BUILD": "TÉLÉCHARGER LA BUILD", "Launch options": "Options de lancement", "Account": "Compte", "IN-GAME TOOLS": "OUTILS EN JEU", "Folder verification": "Vérification du dossier", "Waiting for verification": "En attente de vérification", "Waiting for server information...": "En attente des infos du serveur...", "Connecting...": "Connexion...", "LIVE STATUS": "STATUT EN DIRECT", "Connected players": "Joueurs connectés", "Service connection": "Connexion au service", "WAITING": "EN ATTENTE", "COMMUNITY OVERVIEW": "APERÇU DE LA COMMUNAUTÉ", "Services online": "Services en ligne", "Services offline": "Services hors ligne", "ONLINE": "EN LIGNE", "OFFLINE": "HORS LIGNE", "Discord community": "Communauté Discord", "RESOURCES": "RESSOURCES", "SQUADS": "ÉQUIPES", "Live information from the Project Legacy network.": "Infos en direct du réseau Project Legacy."}, nl: {"DASHBOARD": "DASHBOARD", "Dashboard": "Dashboard", "Community": "Community", "Downloads": "Downloads", "Settings": "Instellingen", "MAIN MENU": "HOOFDMENU", "WELCOME BACK": "WELKOM TERUG", "TO": "BIJ", "THE CLASSIC EXPERIENCE": "DE KLASSIEKE ERVARING", "JOIN DISCORD": "JOIN DISCORD", "PLAYERS ONLINE": "SPELERS ONLINE", "CURRENT BUILD": "HUIDIGE BUILD", "NETWORK STATUS": "NETWERKSTATUS", "NETWORK ACTIVITY": "NETWERKACTIVITEIT", "LATEST NEWS": "LAATSTE NIEUWS", "No news available right now.": "Momenteel geen nieuws.", "LAUNCHER SETTINGS": "LAUNCHER-INSTELLINGEN", "Manage your local installation.": "Beheer je lokale installatie.", "CONFIGURATION": "CONFIGURATIE", "Installation folder": "Installatiemap", "CHOOSE": "KIES", "SAVE": "OPSLAAN", "VERIFY": "CONTROLEER", "CHECK": "TEST", "OPEN": "OPEN", "PAUSE": "PAUZE", "RESUME": "HERVAT", "CANCEL": "ANNULEER", "DOWNLOAD BUILD": "BUILD DOWNLOADEN", "Launch options": "Startopties", "Account": "Account", "IN-GAME TOOLS": "TOOLS IN HET SPEL", "Folder verification": "Mapcontrole", "Waiting for verification": "Wachten op controle", "Waiting for server information...": "Wachten op serverinfo...", "Connecting...": "Verbinden...", "LIVE STATUS": "LIVE STATUS", "Connected players": "Verbonden spelers", "Service connection": "Serververbinding", "WAITING": "WACHTEN", "COMMUNITY OVERVIEW": "COMMUNITY-OVERZICHT", "Services online": "Diensten online", "Services offline": "Diensten offline", "ONLINE": "ONLINE", "OFFLINE": "OFFLINE", "Discord community": "Discord-community", "RESOURCES": "BRONNEN", "SQUADS": "SQUADS", "Live information from the Project Legacy network.": "Live info van het Project Legacy-netwerk."}};
+/* ===================================================================== */
+/* i18n: English (source) + Français + Nederlands                         */
+/*                                                                       */
+/* HOW IT WORKS                                                          */
+/*  - The UI text in the code is English. Every visible text node,       */
+/*    placeholder and confirm()/alert() text is translated at display    */
+/*    time by looking the English text up in I18N_ROWS (exact match) or  */
+/*    I18N_PATTERNS (messages with variable parts).                      */
+/*  - A MutationObserver translates text added later (progress, errors,  */
+/*    messages sent by main.js), so nothing has to be wrapped by hand.   */
+/*  - Text without an entry simply stays in English.                     */
+/*                                                                       */
+/* ADD OR FIX A TRANSLATION                                              */
+/*  - Exact text:   add a row  ["English", "Français", "Nederlands"]     */
+/*  - With numbers/names: add a pattern  [/^regex$/, "fr", "nl"]         */
+/*    $1 $2 = captured text as is, {1} {2} = captured text, translated   */
+/*  - A new language: add a column to every row/pattern + <option>.      */
+/* ===================================================================== */
+
+const I18N_ROWS = [
+    /* ---- navigation / titles ---- */
+    ["DASHBOARD", "TABLEAU DE BORD", "DASHBOARD"],
+    ["Dashboard", "Tableau de bord", "Dashboard"],
+    ["COMMUNITY", "COMMUNAUTÉ", "COMMUNITY"],
+    ["Community", "Communauté", "Community"],
+    ["PROFILE", "PROFIL", "PROFIEL"],
+    ["Profile", "Profil", "Profiel"],
+    ["DOWNLOADS", "TÉLÉCHARGEMENTS", "DOWNLOADS"],
+    ["Downloads", "Téléchargements", "Downloads"],
+    ["HELP", "AIDE", "HULP"],
+    ["Help", "Aide", "Hulp"],
+    ["SETTINGS", "PARAMÈTRES", "INSTELLINGEN"],
+    ["Settings", "Paramètres", "Instellingen"],
+    ["COMMUNITY LAUNCHER", "LAUNCHER COMMUNAUTAIRE", "COMMUNITY-LAUNCHER"],
+    ["MAIN MENU", "MENU PRINCIPAL", "HOOFDMENU"],
+    ["Connecting...", "Connexion...", "Verbinden..."],
+    ["Project Legacy network", "Réseau Project Legacy", "Project Legacy-netwerk"],
+
+    /* ---- dashboard ---- */
+    ["THE CLASSIC EXPERIENCE", "L’EXPÉRIENCE CLASSIQUE", "DE KLASSIEKE ERVARING"],
+    ["WELCOME BACK", "BIENVENUE", "WELKOM TERUG"],
+    ["TO", "DANS", "BIJ"],
+    ["Relive the world of Fortnite Chapter 1. Find the classic experience and join the Project Legacy community.",
+        "Replongez dans l’univers de Fortnite Chapter 1. Retrouvez l’expérience classique et rejoignez la communauté Project Legacy.",
+        "Duik opnieuw de wereld van Fortnite Chapter 1 in. Beleef de klassieke ervaring en sluit je aan bij de Project Legacy-community."],
+    ["LOADING…", "CHARGEMENT…", "LADEN…"],
+    ["JOIN DISCORD", "REJOINDRE DISCORD", "JOIN DISCORD"],
+    ["OPEN PROJECT ↗", "OUVRIR LE PROJET ↗", "PROJECT OPENEN ↗"],
+    ["INSTALLING", "INSTALLATION", "INSTALLEREN"],
+    ["PAUSE", "PAUSE", "PAUZE"],
+    ["RESUME", "REPRENDRE", "HERVAT"],
+    ["CANCEL", "ANNULER", "ANNULEER"],
+    ["RETRY", "RÉESSAYER", "OPNIEUW"],
+    ["IN-GAME TOOLS", "OUTILS EN JEU", "TOOLS IN HET SPEL"],
+    ["GAME RUNNING", "JEU EN COURS", "SPEL ACTIEF"],
+    ["Once you are in the lobby, click INJECT CONSOLE, then press F3 in-game. Use the anti-crash only if the game crashes.",
+        "Une fois dans le lobby, cliquez sur INJECTER LA CONSOLE, puis appuyez sur F3 en jeu. N’utilisez l’anti-crash que si le jeu plante.",
+        "Klik in de lobby op CONSOLE INJECTEREN en druk daarna in het spel op F3. Gebruik de anti-crash alleen als het spel crasht."],
+    ["INJECT CONSOLE", "INJECTER LA CONSOLE", "CONSOLE INJECTEREN"],
+    ["INJECT ANTI-CRASH", "INJECTER L’ANTI-CRASH", "ANTI-CRASH INJECTEREN"],
+    ["PLAYERS ONLINE", "JOUEURS EN LIGNE", "SPELERS ONLINE"],
+    ["Connected players", "Joueurs connectés", "Verbonden spelers"],
+    ["CURRENT BUILD", "BUILD ACTUELLE", "HUIDIGE BUILD"],
+    ["Chapter 1", "Chapitre 1", "Hoofdstuk 1"],
+    ["Season 4", "Saison 4", "Seizoen 4"],
+    ["SEASON", "SAISON", "SEIZOEN"],
+    ["NETWORK STATUS", "ÉTAT DU RÉSEAU", "NETWERKSTATUS"],
+    ["Service connection", "Connexion au service", "Serververbinding"],
+    ["✓ BUILD 4.5 INSTALLED", "✓ BUILD 4.5 INSTALLÉE", "✓ BUILD 4.5 GEÏNSTALLEERD"],
+    ["CHAPTER 1 · SEASON 4", "CHAPITRE 1 · SAISON 4", "HOOFDSTUK 1 · SEIZOEN 4"],
+    ["Your game files are verified. Press PLAY to jump in.",
+        "Vos fichiers de jeu sont vérifiés. Appuyez sur JOUER pour vous lancer.",
+        "Je spelbestanden zijn gecontroleerd. Druk op SPELEN om te beginnen."],
+    ["LATEST NEWS", "DERNIÈRES NEWS", "LAATSTE NIEUWS"],
+    ["No news available right now.", "Aucune news pour le moment.", "Momenteel geen nieuws."],
+    ["NEW", "NOUVEAU", "NIEUW"],
+    ["Welcome,", "Bienvenue,", "Welkom,"],
+    ["YOU", "VOUS", "JIJ"],
+
+    /* ---- community ---- */
+    ["COMMUNITY OVERVIEW", "APERÇU DE LA COMMUNAUTÉ", "COMMUNITY-OVERZICHT"],
+    ["Live information from the Project Legacy network.", "Infos en direct du réseau Project Legacy.", "Live info van het Project Legacy-netwerk."],
+    ["LIVE STATUS", "STATUT EN DIRECT", "LIVE STATUS"],
+    ["NETWORK ACTIVITY", "ACTIVITÉ RÉSEAU", "NETWERKACTIVITEIT"],
+    ["WAITING", "EN ATTENTE", "WACHTEN"],
+    ["JOINABLE", "OUVERT", "OPEN"],
+    ["IN PROGRESS", "EN COURS", "BEZIG"],
+    ["Players currently connected to the community service.",
+        "Joueurs actuellement connectés au service communautaire.",
+        "Spelers die momenteel met de communityservice zijn verbonden."],
+    ["DUOS", "DUOS", "DUO’S"],
+    ["SQUADS", "ÉQUIPES", "SQUADS"],
+    ["Waiting for server information...", "En attente des infos du serveur...", "Wachten op serverinfo..."],
+    ["PROJECT VERSION", "VERSION DU PROJET", "PROJECTVERSIE"],
+    ["Fortnite Chapter 1", "Fortnite Chapitre 1", "Fortnite Hoofdstuk 1"],
+    ["Season 4 experience.", "Expérience Saison 4.", "Seizoen 4-ervaring."],
+    ["Project Legacy community launcher.", "Launcher communautaire Project Legacy.", "Project Legacy community-launcher."],
+    ["ONLINE NOW", "EN LIGNE MAINTENANT", "NU ONLINE"],
+    ["Players currently connected to the server.", "Joueurs actuellement connectés au serveur.", "Spelers die momenteel met de server zijn verbonden."],
+    ["Nobody online right now.", "Personne n’est en ligne pour le moment.", "Er is momenteel niemand online."],
+    ["Services online", "Services en ligne", "Diensten online"],
+    ["Services offline", "Services hors ligne", "Diensten offline"],
+    ["ONLINE", "EN LIGNE", "ONLINE"],
+    ["OFFLINE", "HORS LIGNE", "OFFLINE"],
+    ["CONNECTED", "CONNECTÉ", "VERBONDEN"],
+    ["Network connection established. Waiting for player information...",
+        "Connexion au réseau établie. En attente des informations joueurs...",
+        "Netwerkverbinding tot stand gebracht. Wachten op spelerinformatie..."],
+    ["The community network is currently unavailable.",
+        "Le réseau communautaire est actuellement indisponible.",
+        "Het community-netwerk is momenteel niet beschikbaar."],
+
+    /* ---- profile ---- */
+    ["PLAYER PROFILE", "PROFIL JOUEUR", "SPELERSPROFIEL"],
+    ["FRIENDS", "AMIS", "VRIENDEN"],
+    ["Your stats, your friends and who is online.", "Vos stats, vos amis et qui est en ligne.", "Je statistieken, je vrienden en wie er online is."],
+    ["LAUNCHES", "LANCEMENTS", "STARTS"],
+    ["TIME PLAYED", "TEMPS DE JEU", "SPEELTIJD"],
+    ["LAST PLAYED", "DERNIÈRE PARTIE", "LAATST GESPEELD"],
+    ["Not signed in", "Non connecté", "Niet ingelogd"],
+    ["● Online in game", "● En ligne en jeu", "● Online in het spel"],
+    ["● In game (started from this launcher)", "● En jeu (lancé depuis ce launcher)", "● In het spel (gestart vanuit deze launcher)"],
+    ["○ Not connected to the server", "○ Non connecté au serveur", "○ Niet verbonden met de server"],
+    ["4.5 installed", "4.5 installée", "4.5 geïnstalleerd"],
+    ["Not installed", "Non installée", "Niet geïnstalleerd"],
+    ["No player found.", "Aucun joueur trouvé.", "Geen speler gevonden."],
+    ["Display name (shown on the dashboard)", "Pseudo (affiché sur le tableau de bord)", "Weergavenaam (getoond op het dashboard)"],
+    ["Search a player", "Rechercher un joueur", "Zoek een speler"],
+
+    /* ---- downloads ---- */
+    ["DOWNLOAD CENTER", "CENTRE DE TÉLÉCHARGEMENT", "DOWNLOADCENTRUM"],
+    ["Project resources and official information.", "Ressources du projet et informations officielles.", "Projectbronnen en officiële informatie."],
+    ["RESOURCES", "RESSOURCES", "BRONNEN"],
+    ["Download and install the build straight into your installation folder. The download can be paused, and it picks up where it stopped if you close the launcher.",
+        "Téléchargez et installez la build directement dans votre dossier d’installation. Le téléchargement peut être mis en pause et reprend là où il s’est arrêté si vous fermez le launcher.",
+        "Download en installeer de build rechtstreeks in je installatiemap. De download kan worden gepauzeerd en gaat verder waar hij stopte als je de launcher sluit."],
+    ["DOWNLOAD BUILD", "TÉLÉCHARGER LA BUILD", "BUILD DOWNLOADEN"],
+    ["DOWNLOAD BUILD 4.5", "TÉLÉCHARGER LA BUILD 4.5", "BUILD 4.5 DOWNLOADEN"],
+    ["REINSTALL / REPAIR", "RÉINSTALLER / RÉPARER", "OPNIEUW INSTALLEREN / REPAREREN"],
+    ["IN BROWSER ↗", "DANS LE NAVIGATEUR ↗", "IN DE BROWSER ↗"],
+    ["The build is a large archive. The launcher needs free space for the archive and the extracted game at the same time, and removes the archive once the installation succeeds.",
+        "La build est une grosse archive. Le launcher a besoin d’espace libre pour l’archive et le jeu extrait en même temps, et supprime l’archive une fois l’installation réussie.",
+        "De build is een groot archief. De launcher heeft tegelijk vrije ruimte nodig voor het archief en het uitgepakte spel, en verwijdert het archief zodra de installatie is gelukt."],
+
+    /* ---- help ---- */
+    ["FIX MY GAME", "RÉPARER MON JEU", "MIJN SPEL REPAREREN"],
+    ["CHECKING...", "VÉRIFICATION...", "CONTROLEREN..."],
+    ["Checks your game and repairs what can be repaired automatically.",
+        "Vérifie votre jeu et répare automatiquement ce qui peut l’être.",
+        "Controleert je spel en repareert automatisch wat kan."],
+    ["IF THE GAME CRASHES AT STARTUP", "SI LE JEU PLANTE AU DÉMARRAGE", "ALS HET SPEL BIJ HET STARTEN CRASHT"],
+    ["RESET GAME SETTINGS", "RÉINITIALISER LES PARAMÈTRES DU JEU", "SPELINSTELLINGEN RESETTEN"],
+    ["COMPATIBILITY MODE", "MODE COMPATIBILITÉ", "COMPATIBILITEITSMODUS"],
+    ["Compatibility mode (limit the game to the first 8 CPU threads)",
+        "Mode compatibilité (limite le jeu aux 8 premiers threads du processeur)",
+        "Compatibiliteitsmodus (beperkt het spel tot de eerste 8 processorthreads)"],
+    ["Press FIX MY GAME. The launcher also repairs missing tools by itself every minute and relaunches the game automatically after a startup crash.",
+        "Appuyez sur RÉPARER MON JEU. Le launcher répare aussi tout seul les outils manquants chaque minute et relance automatiquement le jeu après un plantage au démarrage.",
+        "Druk op MIJN SPEL REPAREREN. De launcher repareert ook zelf elke minuut ontbrekende tools en start het spel automatisch opnieuw na een crash bij het opstarten."],
+    ["The check could not run.", "La vérification n’a pas pu s’exécuter.", "De controle kon niet worden uitgevoerd."],
+    ["Everything looks good. If the game still crashes, use COPY LOGS in Settings and send it to support.",
+        "Tout semble en ordre. Si le jeu plante encore, utilisez COPIER LES LOGS dans les paramètres et envoyez-les au support.",
+        "Alles ziet er goed uit. Crasht het spel nog steeds, gebruik dan LOGS KOPIËREN in de instellingen en stuur ze naar de support."],
+
+    /* ---- settings ---- */
+    ["LAUNCHER SETTINGS", "PARAMÈTRES DU LAUNCHER", "LAUNCHER-INSTELLINGEN"],
+    ["Manage your local installation.", "Gérez votre installation locale.", "Beheer je lokale installatie."],
+    ["CONFIGURATION", "CONFIGURATION", "CONFIGURATIE"],
+    ["Language", "Langue", "Taal"],
+    ["Match-open notifications", "Notifications d’ouverture de match", "Melding als een match opent"],
+    ["COPY LOGS", "COPIER LES LOGS", "LOGS KOPIËREN"],
+    ["COPIED", "COPIÉ", "GEKOPIEERD"],
+    ["FAILED", "ÉCHEC", "MISLUKT"],
+    ["Installation folder", "Dossier d’installation", "Installatiemap"],
+    ["Select the folder containing your installation.", "Sélectionnez le dossier contenant votre installation.", "Selecteer de map met je installatie."],
+    ["No folder selected", "Aucun dossier sélectionné", "Geen map geselecteerd"],
+    ["OPEN", "OUVRIR", "OPEN"],
+    ["OPEN ↗", "OUVRIR ↗", "OPEN ↗"],
+    ["CHOOSE", "CHOISIR", "KIES"],
+    ["Folder verification", "Vérification du dossier", "Mapcontrole"],
+    ["Check that the selected folder is accessible.", "Vérifiez que le dossier sélectionné est accessible.", "Controleer of de geselecteerde map toegankelijk is."],
+    ["Waiting for verification", "En attente de vérification", "Wachten op controle"],
+    ["CHECK", "TESTER", "TEST"],
+    ["Account", "Compte", "Account"],
+    ["Email and password used to sign in to the game. The password is stored encrypted on this computer.",
+        "E-mail et mot de passe utilisés pour vous connecter au jeu. Le mot de passe est stocké chiffré sur cet ordinateur.",
+        "E-mailadres en wachtwoord waarmee je in het spel inlogt. Het wachtwoord wordt versleuteld op deze computer opgeslagen."],
+    ["Email", "E-mail", "E-mail"],
+    ["Password", "Mot de passe", "Wachtwoord"],
+    ["Password saved (leave empty to keep it)", "Mot de passe enregistré (laissez vide pour le conserver)", "Wachtwoord opgeslagen (leeg laten om te behouden)"],
+    ["SAVE", "ENREGISTRER", "OPSLAAN"],
+    ["Launch options", "Options de lancement", "Startopties"],
+    ["Arguments passed to the game. The sign-in arguments are added automatically.",
+        "Arguments transmis au jeu. Les arguments de connexion sont ajoutés automatiquement.",
+        "Argumenten die aan het spel worden doorgegeven. De inlogargumenten worden automatisch toegevoegd."],
+    ["Start the launcher / anti-cheat placeholder processes (frozen)",
+        "Démarrer les processus factices du launcher / anti-cheat (gelés)",
+        "De placeholder-processen van de launcher / anti-cheat starten (bevroren)"],
+    ["Launcher files", "Fichiers du launcher", "Launcherbestanden"],
+    ["Check that the injector, the DLLs and the game build are all in place.",
+        "Vérifiez que l’injecteur, les DLL et la build du jeu sont bien en place.",
+        "Controleer of de injector, de DLL’s en de gamebuild allemaal aanwezig zijn."],
+    ["VERIFY", "VÉRIFIER", "CONTROLEER"],
+    ["Discord community", "Communauté Discord", "Discord-community"],
+    ["Join the Project Legacy community.", "Rejoignez la communauté Project Legacy.", "Sluit je aan bij de Project Legacy-community."],
+    ["Community interface · Not affiliated with Epic Games.",
+        "Interface communautaire · Non affilié à Epic Games.",
+        "Community-interface · Niet verbonden aan Epic Games."],
+
+    /* ---- launcher update bar / launch screen ---- */
+    ["Update available", "Mise à jour disponible", "Update beschikbaar"],
+    ["RESTART & UPDATE", "REDÉMARRER ET METTRE À JOUR", "HERSTARTEN EN BIJWERKEN"],
+    ["LAUNCHING PROJECT LEGACY", "LANCEMENT DE PROJECT LEGACY", "PROJECT LEGACY WORDT GESTART"],
+    ["Starting the game...", "Démarrage du jeu...", "Spel starten..."],
+
+    /* ---- play button / hero status ---- */
+    ["PLAY", "JOUER", "SPELEN"],
+    ["UNAVAILABLE", "INDISPONIBLE", "NIET BESCHIKBAAR"],
+    ["FILES OUTDATED", "FICHIERS OBSOLÈTES", "BESTANDEN VEROUDERD"],
+    ["DOWNLOADING…", "TÉLÉCHARGEMENT…", "DOWNLOADEN…"],
+    ["INSTALLING…", "INSTALLATION…", "INSTALLEREN…"],
+    ["RESUME DOWNLOAD", "REPRENDRE LE TÉLÉCHARGEMENT", "DOWNLOAD HERVATTEN"],
+    ["STARTING…", "DÉMARRAGE…", "STARTEN…"],
+    ["STOP GAME", "ARRÊTER LE JEU", "SPEL STOPPEN"],
+    ["CHOOSE FOLDER", "CHOISIR UN DOSSIER", "MAP KIEZEN"],
+    ["Open this page through the launcher application.", "Ouvrez cette page via l’application du launcher.", "Open deze pagina via de launcher-applicatie."],
+    ["preload.js does not match this version. Extract the latest zip into a NEW empty folder and rebuild.",
+        "preload.js ne correspond pas à cette version. Extrayez le dernier zip dans un NOUVEAU dossier vide puis reconstruisez.",
+        "preload.js komt niet overeen met deze versie. Pak de nieuwste zip uit in een NIEUWE lege map en bouw opnieuw."],
+    ["Pick the folder where the game is (or will be) installed.", "Choisissez le dossier où le jeu est (ou sera) installé.", "Kies de map waar het spel is (of wordt) geïnstalleerd."],
+    ["Build 4.5 is not installed in the selected folder yet.", "La build 4.5 n’est pas encore installée dans le dossier sélectionné.", "Build 4.5 is nog niet geïnstalleerd in de geselecteerde map."],
+    ["Launching the game is only supported on Windows.", "Le lancement du jeu n’est pris en charge que sous Windows.", "Het spel starten wordt alleen op Windows ondersteund."],
+
+    /* ---- install panel ---- */
+    ["DOWNLOADING BUILD 4.5", "TÉLÉCHARGEMENT DE LA BUILD 4.5", "BUILD 4.5 DOWNLOADEN"],
+    ["INSTALLING BUILD 4.5", "INSTALLATION DE LA BUILD 4.5", "BUILD 4.5 INSTALLEREN"],
+    ["DOWNLOAD", "TÉLÉCHARGEMENT", "DOWNLOAD"],
+    ["EXTRACTING", "EXTRACTION", "UITPAKKEN"],
+    ["DOWNLOAD PAUSED", "TÉLÉCHARGEMENT EN PAUSE", "DOWNLOAD GEPAUZEERD"],
+    ["PAUSED", "EN PAUSE", "GEPAUZEERD"],
+    ["INSTALLATION FAILED", "ÉCHEC DE L’INSTALLATION", "INSTALLATIE MISLUKT"],
+    ["ERROR", "ERREUR", "FOUT"],
+    ["Installation in progress — see the Dashboard.", "Installation en cours — voir le tableau de bord.", "Installatie bezig — zie het dashboard."],
+    ["No installation folder selected", "Aucun dossier d’installation sélectionné", "Geen installatiemap geselecteerd"],
+    ["Installation complete. You can play now.", "Installation terminée. Vous pouvez jouer.", "Installatie voltooid. Je kunt nu spelen."],
+
+    /* ---- questions / confirmations ---- */
+    ["The server looks offline right now. Launch anyway?", "Le serveur semble hors ligne en ce moment. Lancer quand même ?", "De server lijkt momenteel offline. Toch starten?"],
+    ["Reinstall the build? Existing game files will be overwritten.", "Réinstaller la build ? Les fichiers de jeu existants seront écrasés.", "De build opnieuw installeren? Bestaande spelbestanden worden overschreven."],
+    ["Stop the installation? The game files extracted so far will be incomplete.", "Arrêter l’installation ? Les fichiers de jeu extraits jusqu’ici seront incomplets.", "De installatie stoppen? De tot nu toe uitgepakte spelbestanden zijn dan onvolledig."],
+    ["Repair now? The build will be downloaded again and the missing files restored.", "Réparer maintenant ? La build sera retéléchargée et les fichiers manquants restaurés.", "Nu repareren? De build wordt opnieuw gedownload en de ontbrekende bestanden worden hersteld."],
+    ["Reset the game's saved settings? The old folder is kept as a backup.", "Réinitialiser les paramètres enregistrés du jeu ? L’ancien dossier est conservé comme sauvegarde.", "De opgeslagen spelinstellingen resetten? De oude map blijft bewaard als back-up."],
+
+    /* ---- messages from the settings page ---- */
+    ["External links are unavailable.", "Les liens externes sont indisponibles.", "Externe links zijn niet beschikbaar."],
+    ["Unable to open this link.", "Impossible d’ouvrir ce lien.", "Deze link kan niet worden geopend."],
+    ["Launcher unavailable.", "Launcher indisponible.", "Launcher niet beschikbaar."],
+    ["Choose an installation folder first.", "Choisissez d’abord un dossier d’installation.", "Kies eerst een installatiemap."],
+    ["Configuration unavailable", "Configuration indisponible", "Configuratie niet beschikbaar"],
+    ["Folder selection unavailable.", "Sélection du dossier indisponible.", "Mapselectie niet beschikbaar."],
+    ["Wait for the installation to finish.", "Attendez la fin de l’installation.", "Wacht tot de installatie klaar is."],
+    ["Folder selected successfully", "Dossier sélectionné avec succès", "Map succesvol geselecteerd"],
+    ["Installation folder selected.", "Dossier d’installation sélectionné.", "Installatiemap geselecteerd."],
+    ["Folder selection error", "Erreur de sélection du dossier", "Fout bij het kiezen van de map"],
+    ["Unable to select the folder.", "Impossible de sélectionner le dossier.", "De map kan niet worden geselecteerd."],
+    ["Choose a folder first.", "Choisissez d’abord un dossier.", "Kies eerst een map."],
+    ["Folder verification unavailable.", "Vérification du dossier indisponible.", "Mapcontrole niet beschikbaar."],
+    ["Verification in progress...", "Vérification en cours...", "Controle bezig..."],
+    ["Verification completed", "Vérification terminée", "Controle voltooid"],
+    ["Verification error", "Erreur de vérification", "Fout bij controle"],
+    ["Folder verification failed.", "Échec de la vérification du dossier.", "Mapcontrole mislukt."],
+    ["Account saved.", "Compte enregistré.", "Account opgeslagen."],
+    ["Could not save.", "Enregistrement impossible.", "Opslaan is mislukt."],
+    ["Launch options saved.", "Options de lancement enregistrées.", "Startopties opgeslagen."],
+    ["Invalid email or password.", "E-mail ou mot de passe invalide.", "Ongeldig e-mailadres of wachtwoord."],
+    ["Launch arguments are invalid.", "Les arguments de lancement sont invalides.", "De startargumenten zijn ongeldig."],
+    ["A previous installation was interrupted. Use Download to finish it.", "Une installation précédente a été interrompue. Utilisez Télécharger pour la terminer.", "Een eerdere installatie is onderbroken. Gebruik Download om hem af te maken."],
+    ["Folder accessible, but no game build found in it.", "Dossier accessible, mais aucune build du jeu n’y a été trouvée.", "Map toegankelijk, maar er is geen gamebuild in gevonden."],
+    ["Folder is empty. Use Download to install the build here.", "Le dossier est vide. Utilisez Télécharger pour y installer la build.", "De map is leeg. Gebruik Download om de build hier te installeren."],
+    ["The selected folder cannot be accessed.", "Le dossier sélectionné est inaccessible.", "De geselecteerde map is niet toegankelijk."],
+
+    /* ---- game launch (main.js) ---- */
+    ["The game is already running.", "Le jeu est déjà en cours d’exécution.", "Het spel draait al."],
+    ["The game can only be launched on Windows.", "Le jeu ne peut être lancé que sous Windows.", "Het spel kan alleen op Windows worden gestart."],
+    ["Game build not found or incomplete. Install it or choose the right folder in Settings.",
+        "Build du jeu introuvable ou incomplète. Installez-la ou choisissez le bon dossier dans les paramètres.",
+        "Gamebuild niet gevonden of onvolledig. Installeer hem of kies de juiste map in de instellingen."],
+    ["Enter your account email and password in Settings first.", "Saisissez d’abord l’e-mail et le mot de passe de votre compte dans les paramètres.", "Vul eerst het e-mailadres en wachtwoord van je account in bij de instellingen."],
+    ["Game started, injecting modules...", "Jeu démarré, injection des modules...", "Spel gestart, modules worden geïnjecteerd..."],
+    ["The game closed.", "Le jeu s’est fermé.", "Het spel is gesloten."],
+    ["The game keeps crashing at startup, and the injection timing is not the cause. This usually comes from the PC: update your graphics drivers, close overlays (Discord, GeForce Experience, MSI Afterburner), then open Help: RESET GAME SETTINGS, then try COMPATIBILITY MODE. If it continues, send COPY LOGS (Settings) to support.",
+        "Le jeu plante en boucle au démarrage, et le moment de l’injection n’en est pas la cause. Cela vient généralement du PC : mettez à jour vos pilotes graphiques, fermez les overlays (Discord, GeForce Experience, MSI Afterburner), puis ouvrez Aide : RÉINITIALISER LES PARAMÈTRES DU JEU, puis essayez le MODE COMPATIBILITÉ. Si cela continue, envoyez COPIER LES LOGS (Paramètres) au support.",
+        "Het spel blijft bij het opstarten crashen en het moment van injecteren is niet de oorzaak. Dit komt meestal door de pc: werk je grafische drivers bij, sluit overlays (Discord, GeForce Experience, MSI Afterburner), open Hulp: SPELINSTELLINGEN RESETTEN en probeer daarna de COMPATIBILITEITSMODUS. Blijft het gebeuren, stuur dan LOGS KOPIËREN (Instellingen) naar de support."],
+    ["The game could not start: a Windows component is missing. Install the Microsoft Visual C++ Redistributable (x64), then press PLAY again.",
+        "Le jeu n’a pas pu démarrer : un composant Windows est manquant. Installez le Microsoft Visual C++ Redistributable (x64), puis appuyez de nouveau sur JOUER.",
+        "Het spel kon niet starten: er ontbreekt een Windows-component. Installeer de Microsoft Visual C++ Redistributable (x64) en druk daarna opnieuw op SPELEN."],
+    ["Game running, redirector loaded. In the lobby, use INJECT CONSOLE below (then press F3 in-game).",
+        "Jeu en cours, redirecteur chargé. Dans le lobby, utilisez INJECTER LA CONSOLE ci-dessous (puis appuyez sur F3 en jeu).",
+        "Spel actief, redirector geladen. Gebruik in de lobby hieronder CONSOLE INJECTEREN (druk daarna in het spel op F3)."],
+    ["Already running.", "Déjà en cours.", "Draait al."],
+    ["Unknown module.", "Module inconnu.", "Onbekende module."],
+    ["Start the game first.", "Démarrez d’abord le jeu.", "Start eerst het spel."],
+    ["Console injected. Press F3 in-game.", "Console injectée. Appuyez sur F3 en jeu.", "Console geïnjecteerd. Druk in het spel op F3."],
+
+    /* ---- install (main.js / downloader / extract-worker) ---- */
+    ["Verifying download (SHA-256)...", "Vérification du téléchargement (SHA-256)...", "Download controleren (SHA-256)..."],
+    ["The downloaded file is corrupted (SHA-256 does not match). It was deleted - press Download to try again.",
+        "Le fichier téléchargé est corrompu (le SHA-256 ne correspond pas). Il a été supprimé - appuyez sur Télécharger pour réessayer.",
+        "Het gedownloade bestand is beschadigd (SHA-256 komt niet overeen). Het is verwijderd - druk op Download om het opnieuw te proberen."],
+    ["Reading the archive...", "Lecture de l’archive...", "Archief lezen..."],
+    ["Extraction finished but the game executable was not found. The archive layout may have changed.",
+        "Extraction terminée mais l’exécutable du jeu est introuvable. La structure de l’archive a peut-être changé.",
+        "Uitpakken voltooid, maar het uitvoerbare spelbestand is niet gevonden. De opbouw van het archief is mogelijk veranderd."],
+    ["Installation complete.", "Installation terminée.", "Installatie voltooid."],
+    ["Download paused.", "Téléchargement en pause.", "Download gepauzeerd."],
+    ["Cancelled.", "Annulé.", "Geannuleerd."],
+    ["Too many redirects", "Trop de redirections", "Te veel omleidingen"],
+    ["Server rejected the resume request, restarting from zero", "Le serveur a refusé la reprise, redémarrage depuis zéro", "De server weigerde hervatten, opnieuw vanaf nul beginnen"],
+    ["Connection closed before the download finished", "Connexion fermée avant la fin du téléchargement", "Verbinding verbroken voordat de download klaar was"],
+    ["Connection timed out", "Délai de connexion dépassé", "Verbinding time-out"],
+    ["The RAR extraction module is missing. Run \"npm install\" in the launcher folder.",
+        "Le module d’extraction RAR est manquant. Lancez « npm install » dans le dossier du launcher.",
+        "De RAR-uitpakmodule ontbreekt. Voer “npm install” uit in de launchermap."],
+    ["Unsupported node-unrar-js version (createExtractorFromFile not found).",
+        "Version de node-unrar-js non prise en charge (createExtractorFromFile introuvable).",
+        "Niet-ondersteunde versie van node-unrar-js (createExtractorFromFile niet gevonden)."],
+    ["The archive is empty.", "L’archive est vide.", "Het archief is leeg."],
+    ["The archive is password protected.", "L’archive est protégée par un mot de passe.", "Het archief is met een wachtwoord beveiligd."],
+
+    /* ---- diagnostics (FIX MY GAME) ---- */
+    ["Game folder", "Dossier du jeu", "Spelmap"],
+    ["Game executable", "Exécutable du jeu", "Uitvoerbaar spelbestand"],
+    ["Game data (.pak files)", "Données du jeu (fichiers .pak)", "Spelgegevens (.pak-bestanden)"],
+    ["Only one copy of the game", "Une seule copie du jeu", "Slechts één kopie van het spel"],
+    ["Extraction finished", "Extraction terminée", "Uitpakken voltooid"],
+    ["Injector and DLLs", "Injecteur et DLL", "Injector en DLL’s"],
+    ["Launch arguments", "Arguments de lancement", "Startargumenten"],
+    ["Free disk space", "Espace disque libre", "Vrije schijfruimte"],
+    ["Stuck game processes", "Processus du jeu bloqués", "Vastgelopen spelprocessen"],
+    ["Project Legacy server", "Serveur Project Legacy", "Project Legacy-server"],
+    ["Not set or not found. Choose it in Settings.", "Non défini ou introuvable. Choisissez-le dans les paramètres.", "Niet ingesteld of niet gevonden. Kies de map in de instellingen."],
+    ["Missing. Use the Dashboard to download the build again.", "Manquant. Utilisez le tableau de bord pour retélécharger la build.", "Ontbreekt. Download de build opnieuw via het dashboard."],
+    ["Missing or incomplete. Re-download the build from the Dashboard.", "Manquant ou incomplet. Retéléchargez la build depuis le tableau de bord.", "Ontbreekt of is onvolledig. Download de build opnieuw via het dashboard."],
+    ["-HTTP=WinINet is missing. It is required by the redirector.", "-HTTP=WinINet est manquant. Il est requis par le redirecteur.", "-HTTP=WinINet ontbreekt. Het is nodig voor de redirector."],
+    ["Missing. Install the Microsoft Visual C++ Redistributable (x64).", "Manquant. Installez le Microsoft Visual C++ Redistributable (x64).", "Ontbreekt. Installeer de Microsoft Visual C++ Redistributable (x64)."],
+    ["The server does not answer. Wait a few minutes, it is not a problem on your PC.", "Le serveur ne répond pas. Patientez quelques minutes, ce n’est pas un problème de votre PC.", "De server reageert niet. Wacht een paar minuten, het ligt niet aan je pc."],
+    ["Nothing to reset: the game has no saved settings yet.", "Rien à réinitialiser : le jeu n’a pas encore de paramètres enregistrés.", "Niets om te resetten: het spel heeft nog geen opgeslagen instellingen."],
+
+    /* ---- pre-flight problems ---- */
+    ["The game folder cannot be found. Choose it again in Settings.", "Le dossier du jeu est introuvable. Choisissez-le de nouveau dans les paramètres.", "De spelmap is niet gevonden. Kies hem opnieuw in de instellingen."],
+    ["The game executable is missing.", "L’exécutable du jeu est manquant.", "Het uitvoerbare spelbestand ontbreekt."],
+    ["The game data (.pak files) is missing.", "Les données du jeu (fichiers .pak) sont manquantes.", "De spelgegevens (.pak-bestanden) ontbreken."],
+    ["The game data folder (Paks) is missing.", "Le dossier des données du jeu (Paks) est manquant.", "De map met spelgegevens (Paks) ontbreekt."]
+];
+
+/* Messages with variable parts. [regex, French, Dutch]
+   $1 $2 = captured text as is, {1} {2} = captured text, translated too. */
+const I18N_PATTERNS = [
+    [/^VERSION ([\d.]+) · CHAPTER 1 SEASON 4$/, "VERSION $1 · CHAPITRE 1 SAISON 4", "VERSIE $1 · HOOFDSTUK 1 SEIZOEN 4"],
+    [/^Installed: (.+)$/, "Installée : $1", "Geïnstalleerd: $1"],
+    [/^Not installed in (.+)$/, "Non installée dans $1", "Niet geïnstalleerd in $1"],
+    [/^(\d+) \/ (\S+) files$/, "$1 / $2 fichiers", "$1 / $2 bestanden"],
+    [/^STARTS IN (\d+)s$/, "DÉBUT DANS $1s", "START OVER $1s"],
+    [/^(\w+) match is open - join now!$/, "Match $1 ouvert - rejoignez-le !", "$1-match is open - doe nu mee!"],
+    [/^Version (\S+) is ready to install\.$/, "La version $1 est prête à être installée.", "Versie $1 is klaar om te installeren."],
+    [/^Downloading launcher update\.\.\.( \d+%)?$/, "Téléchargement de la mise à jour du launcher...$1", "Launcher-update downloaden...$1"],
+    [/^Community Launcher · Build ([\d.]+) · UI (v[\d.]+)$/, "Launcher communautaire · Build $1 · UI $2", "Community-launcher · Build $1 · UI $2"],
+    [/^(\d+) problem\(s\) need your action \(see above\)\.$/, "$1 problème(s) nécessitent votre action (voir ci-dessus).", "$1 probleem/problemen vragen om je aandacht (zie hierboven)."],
+    [/^(.+) - fixed$/, "{1} - corrigé", "{1} - opgelost"],
+
+    /* diagnostics */
+    [/^Found (\d+) copies: (.+)\. Keep one, or choose an empty folder and use REINSTALL \/ REPAIR\.$/,
+        "$1 copies trouvées : $2. Gardez-en une seule, ou choisissez un dossier vide et utilisez RÉINSTALLER / RÉPARER.",
+        "$1 kopieën gevonden: $2. Bewaar er één, of kies een lege map en gebruik OPNIEUW INSTALLEREN / REPAREREN."],
+    [/^Leftover (.+): the download or extraction did not finish\. Use REINSTALL \/ REPAIR in Downloads \(in an empty folder\)\.$/,
+        "Reste $1 : le téléchargement ou l’extraction ne s’est pas terminé. Utilisez RÉINSTALLER / RÉPARER dans Téléchargements (dans un dossier vide).",
+        "Overblijfsel $1: de download of het uitpakken is niet voltooid. Gebruik OPNIEUW INSTALLEREN / REPAREREN bij Downloads (in een lege map)."],
+    [/^(.+) missing\. Restore them in Windows Security > Protection history, then add the launcher folder to the exclusions\.$/,
+        "$1 manquant(s). Restaurez-les dans Sécurité Windows > Historique de protection, puis ajoutez le dossier du launcher aux exclusions.",
+        "$1 ontbreekt. Herstel ze via Windows-beveiliging > Beveiligingsgeschiedenis en voeg daarna de launchermap toe aan de uitsluitingen."],
+    [/^Restored: (.+)$/, "Restauré : $1", "Hersteld: $1"],
+    [/^([\d.]+) GB free\. Free some space and try again\.$/, "$1 Go libres. Libérez de l’espace et réessayez.", "$1 GB vrij. Maak ruimte vrij en probeer het opnieuw."],
+    [/^([\d.]+) GB free$/, "$1 Go libres", "$1 GB vrij"],
+    [/^Closed: (.+)$/, "Fermés : $1", "Gesloten: $1"],
+    [/^Found: (.+)$/, "Trouvés : $1", "Gevonden: $1"],
+    [/^Game settings reset\. The old folder was kept as (.+) next to it\. Press PLAY to try again\.$/,
+        "Paramètres du jeu réinitialisés. L’ancien dossier a été conservé sous le nom $1 à côté. Appuyez sur JOUER pour réessayer.",
+        "Spelinstellingen gereset. De oude map is ernaast bewaard als $1. Druk op SPELEN om het opnieuw te proberen."],
+    [/^Could not reset the settings: (.+)$/, "Impossible de réinitialiser les paramètres : $1", "Instellingen resetten is mislukt: $1"],
+
+    /* install */
+    [/^Connection problem, retrying \((\d+)\/5\)\.\.\.$/, "Problème de connexion, nouvelle tentative ($1/5)...", "Verbindingsprobleem, opnieuw proberen ($1/5)..."],
+    [/^Low disk space: about (.+) needed\.$/, "Espace disque insuffisant : environ $1 nécessaires.", "Weinig schijfruimte: ongeveer $1 nodig."],
+    [/^Extraction stopped unexpectedly \(code (.+)\)\.$/, "L’extraction s’est arrêtée de façon inattendue (code $1).", "Het uitpakken stopte onverwacht (code $1)."],
+    [/^Download aborted \((.+)\)$/, "Téléchargement interrompu ($1)", "Download afgebroken ($1)"],
+    [/^Cannot write to disk: (.+)$/, "Écriture sur le disque impossible : $1", "Kan niet naar de schijf schrijven: $1"],
+    [/^Incomplete download \((\d+) of (\d+) bytes\)$/, "Téléchargement incomplet ($1 sur $2 octets)", "Onvolledige download ($1 van $2 bytes)"],
+    [/^(.+)\. The archive may be corrupt: use "Reinstall" to download it again\.$/,
+        "$1. L’archive est peut-être corrompue : utilisez « Réinstaller » pour la retélécharger.",
+        "$1. Het archief is mogelijk beschadigd: gebruik “Opnieuw installeren” om het opnieuw te downloaden."],
+    [/^Refusing to extract unsafe path: (.+)$/, "Extraction refusée, chemin dangereux : $1", "Uitpakken geweigerd, onveilig pad: $1"],
+    [/^Not enough disk space: (.+) needed, (.+) free\.$/, "Espace disque insuffisant : $1 nécessaires, $2 libres.", "Onvoldoende schijfruimte: $1 nodig, $2 vrij."],
+
+    /* game launch */
+    [/^Missing launcher files: (.+)\. A security tool may have removed them\.$/,
+        "Fichiers du launcher manquants : $1. Un outil de sécurité les a peut-être supprimés.",
+        "Launcherbestanden ontbreken: $1. Een beveiligingstool heeft ze mogelijk verwijderd."],
+    [/^The game closed \(exit code (\d+)\)\.$/, "Le jeu s’est fermé (code de sortie $1).", "Het spel is gesloten (afsluitcode $1)."],
+    [/^The game crashed at startup\. Trying again with a different injection timing \((\d+)\/3\)\.\.\.$/,
+        "Le jeu a planté au démarrage. Nouvel essai avec un autre moment d’injection ($1/3)...",
+        "Het spel crashte bij het opstarten. Opnieuw proberen met een ander injectiemoment ($1/3)..."],
+    [/^Game running, but injection failed \((.+)\)$/, "Jeu en cours, mais l’injection a échoué ($1)", "Spel actief, maar injecteren is mislukt ($1)"],
+    [/^Could not start the game: (.+)$/, "Impossible de démarrer le jeu : $1", "Het spel kon niet starten: $1"],
+    [/^Build found: (.+)$/, "Build trouvée : $1", "Build gevonden: $1"],
+    [/^(.+) is missing from the launcher's bin folder\.$/, "$1 est absent du dossier bin du launcher.", "$1 ontbreekt in de bin-map van de launcher."],
+    [/^(.+) injected\.$/, "$1 injecté.", "$1 geïnjecteerd."],
+    [/^(.+) injection failed: (.+)$/, "Échec de l’injection de $1 : $2", "Injecteren van $1 is mislukt: $2"],
+    [/^(.+) is missing - your antivirus probably removed it\. Restore it in Windows Security > Protection history\.$/,
+        "$1 est manquant - votre antivirus l’a probablement supprimé. Restaurez-le dans Sécurité Windows > Historique de protection.",
+        "$1 ontbreekt - je antivirus heeft het waarschijnlijk verwijderd. Herstel het via Windows-beveiliging > Beveiligingsgeschiedenis."]
+];
+
+const I18N = { fr: {}, nl: {} };
+const I18N_RX = { fr: [], nl: [] };
+for (const [en, fr, nl] of I18N_ROWS) { I18N.fr[en] = fr; I18N.nl[en] = nl; }
+for (const [re, fr, nl] of I18N_PATTERNS) { I18N_RX.fr.push([re, fr]); I18N_RX.nl.push([re, nl]); }
+
 let lang = "en";
 try { lang = (localStorage.getItem("lang") || navigator.language || "en").slice(0, 2).toLowerCase(); } catch {}
 if (!I18N[lang]) lang = "en";
 
-function tr(v) {
-    if (lang === "en" || typeof v !== "string") return v;
-    const t = I18N[lang][v.trim()];
-    return t ? v.replace(v.trim(), t) : v;
+function trCore(s) {
+    const dict = I18N[lang];
+    if (Object.prototype.hasOwnProperty.call(dict, s)) return dict[s];
+
+    /* text wrapped over several lines in the HTML: compare with single spaces */
+    const flat = s.replace(/\s+/g, " ");
+    if (flat !== s && Object.prototype.hasOwnProperty.call(dict, flat)) return dict[flat];
+
+    /* several lines (confirm dialogs, problem lists): translate line by line */
+    if (s.indexOf("\n") !== -1) {
+        return s.split("\n").map(line => {
+            const t = line.trim();
+            return t ? line.replace(t, () => trCore(t)) : line;
+        }).join("\n");
+    }
+
+    /* "A · B · C": translate each part */
+    if (s.indexOf(" · ") !== -1) {
+        const parts = s.split(" · ");
+        const out = parts.map(trCore);
+        if (out.some((p, i) => p !== parts[i])) return out.join(" · ");
+    }
+
+    for (const [re, tpl] of I18N_RX[lang]) {
+        const m = re.exec(s);
+        if (m) return tpl.replace(/\{(\d)\}|\$(\d)/g, (_, a, b) => a ? trCore(m[a] || "") : (m[b] || ""));
+    }
+    return s;
 }
 
-function applyLang() {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    let n;
-    while ((n = walker.nextNode())) {
-        if (n.parentNode && /^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) continue;
-        if (n.__o === undefined) n.__o = n.nodeValue;
-        n.nodeValue = lang === "en" ? n.__o : tr(n.__o);
+function tr(v) {
+    if (lang === "en" || typeof v !== "string") return v;
+    const core = v.trim();
+    if (!core) return v;
+    const out = trCore(core);
+    if (out === core) return v;
+    return v.slice(0, v.indexOf(core)) + out + v.slice(v.indexOf(core) + core.length);
+}
+
+/* --- apply to the page --------------------------------------------- */
+const TR_ATTRS = ["placeholder", "title", "aria-label"];
+const trSkip = n => !n || /^(SCRIPT|STYLE|TEXTAREA)$/.test(n.nodeName);
+const trRecords = new WeakMap(); // text node -> { o: English original, t: what we last displayed }
+
+function trNode(n) {
+    const cur = n.nodeValue;
+    const rec = trRecords.get(n);
+    const o = rec && rec.t === cur ? rec.o : cur; // text changed by the app = new English original
+    const t = lang === "en" ? o : tr(o);
+    if (t !== cur) n.nodeValue = t;
+    trRecords.set(n, { o, t });
+}
+
+function trAttrs(el) {
+    if (!el || !el.hasAttribute) return;
+    for (const a of TR_ATTRS) {
+        if (!el.hasAttribute(a)) continue;
+        const key = "__tr_" + a;
+        const cur = el.getAttribute(a);
+        const rec = el[key];
+        const o = rec && rec.t === cur ? rec.o : cur;
+        const t = lang === "en" ? o : tr(o);
+        if (t !== cur) el.setAttribute(a, t);
+        el[key] = { o, t };
     }
 }
 
+function trTree(root) {
+    if (!root) return;
+    if (root.nodeType === 3) { if (!trSkip(root.parentNode)) trNode(root); return; }
+    if (root.nodeType !== 1 || trSkip(root)) return;
+    trAttrs(root);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+        if (n.nodeType === 3) { if (!trSkip(n.parentNode)) trNode(n); }
+        else if (!trSkip(n)) trAttrs(n);
+    }
+}
+
+function applyLang() {
+    try { document.documentElement.lang = lang; } catch {}
+    trTree(document.body);
+    try { if (typeof launcher !== "undefined" && launcher && launcher.setLang) launcher.setLang(lang); } catch {}
+}
+
+/* everything the app writes later (progress, errors, messages from main.js) */
+new MutationObserver(list => {
+    for (const m of list) {
+        if (m.type === "characterData") { if (!trSkip(m.target.parentNode)) trNode(m.target); }
+        else if (m.type === "attributes") trAttrs(m.target);
+        else m.addedNodes.forEach(trTree);
+    }
+}).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: TR_ATTRS });
+
+/* native dialogs */
+(function translateDialogs() {
+    const nativeConfirm = window.confirm.bind(window), nativeAlert = window.alert.bind(window);
+    window.confirm = message => nativeConfirm(tr(String(message)));
+    window.alert = message => nativeAlert(tr(String(message)));
+})();
+
 function setText(id, value) {
-    value = tr(value);
     const element = $(id);
     if (element) element.textContent = String(value);
 }
@@ -1983,7 +2492,7 @@ async function startHeroSlideshow() {
 function renderNews(data) {
     const list = $("newsList");
     if (!list || !data || !Array.isArray(data.posts) || !data.posts.length) return;
-    const lang = (navigator.language || "en").slice(0, 2).toLowerCase();
+    window.__lastNews = data;
     const pick = obj => (obj && (obj[lang] || obj.en)) || "";
     let seen = "";
     try { seen = localStorage.getItem("newsSeen") || ""; } catch {}
@@ -2022,7 +2531,7 @@ function notifyOpen(id, event) {
     try { on = localStorage.getItem("notify") === "1"; } catch {}
     const open = Boolean(event.online && event.joinable);
     if (on && open && prevOpen[id] === false && "Notification" in window && Notification.permission === "granted") {
-        new Notification("Project Legacy", { body: String(event.mode).toUpperCase() + " match is open - join now!" });
+        new Notification("Project Legacy", { body: tr(String(event.mode).toUpperCase() + " match is open - join now!") });
     }
     prevOpen[id] = open;
     const card = $(id) && $(id).parentElement;
@@ -2042,6 +2551,7 @@ function notifyOpen(id, event) {
             lang = sel.value;
             try { localStorage.setItem("lang", lang); } catch {}
             applyLang();
+            try { if (window.__lastNews) renderNews(window.__lastNews); } catch {}
         });
     }
     if (tog) {

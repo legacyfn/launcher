@@ -50,6 +50,7 @@ contextBridge.exposeInMainWorld("launcher", {
   setCompat: on => ipcRenderer.invoke("set-compat", on),
   preflight: () => ipcRenderer.invoke("preflight"),
   getLogs: () => ipcRenderer.invoke("get-logs"),
+  setLang: lang => ipcRenderer.invoke("set-lang", lang),
   onInstallProgress: subscribe("install-progress"),
   onGameStatus: subscribe("game-status")
 });

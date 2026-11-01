@@ -1,6 +1,6 @@
 {
   "name": "project-legacy-launcher",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Project Legacy community launcher",
   "main": "main.js",
   "scripts": {
