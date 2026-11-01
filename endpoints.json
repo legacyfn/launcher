@@ -1,0 +1,10 @@
+{
+  "xmppServerUrl": "https://pr-xmpp.xeros-radio.nl",
+  "buildArchiveUrl": "https://projectlegacybuilds.streamxerosradio.duckdns.org/builds/4.5.rar",
+  "newsUrl": "https://projectlegacy.pages.dev/news.json",
+  "healthPollSeconds": 20,
+  "buildArchiveSha256": "",
+  "discordInvite": "Bd3B7VNzUB",
+  "profileUrl": "",
+  "apiUrl": "https://pr-api.xeros-radio.nl"
+}
