@@ -1,2 +1,0 @@
-# launcher
-Project Legacy Launcher
