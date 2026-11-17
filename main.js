@@ -17,7 +17,7 @@ const { DEFAULT_ARGS, buildLaunchArgs } = require("./lib/args");
 const OFFICIAL_SITE = "https://projectlegacy.pages.dev/";
 function loadEndpoints() {
   const d = {
-    xmppServerUrl: "https://pr-xmpp.xeros-radio.nl",
+    xmppServerUrl: "https://projectlegacymain.streamxerosradio.duckdns.org",
     buildArchiveUrl: "https://projectlegacybuilds.streamxerosradio.duckdns.org/builds/4.5.rar",
     newsUrl: "https://projectlegacy.pages.dev/news.json",
     healthPollSeconds: 20
@@ -51,7 +51,7 @@ const INJECTIONS = [
 // Same as the official launcher: the console and anti-crash modules are injected by hand
 // from the Dashboard once the player is in the lobby (console is then opened with F3).
 const MANUAL_MODULES = {
-  console: { label: "Console", file: "edit.dll" },
+  console: { label: "Console", file: "edit.dll.enc" },
   anticrash: { label: "Anti-crash", file: "anticrash.dll", optional: true }
 };
 
@@ -351,7 +351,7 @@ async function fetchProfile() {
 /* Self-healing: backup of bin/, diagnostics, "Fix my game"            */
 /* ------------------------------------------------------------------ */
 
-const BIN_FILES = ["Injector.exe", "projectlegacy.dll", "edit.dll"];
+const BIN_FILES = ["Injector.exe", "projectlegacy.dll", "edit.dll.enc"];
 const binBackupDir = () => path.join(app.getPath("userData"), "bin-backup");
 
 function backupBin() {
@@ -410,6 +410,36 @@ function findLeftovers(base) {
   return found;
 }
 
+
+function paksSnapshot(root) {
+  try {
+    const dir = path.join(root, "FortniteGame", "Content", "Paks");
+    return fs.readdirSync(dir).filter(f => /\.pak$/i.test(f)).sort().map(f => ({ name: f, size: fs.statSync(path.join(dir, f)).size }));
+  } catch { return []; }
+}
+
+// Written once the build is extracted: later checks notice files changed by another program or launcher.
+function writeInstallMarker() {
+  try {
+    const root = installedRoot();
+    if (root) fs.writeFileSync(path.join(root, ".projectlegacy-install.json"), JSON.stringify({ build: "4.5", time: new Date().toISOString(), paks: paksSnapshot(root) }));
+  } catch {}
+}
+
+// The game talks to the backend written inside the redirector DLL (not to the launcher's endpoints.json).
+function readRedirectorHost() {
+  try {
+    const buf = fs.readFileSync(path.join(BIN_DIR, "projectlegacy.dll"));
+    const texts = [buf.toString("latin1"), buf.toString("utf16le"), buf.subarray(1).toString("utf16le")];
+    for (const text of texts) {
+      for (const host of text.match(/[a-z0-9-]+(?:\.[a-z0-9-]+){2,}/gi) || []) {
+        if (!/\.(dll|exe|pdb|sys|lib|cpp|h|obj|manifest)$/i.test(host)) return host.toLowerCase();
+      }
+    }
+  } catch {}
+  return "";
+}
+
 async function runDiagnostics(fix) {
   const checks = [];
   const add = (id, label, ok, detail, fixed) => checks.push({ id, label, ok, detail: detail || "", fixed: Boolean(fixed) });
@@ -424,6 +454,24 @@ async function runDiagnostics(fix) {
     try { paksOk = fs.readdirSync(path.join(root, "FortniteGame", "Content", "Paks")).some(f => f.toLowerCase().endsWith(".pak")); } catch {}
   }
   add("paks", "Game data (.pak files)", paksOk, paksOk ? "" : "Missing or incomplete. Re-download the build from the Dashboard.");
+
+  // Non-standard .pak files in the game data (added by another launcher or a mod) change what the game shows
+  if (root) {
+    const odd = [];
+    try {
+      const paksDir = path.join(root, "FortniteGame", "Content", "Paks");
+      for (const f of fs.readdirSync(paksDir)) {
+        if (/\.pak$/i.test(f) && !/^pakchunk\d+(_s\d+)?-WindowsClient\.pak$/i.test(f)) odd.push(path.join(paksDir, f));
+      }
+    } catch {}
+    let disabled = false;
+    if (odd.length && fix) {
+      for (const f of odd) { try { fs.renameSync(f, f + ".disabled"); disabled = true; } catch {} }
+    }
+    add("foreign", "Only standard game data files", !odd.length || disabled,
+      odd.length ? (disabled ? "Disabled: " : "Found: ") + odd.map(f => path.basename(f)).join(", ") : "", disabled);
+  }
+
 
   // 1b. several copies of the game / unfinished extraction (a mixed install crashes at startup)
   if (folderOk) {
@@ -477,6 +525,36 @@ async function runDiagnostics(fix) {
     add("procs", "Stuck game processes", !stuck.length || killed, stuck.length ? (killed ? "Closed: " : "Found: ") + [...new Set(stuck)].join(", ") : "", killed);
   }
 
+
+  // Files changed since the installation (another launcher replaced them) + which backend the game talks to
+  if (root) {
+    try {
+      const marker = JSON.parse(fs.readFileSync(path.join(root, ".projectlegacy-install.json"), "utf8"));
+      const now = paksSnapshot(root);
+      const problems = [
+        ...marker.paks.filter(p => !now.some(n => n.name === p.name)).map(p => p.name + " (missing)"),
+        ...marker.paks.filter(p => now.some(n => n.name === p.name && n.size !== p.size)).map(p => p.name + " (changed)"),
+        ...now.filter(n => !marker.paks.some(p => p.name === n.name)).map(n => n.name + " (added)")
+      ];
+      add("integrity", "Game files unchanged since installation", !problems.length,
+        problems.length ? "Changed by another program or launcher: " + problems.slice(0, 4).join(", ") + ". Reinstall in a new EMPTY folder (Help > CLEAN REINSTALL)." : "");
+    } catch {
+      add("integrity", "Game files unchanged since installation", true, "No record yet (installed with an older launcher). Reinstall once to enable this check.");
+    }
+  }
+
+  const host = readRedirectorHost();
+  if (host) {
+    const status = await new Promise(resolve => {
+      const req = https.get("https://" + host + "/", { headers: { "User-Agent": USER_AGENT } }, res => { res.resume(); resolve(res.statusCode); });
+      req.setTimeout(6000, () => req.destroy(new Error("timeout")));
+      req.on("error", () => resolve(0));
+    });
+    const apiHost = String(ENDPOINTS.apiUrl || "").replace(/^https?:\/\//, "").replace(/\/.*$/, "").toLowerCase();
+    add("backend", "Game backend (where the game connects)", status > 0,
+      host + (status > 0 ? " answers (HTTP " + status + ")" : " does not answer") + (apiHost && apiHost !== host ? ". Launcher panels use " + apiHost + "." : ""));
+  }
+
   // 7. server
   const healthy = !lastLive.health || lastLive.health.ok;
   add("server", "Project Legacy server", healthy, healthy ? "" : "The server does not answer. Wait a few minutes, it is not a problem on your PC.");
@@ -487,6 +565,37 @@ async function runDiagnostics(fix) {
   log("diagnostics: " + checks.filter(c => !c.ok).map(c => c.id).join(",") + " problem(s)");
   return { checks, delayMs: config.injectDelayMs };
 }
+
+// Adds the launcher and game folders to Windows Defender's exclusions, so it stops quarantining
+// Injector.exe / the DLLs and does not slow down the download+extraction. Needs admin rights, so it
+// pops Windows' own UAC prompt (Start-Process -Verb RunAs) - the launcher itself never asks for admin.
+ipcMain.handle("add-defender-exclusion", async () => {
+  if (process.platform !== "win32") return { ok: false, message: "This only applies to Windows." };
+
+  const paths = [...new Set([__dirname, config.gameFolder].filter(Boolean))];
+  if (!paths.length) return { ok: false, message: "Nothing to exclude yet." };
+
+  const inner = paths.map(p => `Add-MpPreference -ExclusionPath '${p.replace(/'/g, "''")}'`).join("; ");
+  // Base64/UTF-16LE avoids every quoting issue when passing the inner script through -EncodedCommand.
+  const encoded = Buffer.from(inner, "utf16le").toString("base64");
+
+  return new Promise(resolve => {
+    execFile("powershell.exe", [
+      "-NoProfile", "-NonInteractive", "-Command",
+      `Start-Process powershell -Verb RunAs -WindowStyle Hidden -Wait ` +
+      `-ArgumentList '-NoProfile','-NonInteractive','-EncodedCommand','${encoded}'`
+    ], { windowsHide: true, timeout: 20000 }, (err) => {
+      if (err) {
+        log("defender exclusion: " + err.message);
+        // A cancelled UAC prompt also lands here - Windows gives no clean way to tell the two apart.
+        resolve({ ok: false, message: "Could not add the exclusion. You may have cancelled the admin prompt, or Defender is managed by your organization/antivirus policy." });
+      } else {
+        log("defender exclusion added for: " + paths.join(", "));
+        resolve({ ok: true, message: "Exclusion added for: " + paths.join(" and ") + "." });
+      }
+    });
+  });
+});
 
 ipcMain.handle("reset-game-settings", () => {
   try {
@@ -514,6 +623,7 @@ function startHealLoop() {
 }
 
 function startBackgroundServices() {
+  cleanupConsoleTemp();
   startHealLoop();
   fetchProfile();
   fetchDiscord();
@@ -753,6 +863,7 @@ async function runInstall() {
     }
     try { fs.rmSync(incompleteMarker(), { force: true }); } catch {}
     try { fs.rmSync(archive, { force: true }); } catch {}
+    writeInstallMarker();
     setInstall({ phase: "done", percent: 100, message: "Installation complete." }, true);
   } catch (err) {
     downloadHandle = null;
@@ -977,7 +1088,8 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
+      sandbox: true,
+      autoplayPolicy: "no-user-gesture-required"
     }
   });
 
@@ -1133,6 +1245,72 @@ ipcMain.handle("install-cancel", () => {
 
 ipcMain.handle("game-launch", () => { autoRetries = 0; return launchGame(); });
 
+/* Console / edit on release module: bin/edit.dll.enc is encrypted (AES-256-GCM, key derived from the
+   access code with scrypt). Without the code the DLL cannot be used, even if the file is copied. */
+
+const CONSOLE_ENC = path.join(BIN_DIR, "edit.dll.enc");
+const consoleKeyPath = () => path.join(app.getPath("userData"), "console-key.bin");
+let unlockFails = 0;
+let unlockLockedUntil = 0;
+
+function readConsoleEnc() {
+  const b = fs.readFileSync(CONSOLE_ENC);
+  if (b.subarray(0, 4).toString() !== "PLE1") throw new Error("Unsupported file");
+  return { salt: b.subarray(4, 20), iv: b.subarray(20, 32), tag: b.subarray(32, 48), data: b.subarray(48) };
+}
+
+function decryptConsole(key) {
+  const e = readConsoleEnc();
+  const d = require("crypto").createDecipheriv("aes-256-gcm", key, e.iv);
+  d.setAuthTag(e.tag);
+  return Buffer.concat([d.update(e.data), d.final()]); // throws when the key is wrong
+}
+
+function loadConsoleKey() {
+  try { return Buffer.from(safeStorage.decryptString(fs.readFileSync(consoleKeyPath())), "hex"); } catch { return null; }
+}
+
+function consoleUnlocked() {
+  const key = loadConsoleKey();
+  if (!key) return false;
+  try { decryptConsole(key); return true; } catch { return false; }
+}
+
+function cleanupConsoleTemp() {
+  try {
+    const os = require("os");
+    for (const f of fs.readdirSync(os.tmpdir())) {
+      if (/^plc-[0-9a-f]+\.dll$/.test(f)) { try { fs.unlinkSync(path.join(os.tmpdir(), f)); } catch {} }
+    }
+  } catch {}
+}
+
+ipcMain.handle("console-status", () => ({ available: fs.existsSync(CONSOLE_ENC), unlocked: consoleUnlocked() }));
+
+ipcMain.handle("console-lock", () => { try { fs.unlinkSync(consoleKeyPath()); } catch {} return { ok: true }; });
+
+ipcMain.handle("console-unlock", async (_e, code) => {
+  const wait = Math.ceil((unlockLockedUntil - Date.now()) / 1000);
+  if (wait > 0) return { ok: false, message: `Too many attempts. Try again in ${wait}s.` };
+  try {
+    const raw = String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (raw.length < 8) throw new Error("short");
+    const key = require("crypto").scryptSync(raw, readConsoleEnc().salt, 32, { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 });
+    decryptConsole(key);
+    if (!safeStorage.isEncryptionAvailable()) return { ok: false, message: "Secure storage is not available on this PC." };
+    fs.mkdirSync(path.dirname(consoleKeyPath()), { recursive: true });
+    fs.writeFileSync(consoleKeyPath(), safeStorage.encryptString(key.toString("hex")));
+    unlockFails = 0;
+    log("console unlocked");
+    return { ok: true, message: "Unlocked." };
+  } catch {
+    unlockFails++;
+    if (unlockFails >= 5) unlockLockedUntil = Date.now() + 30000 * (unlockFails - 4);
+    log("console unlock failed (" + unlockFails + ")");
+    return { ok: false, message: "Wrong access code." };
+  }
+});
+
 ipcMain.handle("game-inject", async (_event, key) => {
   const mod = MANUAL_MODULES[key];
   if (!mod) return { ok: false, message: "Unknown module." };
@@ -1141,7 +1319,30 @@ ipcMain.handle("game-inject", async (_event, key) => {
   if (!fs.existsSync(file)) {
     return { ok: false, message: `${mod.file} is missing from the launcher's bin folder.` };
   }
-  const result = await runInjector(game.pid, file);
+
+  let target = file;
+  let temp = null;
+  if (key === "console") {
+    const k = loadConsoleKey();
+    if (!k) return { ok: false, locked: true, message: "Enter your access code first (Settings > Gameplay)." };
+    try {
+      const os = require("os");
+      temp = path.join(os.tmpdir(), "plc-" + require("crypto").randomBytes(6).toString("hex") + ".dll");
+      fs.writeFileSync(temp, decryptConsole(k));
+      target = temp;
+    } catch {
+      return { ok: false, locked: true, message: "Your access code is no longer valid. Enter it again." };
+    }
+  }
+
+  const result = await runInjector(game.pid, target);
+  if (temp) {
+    // The DLL stays locked while the game runs: retry the deletion until it works (and at the next start).
+    let tries = 0;
+    const timer = setInterval(() => {
+      try { fs.unlinkSync(temp); clearInterval(timer); } catch { if (++tries > 120) clearInterval(timer); }
+    }, 10000);
+  }
   const message = result.ok
     ? (key === "console" ? "Console injected. Press F3 in-game." : `${mod.label} injected.`)
     : `${mod.label} injection failed: ${result.output || "unknown error"}`;
@@ -1197,6 +1398,43 @@ ipcMain.handle("preflight", () => {
   }
   if (problems.length) log("preflight: " + problems.join(" | "));
   return { ok: !problems.length, problems, repair };
+});
+
+ipcMain.handle("list-live", () => {
+  try {
+    const dir = path.join(__dirname, "assets", "live");
+    const { pathToFileURL } = require("url");
+    return fs.readdirSync(dir).filter(f => /\.(mp4|webm)$/i.test(f)).sort().slice(0, 1).map(f => pathToFileURL(path.join(dir, f)).href);
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle("folder-info", () => {
+  try { return { path: config.gameFolder, empty: fs.readdirSync(config.gameFolder).length === 0 }; }
+  catch { return { path: config.gameFolder, empty: true }; }
+});
+
+ipcMain.handle("get-shop", async () => {
+  const api = String(ENDPOINTS.apiUrl || "").replace(/\/+$/, "");
+  if (!api.startsWith("https://")) return { ok: false, message: "The shop address is not set (apiUrl in endpoints.json)." };
+  try {
+    const data = await requestJson(api + "/fortnite/api/storefront/v2/catalog");
+    const sections = [];
+    for (const store of data.storefronts || []) {
+      if (!/^BR(Daily|Weekly)Storefront$/.test(store.name)) continue;
+      const items = (store.catalogEntries || []).map(e => ({
+        price: Number(e.prices && e.prices[0] && e.prices[0].finalPrice) || 0,
+        grants: (e.itemGrants || []).map(g => String(g.templateId || "")).filter(Boolean).slice(0, 10)
+      })).filter(i => i.grants.length);
+      sections.push({ name: store.name === "BRDailyStorefront" ? "daily" : "featured", items });
+    }
+    const exp = typeof data.expiration === "string" && !data.expiration.startsWith("9999") ? data.expiration : null;
+    return { ok: true, sections, expiration: exp };
+  } catch (err) {
+    log("shop: " + err.message);
+    return { ok: false, message: "Could not load the shop (" + err.message + "). Try again in a moment." };
+  }
 });
 
 ipcMain.handle("get-logs", async () => {

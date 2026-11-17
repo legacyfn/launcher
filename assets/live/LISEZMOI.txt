@@ -1,0 +1,5 @@
+FOND VIDEO (optionnel)
+Mets ici une video .mp4 ou .webm (ex: 1920x1080, 10-30 s, sans son, boucle). Le launcher la joue en fond sur TOUTES les pages.
+Sans video, le launcher utilise le diaporama d'images (zoom lent + fondu) avec des particules animees.
+Reglage : Settings > "Live background" pour couper le fond anime (PC lents).
+Utilise une video dont tu as les droits.

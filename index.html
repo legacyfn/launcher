@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' file: https: data:; connect-src 'self' https: wss:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src 'self' file: data: blob:; img-src 'self' file: https: data:; connect-src 'self' https: wss:; media-src 'self' file: data:;">
 
 <title>Project Legacy | Launcher</title>
 
@@ -826,20 +826,44 @@ button:focus-visible {
 
 .install-panel { margin-top: 19px; }
 .install-panel[hidden] { display: none; }
+#installPanel { padding: 22px 24px; border-radius: 18px; background: linear-gradient(160deg, rgba(34,26,58,.7), rgba(16,14,28,.65)); border: 1px solid #9668ed44; box-shadow: 0 16px 40px #0007; }
+#installPanel .panel-header strong { font-size: 15px; letter-spacing: 1.5px; }
+#installPanel #progressPercent { font-size: 20px; font-weight: 900; background: linear-gradient(90deg,#b18aff,#53d18d,#4db8ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+#installPanel .progress-meta { margin-top: 10px; font-size: 13px; font-weight: 700; }
+#installPanel #progressDetail { color: #cfd6ee; }
 
 .progress {
-    height: 8px;
-    border-radius: 6px;
+    height: 16px;
+    border-radius: 10px;
     background: #ffffff12;
     overflow: hidden;
+    border: 1px solid #ffffff1c;
+    box-shadow: inset 0 2px 6px #0007;
 }
 
 .progress-bar {
+    position: relative;
     height: 100%;
     width: 0;
-    background: linear-gradient(90deg,#7047bc,#b18aff);
-    transition: width .25s;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #9668ed 0%, #53d18d 50%, #4db8ff 100%);
+    background-size: 220% 100%;
+    animation: barFlow 3.5s ease-in-out infinite;
+    transition: width .35s ease-out;
+    box-shadow: 0 0 18px #9668ed55, 0 0 18px #4db8ff33;
 }
+
+.progress-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent, #ffffff55, transparent);
+    transform: translateX(-100%);
+    animation: barShine 2.2s ease-in-out infinite;
+}
+
+@keyframes barFlow { 0%,100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+@keyframes barShine { 0% { transform: translateX(-120%); } 60%,100% { transform: translateX(220%); } }
 
 .progress-meta {
     display: flex;
@@ -897,10 +921,225 @@ button:focus-visible {
 @media(max-width:520px) {
     .setting-buttons { width: 100%; }
 }
+
+/* ===== BACKGROUND MUSIC ===== */
+.music-control { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.music-control[hidden] { display: none; }
+.music-toggle {
+    width: 32px; height: 32px; flex-shrink: 0;
+    display: grid; place-items: center;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--panel); color: var(--purple2);
+    font-size: 15px; line-height: 1;
+}
+.music-toggle:hover { background: #9668ed25; }
+.music-toggle.off { color: var(--muted); text-decoration: line-through; }
+.music-control input[type=range] { flex: 1; min-width: 0; accent-color: var(--purple); }
+
+/* ===== DESIGN v5: glow, motion, big PLAY ===== */
+body { background: radial-gradient(1100px 600px at 85% -10%, #3a1f6b55, transparent 60%), radial-gradient(900px 500px at -10% 110%, #1f3a6b40, transparent 60%), var(--bg); background-attachment: fixed; }
+.page.active { animation: pageIn .38s cubic-bezier(.2,.8,.2,1); }
+@keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.nav button { transition: background .2s, transform .2s, box-shadow .2s; }
+.nav button:hover { transform: translateX(4px); }
+.nav button.active { box-shadow: inset 3px 0 0 var(--purple2), 0 0 24px #9668ed22; }
+.hero { position: relative; overflow: hidden; box-shadow: 0 20px 60px #0008, 0 0 0 1px #9668ed22; }
+.hero::before { content: ""; position: absolute; inset: -40%; z-index: 1; pointer-events: none; background: conic-gradient(from 0deg, transparent 0 70%, #b18aff26 80%, transparent 90%); animation: heroSpin 14s linear infinite; }
+@keyframes heroSpin { to { transform: rotate(360deg); } }
+.stat, .p-card, .news-item, .online-chip, .p-stat { transition: transform .25s, border-color .25s, box-shadow .25s; }
+.stat:hover, .p-card:hover, .news-item:hover, .p-stat:hover { transform: translateY(-3px); border-color: #9668ed66; box-shadow: 0 12px 30px #0006, 0 0 24px #9668ed1c; }
+.button.play {
+    min-width: 280px; height: 64px; font-size: 15px; letter-spacing: 4px; border-radius: 12px;
+    background: linear-gradient(110deg,#b18aff,#7a4fd6 45%,#b18aff); background-size: 220% 100%;
+    animation: playShine 4s ease-in-out infinite, playPulse 2.4s ease-in-out infinite;
+}
+.button.play:hover { transform: translateY(-3px) scale(1.03); filter: brightness(1.15); }
+.button.play:active { transform: scale(.98); }
+@keyframes playShine { 0%,100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+@keyframes playPulse { 0%,100% { box-shadow: 0 6px 26px #9668ed55; } 50% { box-shadow: 0 6px 44px #b18aff99, 0 0 0 6px #9668ed1a; } }
+.shop-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.shop-timer { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.shop-section { margin: 22px 0 10px; font-size: 11px; font-weight: 900; letter-spacing: 3px; color: var(--purple2); }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.shop-card { position: relative; padding: 16px; min-height: 120px; border-radius: 12px; background: linear-gradient(160deg,#1c1730,#120f1c); border: 1px solid #ffffff14; overflow: hidden; transition: transform .25s, border-color .25s, box-shadow .25s; }
+.shop-card:hover { transform: translateY(-4px) scale(1.02); border-color: #b18aff88; box-shadow: 0 14px 34px #0007, 0 0 26px #9668ed30; }
+.shop-card.big { grid-column: span 2; background: linear-gradient(160deg,#2a1b4d,#140f24); }
+.shop-type { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; color: var(--purple2); }
+.shop-name { margin-top: 8px; font-size: 15px; font-weight: 900; line-height: 1.25; }
+.shop-more { margin-top: 4px; color: var(--muted); font-size: 11px; }
+.shop-price { position: absolute; left: 16px; bottom: 14px; font-size: 13px; font-weight: 900; }
+.shop-price::before { content: "◈ "; color: #6fb7ff; }
+.shop-card.big { min-height: 150px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ===== LIVE BACKGROUND (everywhere) ===== */
+#liveBg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: var(--bg); }
+#liveBg[hidden] { display: none; }
+.app { position: relative; z-index: 1; }
+.lb-wrap { position: absolute; inset: -3%; transform: translate(var(--px, 0px), var(--py, 0px)); transition: transform .5s ease-out; }
+.lb-layer { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 2.4s ease; animation: lbKen 28s ease-in-out infinite alternate; will-change: transform, opacity; }
+.lb-layer.show { opacity: 1; }
+@keyframes lbKen { from { transform: scale(1.04) translate3d(0,0,0); } to { transform: scale(1.17) translate3d(-2.5%,-1.5%,0); } }
+#lbVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#lbVideo[hidden] { display: none; }
+#lbCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lb-shade { position: absolute; inset: 0; background: radial-gradient(ellipse at 55% 25%, rgba(8,7,13,.18), rgba(8,7,13,.80) 85%), linear-gradient(180deg, rgba(8,7,13,.30), rgba(8,7,13,.62)); transition: opacity 1s; }
+body[data-page="home"] .lb-shade { opacity: .55; }
+body:not(.no-live) .sidebar { background: rgba(13,11,20,.62); backdrop-filter: blur(22px) saturate(1.3); }
+body:not(.no-live) .stat, body:not(.no-live) .p-card, body:not(.no-live) .p-stat, body:not(.no-live) .news-item,
+body:not(.no-live) .online-chip, body:not(.no-live) .unlock-box { background: rgba(18,16,27,.58); backdrop-filter: blur(14px); }
+body:not(.no-live) .shop-card { background: linear-gradient(160deg, rgba(34,26,58,.62), rgba(18,15,28,.58)); backdrop-filter: blur(12px); }
+body:not(.no-live) .hero { background: rgba(15,12,24,.35); }
+
+/* ===== TOP BAR LAYOUT (v5.2): top glass bar, home grid, tabs ===== */
+.sidebar { inset: 14px 16px auto 16px !important; width: auto !important; height: 68px; padding: 0 18px !important; flex-direction: row !important; align-items: center; gap: 22px; border-radius: 20px; border: 1px solid #ffffff22 !important; background: rgba(10,13,28,.55) !important; backdrop-filter: blur(22px) saturate(1.4); box-shadow: 0 10px 40px #0008; z-index: 200; }
+.sidebar .brand { margin: 0 !important; padding: 0 !important; flex: none; }
+.sidebar .brand small, .sidebar .brand .brand-sub { display: none; }
+.sidebar .nav { display: flex !important; flex-direction: row !important; gap: 6px; margin: 0 !important; flex: 1; }
+.sidebar .nav button { width: auto !important; padding: 10px 16px !important; border-radius: 12px; white-space: nowrap; }
+.sidebar .nav button[data-page="settings"] { display: none !important; }
+.sidebar .sidebar-bottom { display: none !important; }
+.main { margin-left: 0 !important; padding: 104px 34px 40px !important; max-width: 1560px; margin-inline: auto !important; }
+.topbar { display: none !important; }
+body.nav-compact .sidebar .nav button { font-size: 0; }
+body.nav-compact .sidebar .nav .nav-icon { font-size: 18px; }
+.sidebar .music-control { margin: 0 !important; flex: none; }
+.sidebar .music-control input[type=range] { width: 86px; flex: none; }
+.user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border-radius: 14px; background: #ffffff10; border: 1px solid #ffffff1a; flex: none; }
+.uc-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.uc-text { display: flex; flex-direction: column; line-height: 1.15; }
+.uc-text b { font-size: 13px; }
+.uc-text span { font-size: 11px; color: #53d18d; font-weight: 700; }
+.uc-gear { width: 34px; height: 34px; border-radius: 9px; border: 1px solid #ffffff22; background: #ffffff14; color: #fff; font-size: 16px; }
+.uc-gear:hover { background: #9668ed55; }
+
+#page-home.active { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 22px 36px; align-items: start; }
+#page-home > * { grid-column: 1; min-width: 0; }
+#page-home > .news-block { grid-column: 2; grid-row: 1 / span 5; margin-top: 0; }
+.hero { background: none !important; border: 0 !important; box-shadow: none !important; min-height: 0 !important; overflow: visible !important; padding: 10px 0 0 !important; }
+.hero::before, .hero::after, .hero .hero-image, .hero-dots, .hero .eyebrow, .hero-content > p { display: none !important; }
+.hero h1 { font-size: 78px; line-height: .95; text-shadow: 0 6px 40px #000a; }
+.hero-sub { margin: 8px 0 18px; color: #cfd6ee; font-size: 14px; font-weight: 600; }
+.hero .actions .secondary { display: none; }
+.button.play { width: 100%; max-width: 540px; min-width: 0; height: 84px; font-size: 34px; font-style: italic; font-weight: 900; letter-spacing: 8px; border-radius: 8px; transform: skewX(-8deg); border: 3px solid #f5c542; background: linear-gradient(120deg,#b18aff,#7a4fd6 50%,#e04ab0); text-shadow: 0 3px 0 #0006; }
+.button.play:hover { transform: skewX(-8deg) translateY(-3px) scale(1.02); }
+.button.play:active { transform: skewX(-8deg) scale(.98); }
+.discord-card { margin-top: 18px; padding: 18px; border-radius: 16px; background: rgba(14,16,34,.6); border: 1px solid #ffffff1a; backdrop-filter: blur(14px); }
+.dc-top { display: flex; align-items: center; gap: 12px; }
+.dc-logo { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; }
+.dc-top b { display: block; font-size: 17px; }
+.dc-online { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.dc-online i { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; background: #53d18d; }
+.discord-card p { margin: 12px 0 14px; color: #cfd6ee; font-size: 13px; }
+.discord-card .join { width: 100%; height: 46px; border: 0; border-radius: 10px; background: #2fa44f; color: #fff; font-weight: 800; letter-spacing: 1px; }
+.discord-card .join:hover { filter: brightness(1.15); }
+
+.modes .mode { position: relative; min-height: 150px; overflow: hidden; background-size: cover; background-position: center; }
+.modes .mode::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,10,22,.92), rgba(8,10,22,.35)); }
+.modes .mode > * { position: relative; }
+
+.set-tabs { display: flex; gap: 6px; margin: 0 0 18px; border-bottom: 1px solid #ffffff1c; }
+.set-tabs button { padding: 14px 26px; border: 0; background: none; color: var(--muted); font-weight: 700; border-bottom: 2px solid transparent; }
+.set-tabs button.on { color: #fff; border-bottom-color: #4db8ff; background: #ffffff0d; }
+.tab-body { display: none; }
+.tab-body.on { display: block; }
+.opt-group { margin: 0 0 14px; font-size: 15px; font-weight: 900; }
+.opt-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 12px; padding: 18px 20px; border-radius: 14px; background: rgba(18,22,42,.55); border: 1px solid #ffffff17; }
+.opt-row b { display: block; font-size: 15px; }
+.opt-row span.d { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+.opt-row .ctl { display: flex; align-items: center; gap: 12px; flex: none; }
+.opt-row input[type=range] { width: 220px; accent-color: #4db8ff; }
+.opt-row select { padding: 8px 10px; color: inherit; background: #14111f; border: 1px solid #ffffff22; border-radius: 8px; }
+.switch { position: relative; display: inline-block; width: 56px; height: 30px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch span { position: absolute; inset: 0; border-radius: 30px; background: #ffffff22; transition: background .25s; cursor: pointer; }
+.switch span::before { content: ""; position: absolute; left: 4px; top: 4px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .25s; }
+.switch input:checked + span { background: linear-gradient(90deg,#2f6fe0,#4db8ff); }
+.switch input:checked + span::before { transform: translateX(26px); }
+
+.lb-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; animation: orbDrift calc(34s / var(--lb-speed, 1)) ease-in-out infinite alternate; }
+.lb-orb.o1 { width: 46vw; height: 46vw; left: -12vw; top: -10vw; background: #3a7bff; }
+.lb-orb.o2 { width: 40vw; height: 40vw; right: -10vw; top: 20vh; background: #9668ed; animation-duration: calc(42s / var(--lb-speed, 1)); }
+.lb-orb.o3 { width: 36vw; height: 36vw; left: 25vw; bottom: -18vw; background: #20c6c0; animation-duration: calc(38s / var(--lb-speed, 1)); }
+@keyframes orbDrift { from { transform: translate(0,0) scale(1); } to { transform: translate(8vw,6vh) scale(1.2); } }
+.lb-layer { animation-duration: calc(28s / var(--lb-speed, 1)) !important; }
+@media (max-width: 1100px) { #page-home { grid-template-columns: 1fr; } #page-home > .news-block { grid-column: 1; grid-row: auto; } }
+
+/* ===== POLISH v5.5 ===== */
+.sidebar .nav-label { display: none !important; }
+.sidebar { gap: 14px !important; padding: 0 14px !important; }
+.sidebar .brand { min-width: 0; }
+.sidebar .nav { min-width: 0; gap: 2px !important; }
+.sidebar .nav button { padding: 9px 13px !important; font-size: 13px; border: 0; }
+.sidebar .nav button.active { background: linear-gradient(180deg,#9668ed48,#9668ed1c) !important; box-shadow: 0 0 0 1px #b18aff66, 0 6px 22px #9668ed33 !important; color: #fff; }
+.sidebar .music-control input[type=range] { width: 0; opacity: 0; transition: width .25s, opacity .25s; }
+.sidebar .music-control:hover input[type=range] { width: 86px; opacity: 1; }
+@media (max-width: 1500px) { .sidebar .brand > div { display: none; } }
+@media (max-width: 1380px) { .sidebar .nav .nav-icon { display: none; } }
+@media (max-width: 1300px) { .uc-text { display: none; } }
+body:not([data-page="home"]) .lb-layer { filter: blur(9px) brightness(.85) saturate(1.15); }
+.lb-layer { transition: opacity 2.4s ease, filter .6s ease; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: #9668ed55; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #9668ed99; }
+::-webkit-scrollbar-track { background: transparent; }
+.section-heading h2 { font-size: 30px; letter-spacing: .5px; }
+.small-button { border-radius: 10px !important; background: rgba(150,104,237,.18) !important; border: 1px solid #9668ed66 !important; backdrop-filter: blur(10px); transition: background .2s, box-shadow .2s, transform .2s; }
+.small-button:hover { background: rgba(150,104,237,.38) !important; box-shadow: 0 0 22px #9668ed44; transform: translateY(-1px); }
+.p-card, .opt-row, .stat, .news-item, .discord-card, .setting-row, .shop-card { border-radius: 18px; border: 1px solid #ffffff1c; box-shadow: inset 0 1px 0 #ffffff12, 0 10px 34px #0005; }
+.field { border-radius: 10px; }
+
+/* ===== POLISH v5.6 ===== */
+html { scroll-behavior: smooth; }
+::selection { background: #9668ed88; color: #fff; }
+.field:focus, .opt-row select:focus { outline: none; border-color: #b18aff !important; box-shadow: 0 0 0 3px #9668ed33; }
+.section-heading h2::after { content: ""; display: block; width: 46px; height: 3px; margin-top: 8px; border-radius: 3px; background: linear-gradient(90deg,#b18aff,#4db8ff); }
+.sidebar .brand-icon, .sidebar .brand img { filter: drop-shadow(0 0 10px #9668ed88); }
+.sidebar::after { content: ""; position: absolute; left: 24px; right: 24px; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, #b18aff99, #4db8ff99, transparent); }
+.page.active > * { animation: riseIn .55s cubic-bezier(.2,.8,.2,1) both; }
+.page.active > *:nth-child(2) { animation-delay: .06s; }
+.page.active > *:nth-child(3) { animation-delay: .12s; }
+.page.active > *:nth-child(4) { animation-delay: .18s; }
+.page.active > *:nth-child(n+5) { animation-delay: .24s; }
+@keyframes riseIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.stat .stat-icon { box-shadow: 0 0 22px #9668ed40; }
+.news-item, .stat, .p-card, .opt-row, .discord-card { background: linear-gradient(160deg, rgba(30,26,52,.62), rgba(14,13,26,.58)) !important; }
+.hero h1 span { background: linear-gradient(90deg,#d9c8ff,#b18aff,#7fc4ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.online-chip, .update-bar, .unlock-box { box-shadow: 0 10px 30px #0006; }
+.unlock-modal { position: fixed; inset: 0; z-index: 9500; display: grid; place-items: center; background: #000b; backdrop-filter: blur(6px); }
+.unlock-modal[hidden] { display: none; }
+
+/* ===== POLISH v5.7: grand finale ===== */
+body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
+.button.play { position: relative; }
+.button.play::after { content: ""; position: absolute; inset: -3px; border-radius: 10px; background: linear-gradient(120deg,#f5c542,#b18aff,#4db8ff,#f5c542); background-size: 300% 300%; z-index: -1; filter: blur(10px); opacity: .55; animation: playShine 4s ease-in-out infinite; }
+.hero { padding-bottom: 8px !important; }
+.hero-actions, .actions { gap: 16px; }
+.nav button.active .nav-icon { filter: drop-shadow(0 0 8px #b18affcc); }
+.stat { position: relative; overflow: hidden; }
+.stat::before { content: ""; position: absolute; top: -40%; left: -20%; width: 60%; height: 220%; background: linear-gradient(100deg, transparent, #ffffff14, transparent); transform: skewX(-20deg) translateX(-140%); transition: transform .9s; }
+.stat:hover::before { transform: skewX(-20deg) translateX(240%); }
+.shop-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, #b18aff22, transparent 55%); opacity: 0; transition: opacity .3s; }
+.shop-card:hover::after { opacity: 1; }
+.p-name .role, .online-chip .role, .welcome-user .role { box-shadow: 0 0 14px #f5c54266; }
+.brand b, .brand strong { letter-spacing: .5px; }
+.news-item strong { position: relative; }
+.update-bar { border-radius: 14px; }
+#unlockModal .unlock-box, .p-card { animation: cardPop .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes cardPop { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+.small-button:active, .button:active { transform: scale(.97) !important; }
+.sidebar .brand-icon, .sidebar .brand img { border-radius: 12px; }
 </style>
 </head>
 
 <body>
+<div id="liveBg" aria-hidden="true">
+    <div class="lb-orb o1"></div><div class="lb-orb o2"></div><div class="lb-orb o3"></div>
+    <div class="lb-wrap"><div class="lb-layer lb-a"></div><div class="lb-layer lb-b"></div></div>
+    <video id="lbVideo" muted loop playsinline hidden></video>
+    <canvas id="lbCanvas"></canvas>
+    <div class="lb-shade"></div>
+</div>
 <div class="app">
 
 <aside class="sidebar">
@@ -916,13 +1155,16 @@ button:focus-visible {
 
     <nav class="nav">
         <button class="active" data-page="home">
-            <span class="nav-icon">⌂</span> Dashboard
+            <span class="nav-icon">⌂</span> Home
         </button>
         <button data-page="community">
-            <span class="nav-icon">◉</span> Community
+            <span class="nav-icon">◉</span> Servers
         </button>
         <button data-page="profile">
             <span class="nav-icon">☻</span> Profile
+        </button>
+        <button data-page="shop">
+            <span class="nav-icon">◆</span> Item Shop
         </button>
         <button data-page="downloads">
             <span class="nav-icon">↓</span> Downloads
@@ -936,11 +1178,21 @@ button:focus-visible {
     </nav>
 
     <div class="sidebar-bottom">
+        <div class="music-control" id="musicControl" hidden>
+            <button class="music-toggle" id="musicToggle" type="button" title="Music on/off" aria-label="Music on/off" aria-pressed="true">♪</button>
+            <input type="range" id="musicVolume" min="0" max="100" value="25" aria-label="Music volume">
+            <audio id="bgMusic" loop preload="auto"></audio>
+        </div>
         <div class="network-line">
             <span class="network-dot" id="networkDot"></span>
             <span id="networkText">Connecting...</span>
         </div>
         <div class="network-caption">Project Legacy network</div>
+    </div>
+    <div class="user-chip" id="userChip">
+        <img class="uc-avatar" id="ucAvatar" alt="">
+        <div class="uc-text"><b id="ucName">Player</b><span id="ucRole">Member</span></div>
+        <button class="uc-gear" id="ucGear" type="button" title="Settings" aria-label="Settings">⚙</button>
     </div>
 </aside>
 
@@ -1045,6 +1297,11 @@ button:focus-visible {
         </div>
 
         <div class="news-block">
+            <div class="discord-card">
+                <div class="dc-top"><img class="dc-logo" id="dcLogo" alt=""><div><b>Project Legacy</b><span class="dc-online"><i></i>Online: <b id="dcOnline" style="display:inline">—</b></span></div></div>
+                <p>Relive a true OG Fortnite experience!</p>
+                <button class="join" id="joinServer" type="button">Join Discord</button>
+            </div>
             <div class="section-heading"><div><h2>LATEST NEWS</h2></div></div>
             <div id="newsList" class="news-list"><div class="news-empty">No news available right now.</div></div>
         </div>
@@ -1138,6 +1395,21 @@ button:focus-visible {
         </div>
     </section>
 
+    <!-- SHOP -->
+    <section class="page" id="page-shop">
+        <div class="section-heading shop-head">
+            <div>
+                <h2>ITEM SHOP</h2>
+                <p>What the Project Legacy shop sells right now.</p>
+            </div>
+            <div>
+                <div class="shop-timer" id="shopTimer"></div>
+                <button class="small-button" id="shopRefresh">REFRESH</button>
+            </div>
+        </div>
+        <div id="shopBody"><div class="news-empty">Loading the shop...</div></div>
+    </section>
+
     <!-- DOWNLOADS -->
     <section class="page" id="page-downloads">
         <div class="section-heading">
@@ -1181,10 +1453,18 @@ button:focus-visible {
             <button class="small-button" id="fixBtn">FIX MY GAME</button>
         </div>
         <div class="p-card">
+            <h3>WINDOWS DEFENDER</h3>
+            <div class="news-empty" style="margin-bottom:12px">Defender sometimes quarantines the injector or the DLLs, which breaks the console and anti-crash tools. Adding an exclusion needs admin rights, so Windows will ask you to confirm.</div>
+            <button class="small-button" id="defenderBtn">ADD WINDOWS DEFENDER EXCLUSION</button>
+            <div class="news-empty" id="defenderMsg" style="margin-top:10px"></div>
+        </div>
+        <div class="p-card">
             <h3>IF THE GAME CRASHES AT STARTUP</h3>
+            <div class="news-empty" style="margin-bottom:12px">The loading screen shows another name? The game files come from another launcher. Choose a new empty folder, then download the build again.</div>
             <div class="p-add">
+                <button class="small-button" id="cleanInstallBtn">CLEAN REINSTALL (NEW FOLDER)</button>
                 <button class="small-button" id="resetSettingsBtn">RESET GAME SETTINGS</button>
-                <label style="display:flex;align-items:center;gap:8px;font-size:12px"><input type="checkbox" id="compatToggle"> Compatibility mode (limit the game to the first 8 CPU threads)</label>
+                <label class="switch" style="margin-right:6px"><input type="checkbox" id="compatToggle"><span></span></label><label for="compatToggle" style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"> Compatibility mode (limit the game to the first 8 CPU threads)</label>
             </div>
             <div class="news-empty" id="resetMsg"></div>
         </div>
@@ -1204,6 +1484,7 @@ button:focus-visible {
         <div class="settings-panel">
             <div class="prefs">
                 <label>Language <select id="langSelect"><option value="en">English</option><option value="fr">Français</option><option value="nl">Nederlands</option></select></label>
+                <label><input type="checkbox" id="liveToggle" checked> Live background</label>
                 <label><input type="checkbox" id="notifyToggle"> Match-open notifications</label>
                 <button class="small-button" id="copyLogs">COPY LOGS</button>
             </div>
@@ -1280,7 +1561,7 @@ button:focus-visible {
     <footer class="footer">
         <div>
             <strong>PROJECT LEGACY</strong><br>
-            Community Launcher · Build 4.5 · UI v4.8
+            Community Launcher · Build 4.5 · UI v5.7
         </div>
         <div>Community interface · Not affiliated with Epic Games.</div>
     </footer>
@@ -1333,6 +1614,48 @@ const I18N_ROWS = [
     ["Community", "Communauté", "Community"],
     ["PROFILE", "PROFIL", "PROFIEL"],
     ["Profile", "Profil", "Profiel"],
+    ["Shop", "Boutique", "Winkel"],
+    ["Edit on release", "Edit on release", "Edit on release"],
+    ["WINDOWS DEFENDER", "WINDOWS DEFENDER", "WINDOWS DEFENDER"],
+    ["Defender sometimes quarantines the injector or the DLLs, which breaks the console and anti-crash tools. Adding an exclusion needs admin rights, so Windows will ask you to confirm.",
+     "Defender met parfois l’injecteur ou les DLL en quarantaine, ce qui casse la console et l’anti-crash. Ajouter une exclusion demande les droits administrateur : Windows va te demander de confirmer.",
+     "Defender zet de injector of de DLL’s soms in quarantaine, waardoor de console en anti-crash stoppen met werken. Een uitzondering toevoegen vereist beheerdersrechten; Windows vraagt om bevestiging."],
+    ["ADD WINDOWS DEFENDER EXCLUSION", "AJOUTER UNE EXCLUSION WINDOWS DEFENDER", "WINDOWS DEFENDER-UITZONDERING TOEVOEGEN"],
+    ["A Windows security prompt should appear - accept it.", "Une fenêtre de sécurité Windows doit apparaître - accepte-la.", "Er zou een Windows-beveiligingsvenster moeten verschijnen - accepteer dit."],
+    ["WAITING FOR ADMIN CONFIRMATION...", "EN ATTENTE DE CONFIRMATION ADMINISTRATEUR...", "WACHTEN OP BEHEERDERSBEVESTIGING..."],
+    ["Edit on release and console", "Edit on release et console", "Edit on release en console"],
+    ["Enter your access code to unlock the module, then use INJECT CONSOLE in game.", "Entre ton code d’accès pour débloquer le module, puis utilise INJECT CONSOLE en jeu.", "Voer je toegangscode in om de module te ontgrendelen en gebruik daarna INJECT CONSOLE in het spel."],
+    ["UNLOCK", "DÉVERROUILLER", "ONTGRENDELEN"],
+    ["LOCK", "VERROUILLER", "VERGRENDELEN"],
+    ["Match", "Match", "Wedstrijd"],
+    ["Gameplay", "Gameplay", "Gameplay"],
+    ["Appearance", "Apparence", "Uiterlijk"],
+    ["Game", "Jeu", "Spel"],
+    ["Audio", "Audio", "Audio"],
+    ["Expanded Navigation", "Navigation étendue", "Uitgebreide navigatie"],
+    ["Show the navigation labels in the top bar.", "Affiche les noms des pages dans la barre du haut.", "Toon de paginanamen in de bovenbalk."],
+    ["Animated Background", "Fond animé", "Geanimeerde achtergrond"],
+    ["Animate the drifting orbs, the starfield and the theme effects.", "Anime les lueurs, les particules et les effets du thème.", "Animeer de lichtbollen, de sterren en de thema-effecten."],
+    ["Animation Speed", "Vitesse d’animation", "Animatiesnelheid"],
+    ["How fast the background moves.", "La vitesse de déplacement du fond.", "Hoe snel de achtergrond beweegt."],
+    ["UI Sound Effects", "Sons de l’interface", "Interfacegeluiden"],
+    ["Play sounds when navigating sections and launching the game.", "Joue des sons quand tu navigues et lances le jeu.", "Speel geluiden bij het navigeren en starten van het spel."],
+    ["Sound Volume", "Volume des sons", "Geluidsvolume"],
+    ["Adjust the volume of UI sound effects.", "Règle le volume des sons de l’interface.", "Stel het volume van de interfacegeluiden in."],
+    ["Match-open notifications", "Notifications d’ouverture de match", "Meldingen bij openen van wedstrijd"],
+    ["Get a desktop notification when a match opens.", "Reçois une notification quand un match s’ouvre.", "Ontvang een melding wanneer een wedstrijd opent."],
+    ["Support", "Assistance", "Ondersteuning"],
+    ["Copy the launcher logs to send them to support.", "Copie les journaux du launcher pour les envoyer au support.", "Kopieer de logs van de launcher om ze naar support te sturen."],
+    ["CLEAN REINSTALL (NEW FOLDER)", "RÉINSTALLATION PROPRE (NOUVEAU DOSSIER)", "SCHONE INSTALLATIE (NIEUWE MAP)"],
+    ["The loading screen shows another name? The game files come from another launcher. Choose a new empty folder, then download the build again.", "L’écran de chargement affiche un autre nom ? Les fichiers du jeu viennent d’un autre launcher. Choisis un nouveau dossier vide, puis retélécharge le build.", "Toont het laadscherm een andere naam? De spelbestanden komen van een andere launcher. Kies een nieuwe lege map en download de build opnieuw."],
+    ["Home", "Accueil", "Home"],
+    ["Servers", "Serveurs", "Servers"],
+    ["Item Shop", "Boutique", "Itemshop"],
+    ["Live background", "Fond animé", "Live achtergrond"],
+    ["ITEM SHOP", "BOUTIQUE D’OBJETS", "ITEMSHOP"],
+    ["What the Project Legacy shop sells right now.", "Ce que la boutique Project Legacy vend en ce moment.", "Wat de Project Legacy-shop nu verkoopt."],
+    ["REFRESH", "ACTUALISER", "VERNIEUWEN"],
+    ["Loading the shop...", "Chargement de la boutique...", "Shop laden..."],
     ["DOWNLOADS", "TÉLÉCHARGEMENTS", "DOWNLOADS"],
     ["Downloads", "Téléchargements", "Downloads"],
     ["HELP", "AIDE", "HULP"],
@@ -1883,6 +2206,7 @@ const pageLabels = {
     home: "DASHBOARD",
     community: "COMMUNITY",
     profile: "PROFILE",
+    shop: "SHOP",
     downloads: "DOWNLOADS",
     help: "HELP",
     settings: "SETTINGS"
@@ -1900,9 +2224,11 @@ function showPage(name) {
     });
 
     setText("breadcrumbPage", pageLabels[name] || "DASHBOARD");
+    document.body.dataset.page = name;
 
     if (name === "settings" || name === "downloads") refreshConfig();
     if (name === "profile") renderProfile();
+    if (name === "shop") loadShop();
 }
 
 document.querySelectorAll(".nav button").forEach(button => {
@@ -2137,7 +2463,14 @@ async function inject(key) {
     if (result && result.message) notify(result.message);
 }
 
-$("injectConsole").addEventListener("click", () => inject("console"));
+$("injectConsole").addEventListener("click", async () => {
+    const st = launcher && launcher.consoleStatus ? await launcher.consoleStatus() : { unlocked: true };
+    if (st.unlocked) return inject("console");
+    const nav = document.querySelector('.nav button[data-page="settings"]');
+    if (nav) nav.click();
+    notify("Enter your access code in Settings > Gameplay first.");
+    window.__openGameplayTab && window.__openGameplayTab();
+});
 $("injectAnticrash").addEventListener("click", () => inject("anticrash"));
 
 /* NETWORK */
@@ -2607,6 +2940,7 @@ function rolesCache() {
 }
 
 function renderWelcome() {
+    try { updateUserChip(); } catch {}
     const box = $("welcomeUser");
     if (!box) return;
     const typed = currentNick();
@@ -2868,7 +3202,436 @@ function renderProfile() {
     }
 })();
 
+/* ITEM SHOP: read from the backend catalog (through the main process) */
+const SHOP_TYPES = { AthenaCharacter: "OUTFIT", AthenaBackpack: "BACK BLING", AthenaPickaxe: "PICKAXE", AthenaGlider: "GLIDER", AthenaDance: "EMOTE", AthenaItemWrap: "WRAP", AthenaSkyDiveContrail: "CONTRAIL", AthenaLoadingScreen: "LOADING SCREEN", AthenaMusicPack: "MUSIC" };
+let shopTimerId = null, shopLoadedAt = 0;
+
+function prettyItem(templateId) {
+    const [type, raw = ""] = String(templateId).split(":");
+    const name = raw.replace(/^(cid|bid|pickaxe_id|glider_id|eid|wrap|trails_id|lsid|musicpack)_/i, "")
+        .replace(/_athena_commando_[fm]/i, "").replace(/^\d+_/, "").replace(/_/g, " ")
+        .replace(/\b\w/g, c => c.toUpperCase()).trim();
+    return { type: SHOP_TYPES[type] || "ITEM", name: name || raw };
+}
+
+function shopCard(entry, big) {
+    const first = prettyItem(entry.grants[0]);
+    const card = document.createElement("div");
+    card.className = "shop-card" + (big ? " big" : "");
+    const t = document.createElement("div"); t.className = "shop-type"; t.textContent = first.type;
+    const n = document.createElement("div"); n.className = "shop-name"; n.textContent = first.name;
+    card.append(t, n);
+    if (entry.grants.length > 1) {
+        const m = document.createElement("div"); m.className = "shop-more"; m.textContent = "+ " + (entry.grants.length - 1) + " more item(s)";
+        card.appendChild(m);
+    }
+    const p = document.createElement("div"); p.className = "shop-price"; p.textContent = Number(entry.price).toLocaleString() + " V-Bucks";
+    card.appendChild(p);
+    return card;
+}
+
+async function loadShop(force) {
+    const body = $("shopBody");
+    if (!body || !launcher || typeof launcher.getShop !== "function") return;
+    if (!force && Date.now() - shopLoadedAt < 60000 && body.dataset.ok === "1") return;
+
+    const res = await launcher.getShop();
+    body.textContent = "";
+    body.dataset.ok = res && res.ok ? "1" : "0";
+    clearInterval(shopTimerId);
+    $("shopTimer").textContent = "";
+
+    if (!res || !res.ok) {
+        const e = document.createElement("div"); e.className = "news-empty"; e.textContent = (res && res.message) || "The shop is not available right now."; body.appendChild(e);
+        return;
+    }
+    shopLoadedAt = Date.now();
+
+    for (const section of res.sections) {
+        if (!section.items.length) continue;
+        const h = document.createElement("div"); h.className = "shop-section"; h.textContent = section.name === "daily" ? "DAILY" : "FEATURED";
+        const grid = document.createElement("div"); grid.className = "shop-grid";
+        section.items.forEach(item => grid.appendChild(shopCard(item, section.name === "featured")));
+        body.append(h, grid);
+    }
+    if (!body.children.length) {
+        const e = document.createElement("div"); e.className = "news-empty"; e.textContent = "The shop is empty for now. Come back later."; body.appendChild(e);
+    }
+
+    if (res.expiration) {
+        const end = new Date(res.expiration).getTime();
+        const tick = () => {
+            const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+            $("shopTimer").textContent = "NEXT ROTATION " + String(Math.floor(left / 3600)).padStart(2, "0") + ":" + String(Math.floor(left % 3600 / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0");
+            if (left === 0) { clearInterval(shopTimerId); loadShop(true); }
+        };
+        tick();
+        shopTimerId = setInterval(tick, 1000);
+    }
+}
+
+if ($("shopRefresh")) $("shopRefresh").addEventListener("click", () => loadShop(true));
+
+/* LIVE BACKGROUND: images (Ken Burns + crossfade), optional video, particles, mouse parallax */
+(async function setupLiveBg() {
+    const root = $("liveBg");
+    if (!root) return;
+
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.body.dataset.page = document.body.dataset.page || "home";
+
+    // on/off switch (saved)
+    let enabled = true;
+    try { enabled = localStorage.getItem("liveBg") !== "0"; } catch {}
+    const toggle = $("liveToggle");
+    const apply = on => { root.hidden = !on; document.body.classList.toggle("no-live", !on); };
+    apply(enabled);
+    if (toggle) {
+        toggle.checked = enabled;
+        toggle.addEventListener("change", () => { try { localStorage.setItem("liveBg", toggle.checked ? "1" : "0"); } catch {} apply(toggle.checked); });
+    }
+
+    // 1) video wallpaper: drop a .mp4/.webm in assets/live/
+    const video = $("lbVideo");
+    try {
+        if (launcher && typeof launcher.listLive === "function") {
+            const found = await launcher.listLive();
+            if (found && found.length) {
+                video.src = found[0];
+                video.hidden = false;
+                video.play().catch(() => {});
+                root.classList.add("has-video");
+            }
+        }
+    } catch {}
+
+    // 2) images: slow zoom + crossfade
+    if (!root.classList.contains("has-video")) {
+        let images = [];
+        try { if (launcher && typeof launcher.listBackgrounds === "function") images = await launcher.listBackgrounds(); } catch {}
+        if (!Array.isArray(images) || !images.length) images = typeof BUILTIN_SLIDES !== "undefined" ? BUILTIN_SLIDES : [];
+
+        const layers = [root.querySelector(".lb-a"), root.querySelector(".lb-b")];
+        if (images.length) {
+            let index = 0, front = 0;
+            layers[0].style.backgroundImage = 'url("' + images[0] + '")';
+            layers[0].classList.add("show");
+            if (images.length > 1) setInterval(() => {
+                index = (index + 1) % images.length;
+                const back = 1 - front;
+                layers[back].style.backgroundImage = 'url("' + images[index] + '")';
+                layers[back].classList.add("show");
+                layers[front].classList.remove("show");
+                front = back;
+            }, 9000);
+        }
+    }
+
+    if (reduce) return;
+
+    // 3) floating embers / stars
+    const canvas = $("lbCanvas"), ctx = canvas.getContext("2d");
+    let w = 0, h = 0;
+    const fit = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+    fit();
+    window.addEventListener("resize", fit);
+    const colors = ["177,138,255", "255,255,255", "120,180,255"];
+    const dots = Array.from({ length: 70 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .4,
+        vy: -(Math.random() * .35 + .08), vx: (Math.random() - .5) * .15,
+        a: Math.random() * Math.PI * 2, c: colors[Math.floor(Math.random() * colors.length)]
+    }));
+    const frame = () => {
+        if (!root.hidden && !document.hidden) {
+            ctx.clearRect(0, 0, w, h);
+            for (const d of dots) {
+                const sp = window.__lbSpeed || 1; d.x += d.vx * sp; d.y += d.vy * sp; d.a += .02 * sp;
+                if (d.y < -5) { d.y = h + 5; d.x = Math.random() * w; }
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(" + d.c + "," + (0.25 + 0.35 * Math.abs(Math.sin(d.a))) + ")";
+                ctx.arc(d.x, d.y, d.r, 0, 6.2832);
+                ctx.fill();
+            }
+        }
+        requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+
+    // 4) mouse parallax
+    window.addEventListener("mousemove", e => {
+        root.style.setProperty("--px", (e.clientX / window.innerWidth - .5) * -18 + "px");
+        root.style.setProperty("--py", (e.clientY / window.innerHeight - .5) * -12 + "px");
+    });
+})();
+
+/* TOP BAR: user chip, hero sub-title, settings tabs, UI sounds, animation speed */
+function updateUserChip() {
+    const nick = parseClient(currentNick());
+    if ($("ucName")) $("ucName").textContent = nick ? nick.name : "Player";
+    const cached = nick ? (rolesCache()[nick.name.toLowerCase()] || "") : "";
+    if ($("ucRole")) $("ucRole").textContent = (nick && nick.role) || cached || "Member";
+}
+
+(function setupTopBar() {
+    const music = $("musicControl"), chip = $("userChip");
+    if (music && chip) chip.parentNode.insertBefore(music, chip);
+    const logo = document.querySelector(".brand-icon");
+    if (logo) { $("ucAvatar").src = logo.src; $("dcLogo").src = logo.src; }
+    $("ucGear").addEventListener("click", () => document.querySelector('.nav button[data-page="settings"]').click());
+    $("joinServer").addEventListener("click", () => { const b = $("openDiscord"); if (b) b.click(); });
+    if (launcher && launcher.onDiscordCount) launcher.onDiscordCount(d => { $("dcOnline").textContent = d.online; });
+
+    // "Season 4 · Last played" under the title
+    const h1 = document.querySelector(".hero h1");
+    if (h1) {
+        const sub = document.createElement("div");
+        sub.className = "hero-sub";
+        const st = loadJSON("stats", { last: 0 });
+        sub.textContent = "Season 4 · Last played " + (st.last ? new Date(st.last).toLocaleDateString() : "--");
+        h1.after(sub);
+    }
+
+    // server cards get a picture
+    document.querySelectorAll("#page-community .modes .mode").forEach((card, i) => {
+        if (typeof BUILTIN_SLIDES !== "undefined" && BUILTIN_SLIDES.length) card.style.backgroundImage = 'url("' + BUILTIN_SLIDES[(i + 1) % BUILTIN_SLIDES.length] + '")';
+    });
+
+    // ----- preferences -----
+    const get = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch { return d; } };
+    const set = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+    const applyNav = on => document.body.classList.toggle("nav-compact", !on);
+    const applySpeed = v => { document.documentElement.style.setProperty("--lb-speed", v); window.__lbSpeed = Number(v); };
+    applyNav(get("navExpanded", "1") === "1");
+    applySpeed(get("animSpeed", "1"));
+
+    // ----- UI sounds (generated, no files) -----
+    let ac = null;
+    const soundOn = () => get("uiSound", "1") !== "0";
+    const volume = () => Number(get("uiVol", "50")) / 100;
+    function beep(freq, dur, type, gain) {
+        if (!soundOn() || volume() <= 0) return;
+        try {
+            ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+            const o = ac.createOscillator(), g = ac.createGain();
+            o.type = type || "sine"; o.frequency.value = freq;
+            g.gain.setValueAtTime(Math.max(.0002, (gain || .1) * volume()), ac.currentTime);
+            g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + dur);
+            o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + dur);
+        } catch {}
+    }
+    document.addEventListener("click", e => {
+        const b = e.target.closest && e.target.closest("button");
+        if (!b) return;
+        if (b.id === "playButton") { beep(200, .3, "sawtooth", .14); setTimeout(() => beep(420, .4, "triangle", .14), 130); }
+        else if (b.closest(".nav")) beep(660, .07);
+        else beep(520, .05);
+    }, true);
+
+    // ----- settings in tabs -----
+    const page = $("page-settings"), panel = page && page.querySelector(".settings-panel");
+    if (!panel) return;
+    const rows = [...panel.querySelectorAll(":scope > .setting-row")];
+    const prefs = panel.querySelector(".prefs");
+
+    const swEl = (input, checked, onChange) => {
+        const label = document.createElement("label"); label.className = "switch";
+        if (!input) { input = document.createElement("input"); input.type = "checkbox"; input.checked = checked; input.addEventListener("change", () => onChange(input.checked)); }
+        label.append(input, document.createElement("span"));
+        return label;
+    };
+    const opt = (title, desc, control) => {
+        const row = document.createElement("div"); row.className = "opt-row";
+        const t = document.createElement("div");
+        const b = document.createElement("b"); b.textContent = title;
+        const d = document.createElement("span"); d.className = "d"; d.textContent = desc;
+        t.append(b, d);
+        const c = document.createElement("div"); c.className = "ctl"; c.append(...[].concat(control));
+        row.append(t, c);
+        return row;
+    };
+    const range = (min, max, step, value, onInput, label) => {
+        const r = document.createElement("input"); r.type = "range"; r.min = min; r.max = max; r.step = step; r.value = value;
+        const out = document.createElement("span"); out.className = "d"; out.style.minWidth = "34px"; out.textContent = label(value);
+        r.addEventListener("input", () => { onInput(r.value); out.textContent = label(r.value); });
+        return [r, out];
+    };
+    const body = name => { const d = document.createElement("div"); d.className = "tab-body"; d.dataset.tab = name; return d; };
+    const tabs = { gameplay: body("gameplay"), audio: body("audio"), appearance: body("appearance"), game: body("game") };
+
+    const h = text => { const d = document.createElement("div"); d.className = "opt-group"; d.textContent = text; return d; };
+
+    // Gameplay
+    // Edit on release / console: access code
+    const codeInput = document.createElement("input");
+    codeInput.className = "field"; codeInput.type = "text"; codeInput.placeholder = "XXXX-XXXX-XXXX-XXXX";
+    codeInput.maxLength = 32; codeInput.autocomplete = "off"; codeInput.spellcheck = false; codeInput.style.cssText = "width:230px;text-transform:uppercase;letter-spacing:2px";
+    const codeBtn = document.createElement("button"); codeBtn.type = "button"; codeBtn.className = "small-button"; codeBtn.textContent = "UNLOCK";
+    const codeMsg = document.createElement("span"); codeMsg.className = "d"; codeMsg.style.minWidth = "90px";
+    const refreshCode = async () => {
+        const st = launcher && launcher.consoleStatus ? await launcher.consoleStatus() : { unlocked: false };
+        codeMsg.textContent = st.unlocked ? "● Unlocked" : "○ Locked";
+        codeMsg.style.color = st.unlocked ? "#53d18d" : "";
+        codeInput.disabled = st.unlocked; codeBtn.textContent = st.unlocked ? "LOCK" : "UNLOCK";
+        if (st.unlocked) codeInput.value = "";
+    };
+    codeBtn.addEventListener("click", async () => {
+        const st = await launcher.consoleStatus();
+        if (st.unlocked) { await launcher.consoleLock(); return refreshCode(); }
+        if (!codeInput.value.trim()) return;
+        codeBtn.disabled = true;
+        const r = await launcher.consoleUnlock(codeInput.value);
+        codeBtn.disabled = false;
+        if (r.ok) refreshCode(); else { codeMsg.textContent = r.message; codeMsg.style.color = "#ff6b6b"; }
+    });
+    codeInput.addEventListener("keydown", e => { if (e.key === "Enter") codeBtn.click(); });
+    refreshCode();
+
+    tabs.gameplay.append(h("Edit on release"),
+        opt("Edit on release and console", "Enter your access code to unlock the module, then use INJECT CONSOLE in game.", [codeInput, codeBtn, codeMsg]),
+        h("Match"),
+        opt("Match-open notifications", "Get a desktop notification when a match opens.", swEl($("notifyToggle"))),
+        opt("Support", "Copy the launcher logs to send them to support.", $("copyLogs")));
+    // Audio
+    tabs.audio.append(h("Sound"),
+        opt("UI Sound Effects", "Play sounds when navigating sections and launching the game.", swEl(null, soundOn(), v => { set("uiSound", v ? "1" : "0"); beep(660, .08); })),
+        opt("Sound Volume", "Adjust the volume of UI sound effects.", range(0, 100, 1, get("uiVol", "50"), v => set("uiVol", v), v => v + "%")));
+    // Appearance
+    tabs.appearance.append(h("Interface"),
+        opt("Expanded Navigation", "Show the navigation labels in the top bar.", swEl(null, get("navExpanded", "1") === "1", v => { set("navExpanded", v ? "1" : "0"); applyNav(v); })),
+        opt("Language", "Language of the launcher.", $("langSelect")),
+        h("Theme"),
+        opt("Animated Background", "Animate the drifting orbs, the starfield and the theme effects.", swEl($("liveToggle"))),
+        opt("Animation Speed", "How fast the background moves.", range(.25, 2.5, .25, get("animSpeed", "1"), v => { set("animSpeed", v); applySpeed(v); }, v => v + "x")));
+    // Game = everything that was already there
+    rows.forEach(r => tabs.game.appendChild(r));
+    if (prefs) prefs.remove();
+
+    const bar = document.createElement("div"); bar.className = "set-tabs";
+    const show = name => {
+        for (const [k, el] of Object.entries(tabs)) el.classList.toggle("on", k === name);
+        bar.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+    };
+    for (const [key, label] of [["gameplay", "Gameplay"], ["audio", "Audio"], ["appearance", "Appearance"], ["game", "Game"]]) {
+        const b = document.createElement("button"); b.type = "button"; b.dataset.tab = key; b.textContent = label;
+        b.addEventListener("click", () => show(key));
+        bar.appendChild(b);
+    }
+    panel.prepend(bar);
+    Object.values(tabs).forEach(t => panel.appendChild(t));
+    window.__openGameplayTab = () => show("gameplay");
+    show("game");
+    if (typeof applyLang === "function") applyLang();
+})();
+
+/* CLEAN REINSTALL: pick a new empty folder, then download the build again */
+(function setupCleanInstall() {
+    const btn = $("cleanInstallBtn");
+    if (!btn || !launcher || !launcher.chooseFolder) return;
+    btn.addEventListener("click", async () => {
+        const folder = await launcher.chooseFolder();
+        if (!folder) return;
+        const info = launcher.folderInfo ? await launcher.folderInfo() : { empty: true };
+        if (!info.empty && !confirm("This folder is not empty. For a clean install, choose an EMPTY folder.\n\nContinue anyway?")) return;
+        const nav = document.querySelector('.nav button[data-page="downloads"]');
+        if (nav) nav.click();
+        if (typeof startInstall === "function") startInstall(); else launcher.installStart();
+    });
+})();
+
+/* Windows Defender exclusion (needs admin: Windows shows its own UAC prompt) */
+(function setupDefender() {
+    const btn = $("defenderBtn"), msg = $("defenderMsg");
+    if (!btn || !launcher || !launcher.addDefenderExclusion) return;
+    btn.addEventListener("click", async () => {
+        btn.disabled = true; btn.textContent = "WAITING FOR ADMIN CONFIRMATION...";
+        msg.textContent = "A Windows security prompt should appear - accept it.";
+        const r = await launcher.addDefenderExclusion();
+        btn.disabled = false; btn.textContent = "ADD WINDOWS DEFENDER EXCLUSION";
+        msg.textContent = r.message;
+        msg.style.color = r.ok ? "#53d18d" : "#ff6b6b";
+    });
+})();
+
 startHeroSlideshow();
+
+
+/* BACKGROUND MUSIC: plays assets/music/background.(mp3|ogg|m4a|wav) if present */
+
+(function initMusic() {
+    const audio = $("bgMusic");
+    const box = $("musicControl");
+    const toggle = $("musicToggle");
+    const volume = $("musicVolume");
+    if (!audio || !box || !toggle || !volume) return;
+
+    const KEY = "launcher.music";
+    const files = ["background.mp3", "background.ogg", "background.m4a", "background.wav"];
+    let index = 0;
+    let gameBusy = false;
+    const pref = { on: true, volume: 0.25 };
+
+    try {
+        const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (saved && typeof saved === "object") {
+            pref.on = saved.on !== false;
+            if (Number.isFinite(saved.volume)) pref.volume = Math.min(1, Math.max(0, saved.volume));
+        }
+    } catch {}
+
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(pref)); } catch {} };
+
+    function refresh() {
+        audio.volume = pref.volume;
+        volume.value = String(Math.round(pref.volume * 100));
+        toggle.classList.toggle("off", !pref.on);
+        toggle.setAttribute("aria-pressed", String(pref.on));
+    }
+
+    function apply() {
+        // The game has its own sound: stay quiet while it is starting or running.
+        if (pref.on && !gameBusy) {
+            const attempt = audio.play();
+            if (attempt && attempt.catch) attempt.catch(() => {});
+        } else {
+            audio.pause();
+        }
+    }
+
+    audio.addEventListener("error", () => {
+        index++;
+        if (index < files.length) audio.src = "assets/music/" + files[index];
+        else box.hidden = true; // no music file: the control simply never appears
+    });
+
+    audio.addEventListener("canplay", () => {
+        box.hidden = false;
+        refresh();
+        apply();
+    }, { once: true });
+
+    toggle.addEventListener("click", () => {
+        pref.on = !pref.on;
+        save();
+        refresh();
+        apply();
+    });
+
+    volume.addEventListener("input", () => {
+        pref.volume = Number(volume.value) / 100;
+        audio.volume = pref.volume;
+        save();
+    });
+
+    if (launcher && typeof launcher.onGameStatus === "function") {
+        launcher.onGameStatus(data => {
+            gameBusy = Boolean(data) && (data.state === "running" || data.state === "launching");
+            apply();
+        });
+    }
+
+    refresh();
+    audio.src = "assets/music/" + files[0];
+})();
 
 initializeLauncher().catch(error => console.error(error)).finally(render);
 })();

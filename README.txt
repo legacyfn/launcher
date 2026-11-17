@@ -31,12 +31,12 @@ INJECT ANTI-CRASH only if the game crashes (requires anticrash.dll in bin/).
 If you already have the build extracted, simply choose its folder: the launcher detects it (PLAY appears).
 
 bin/ FOLDER
-Injector.exe, projectlegacy.dll, edit.dll must stay in bin/.
+Injector.exe, projectlegacy.dll, edit.dll.enc must stay in bin/.
+  edit.dll.enc = module edit on release / console, CHIFFRE : il faut le code d'acces (Settings > Gameplay > Edit on release).
 anticrash.dll (optional): also copy it into bin/ to enable the INJECT ANTI-CRASH button.
 SHA-256 of the provided files:
 Injector.exe f733438319af6f3c7dc40b3057b1c9239fc691b0b808311ba3e5b699f22157e4
 projectlegacy.dll 94f9822a72d169f4c6a6303ecabf9f68fee0a9dac24c8dacc29161760a8b9905
-edit.dll b0dfce0ec0f866e4881d55796f234cc2119e6e82e6728d1835c164f3da3ef6d2
 Windows Defender may quarantine Injector.exe (it is a DLL injector).
 Settings > Launcher files > VERIFY button to check that everything is present.
 
@@ -91,3 +91,12 @@ If you change an English message in main.js, also change its key in I18N_ROWS.
 
 New language: add a column to each line/pattern + an <option> in #langSelect.
 Logs (COPY LOGS) remain in English, for support.
+
+BACKGROUND MUSIC
+Put a file named background.mp3 (or .ogg/.m4a/.wav) in assets/music/. It loops in the launcher, with a music button and volume slider at the bottom of the sidebar. It pauses while the game is running. Without a file, nothing changes.
+
+
+SERVEURS (endpoints.json)
+  xmppServerUrl / apiUrl = serveurs de PROJECT LEGACY (statut, joueurs, boutique). Le JEU, lui, se connecte
+  au serveur ecrit dans bin/projectlegacy.dll (Help > FIX MY GAME affiche lequel).
+  Si l'ecran de chargement du jeu affiche un autre nom : les fichiers du jeu viennent d'un autre launcher. Help > CLEAN REINSTALL (NEW FOLDER).
