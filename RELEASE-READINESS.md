@@ -19,7 +19,7 @@
 
 - Anti-cheat placeholder processes or suspension. The optional legacy `useStubs` setting is accepted for config compatibility but does not spawn or suspend game/security processes.
 - Windows Defender exclusions.
-- The updater is integrated in source, but cannot check a valid feed until the owner configures the matching signing public key and publishes a signed GitHub release.
+- The updater is integrated in source and its generated public key is now configured; it cannot check a valid feed until a signed GitHub release is published.
 - `anticrash.dll` (not present in the supplied Electron ZIP).
 
 The original injector and console binaries remain bundled and integrity checked. The Redirector and Console use the original `Injector.exe -p <pid> -i <dll-path>` invocation. The Defender exclusion command remains a no-op, and `anticrash.dll` is absent from the supplied original ZIP.
@@ -82,16 +82,17 @@ A successful Windows CI build remains mandatory before release.
 ## Version 4.3.2 — Tauri auto-updater integration
 
 - `tauri-plugin-updater` v2 requires Rust 1.90 or newer; `Cargo.toml` now declares `rust-version = "1.90"`.
-- A placeholder public key is intentionally committed. Tagged-release CI refuses to publish while that placeholder remains.
+- The generated updater public key is committed in `src-tauri/tauri.conf.json` and must remain unchanged for future updates.
 
 **Implemented in source:** `tauri-plugin-updater` v2 is registered, signed updater artifacts are enabled for release builds, and Rust commands check the configured GitHub `latest.json`, download and install updates, and emit progress events. The frontend checks on startup and lets the user choose when to install. The GitHub Actions workflow tests the project and publishes the Windows NSIS installer plus `latest.json` on a `v*` tag.
 
 **Still requires repository-owner setup before publication:**
 
-1. Generate the Tauri signing key pair using `scripts/generate-updater-key.ps1`.
-2. Replace the updater public-key placeholder in `src-tauri/tauri.conf.json` with the generated public key.
-3. Add `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` as GitHub Actions secrets in `legacyfn/launcher`.
-4. Push the source changes and then push tag `v4.3.2`.
-5. Ensure the GitHub Release and `latest.json` are publicly readable. A private repository cannot serve a public update feed to unauthenticated launcher clients.
+1. The generated Tauri key pair's public key is now configured in `src-tauri/tauri.conf.json`.
+2. Add `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` as GitHub Actions secrets in `legacyfn/launcher`. Never commit the private key.
+3. Back up the private key file and its password securely.
+4. Run the Windows CI/build and installer smoke tests.
+5. Only after the checks pass and secrets are configured, publish tag `v4.3.2`.
+6. Ensure the GitHub Release and `latest.json` are publicly readable. A private repository cannot serve a public update feed to unauthenticated launcher clients.
 
 The private signing key is deliberately not included in this package. The version bump and source integration are prepared, but an actual signed release has not been published from this environment.
