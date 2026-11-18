@@ -1,70 +1,76 @@
-name: Build launcher
+name: Tauri Build and Release
 
 on:
   push:
     tags:
-      - "v*"           # optioneel: tag pushen publiceert ook
-  workflow_dispatch:    # knop "Run workflow" op GitHub (web)
-    inputs:
-      publish:
-        description: "Publiceren naar GitHub Releases (versie uit package.json)"
-        type: boolean
-        default: true
+      - "v*"
+  workflow_dispatch:
 
 permissions:
-  contents: write       # nodig om een release aan te maken / bestanden te uploaden
+  contents: write
 
 jobs:
-  build:
+  verify:
+    name: Verify Tauri source
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: Check dat tag en package.json-versie overeenkomen
+      - name: Install Tauri CLI
+        shell: pwsh
+        run: cargo install tauri-cli --version "^2" --locked
+
+      - name: Check release version
         if: startsWith(github.ref, 'refs/tags/v')
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}".TrimStart("v")
-          $ver = (Get-Content package.json | ConvertFrom-Json).version
-          if ($tag -ne $ver) { throw "Tag ($tag) komt niet overeen met package.json ($ver)" }
+          $tagVersion = "${{ github.ref_name }}".TrimStart("v")
+          $cargoVersion = (Select-String -Path src-tauri/Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"').Matches.Groups[1].Value
+          $configVersion = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
+          if ($tagVersion -ne $cargoVersion -or $tagVersion -ne $configVersion) {
+            throw "Tag ($tagVersion), Cargo.toml ($cargoVersion) and tauri.conf.json ($configVersion) must match."
+          }
 
-      - name: Dependencies installeren
-        run: npm install
+      - name: Run Rust tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
 
-      # electron-builder kan geen gepubliceerde release maken zonder bestaande tag
-      - name: Tag aanmaken (als die nog niet bestaat)
-        if: ${{ !startsWith(github.ref, 'refs/tags/v') && inputs.publish }}
+      - name: Check Rust build
+        run: cargo check --manifest-path src-tauri/Cargo.toml
+
+  release:
+    name: Build and publish Tauri installer
+    needs: verify
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Tauri CLI
         shell: pwsh
-        run: |
-          $ver = (Get-Content package.json | ConvertFrom-Json).version
-          $tag = "v$ver"
-          git ls-remote --exit-code --tags origin "refs/tags/$tag" 2>$null | Out-Null
-          if ($LASTEXITCODE -eq 0) { Write-Host "Tag $tag bestaat al"; exit 0 }
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag $tag
-          git push origin $tag
-          exit $LASTEXITCODE
+        run: cargo install tauri-cli --version "^2" --locked
 
-      - name: Bouwen en publiceren
-        if: ${{ startsWith(github.ref, 'refs/tags/v') || inputs.publish }}
-        run: npx electron-builder --win nsis --publish always
+      - name: Build and publish signed Tauri updater
+        uses: tauri-apps/tauri-action@v1
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Bouwen (zonder publiceren)
-        if: ${{ !(startsWith(github.ref, 'refs/tags/v') || inputs.publish) }}
-        run: npm run dist
-
-      - name: Build als artifact bewaren
-        uses: actions/upload-artifact@v4
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          name: launcher-windows
-          path: |
-            dist/*.exe
-            dist/*.blockmap
-            dist/latest.yml
+          projectPath: src-tauri
+          tauriScript: cargo tauri
+          tagName: v__VERSION__
+          releaseName: Project Legacy Launcher v__VERSION__
+          releaseBody: |
+            Project Legacy Launcher release built with Tauri 2.
+            The Windows installer and signed updater metadata are attached below.
+          releaseDraft: false
+          prerelease: false
+          uploadUpdaterJson: true
+          updaterJsonPreferNsis: true
+          args: --bundles nsis

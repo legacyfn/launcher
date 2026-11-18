@@ -1,8 +1,0 @@
-Mets ici ta musique de fond, nommee exactement :  background.mp3
-(background.ogg, background.m4a ou background.wav marchent aussi)
-
-- Le launcher la joue en boucle, volume 25% par defaut.
-- Bouton ♪ + curseur de volume en bas a gauche (le choix est memorise).
-- La musique se coupe toute seule quand le jeu se lance, et revient quand il se ferme.
-- Sans fichier, rien ne s'affiche et rien ne change.
-- Utilise une musique dont tu as les droits (ou libre de droits).
