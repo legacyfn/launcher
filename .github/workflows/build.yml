@@ -43,6 +43,39 @@ jobs:
       - name: Check Rust build
         run: cargo check --manifest-path src-tauri/Cargo.toml
 
+  signed-build-validation:
+    name: Build signed Tauri installer (no release)
+    needs: verify
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Tauri CLI
+        shell: pwsh
+        run: cargo install tauri-cli --version "^2" --locked
+
+      - name: Build signed Windows installer
+        shell: pwsh
+        working-directory: src-tauri
+        run: cargo tauri build --bundles nsis
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Save signed installer and updater artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-4.3.2-signed-windows-test
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/nsis/*.nsis.zip
+            src-tauri/target/release/bundle/nsis/*.sig
+          if-no-files-found: error
+
   release:
     name: Build and publish Tauri installer
     needs: verify
