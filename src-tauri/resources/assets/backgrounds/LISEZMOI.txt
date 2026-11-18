@@ -1,0 +1,3 @@
+Mets ici tes images (jpg, png, webp - 1920x1080 idealement, max 20).
+Elles defilent automatiquement derriere le titre du Dashboard (toutes les 7 secondes).
+Ordre = ordre alphabetique des noms : 01-..., 02-..., 03-...
