@@ -10,4 +10,4 @@
 
 ## Release status
 
-These are source-code changes for the 4.3.2 release candidate. The updater becomes operational only after the owner configures the permanent signing key, pushes this source to the configured GitHub repository, and publishes the signed `v4.3.2` release. This project ZIP is not itself a published or signed updater release.
+These are source-code changes for the 4.3.2 release candidate. The generated public key is now configured in `src-tauri/tauri.conf.json`. The updater becomes operational after the owner configures the two private-key GitHub Actions secrets, the Windows CI/build passes, and the signed `v4.3.2` release is published. This branch is not itself a published or signed updater release.
