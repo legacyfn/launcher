@@ -684,14 +684,6 @@ button:focus-visible {
 
 /* ===== LAUNCHER ADDITIONS (v3) ===== */
 
-.fix-row { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid #ffffff10; font-size: 12px; }
-.fix-row:last-child { border-bottom: 0; }
-.fix-ico { width: 18px; font-weight: 900; }
-.fix-ok .fix-ico { color: #53d18d; }
-.fix-bad .fix-ico { color: #ff6b6b; }
-.fix-fixed .fix-ico { color: #f5c542; }
-.fix-row b { display: block; }
-.fix-row span.d { display: block; margin-top: 2px; color: var(--muted); }
 
 .profile-head { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 12px; background: #14111f; border: 1px solid #ffffff14; }
 .profile-head img { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; }
@@ -914,9 +906,6 @@ button:focus-visible {
 
 .check input { accent-color: var(--purple); }
 
-.verify-list { margin-top: 10px; font-size: 9px; line-height: 1.9; }
-.verify-list .ok { color: var(--green); }
-.verify-list .bad { color: var(--red); }
 
 @media(max-width:520px) {
     .setting-buttons { width: 100%; }
@@ -1001,8 +990,6 @@ body:not(.no-live) .hero { background: rgba(15,12,24,.35); }
 .sidebar .sidebar-bottom { display: none !important; }
 .main { margin-left: 0 !important; padding: 104px 34px 40px !important; max-width: 1560px; margin-inline: auto !important; }
 .topbar { display: none !important; }
-body.nav-compact .sidebar .nav button { font-size: 0; }
-body.nav-compact .sidebar .nav .nav-icon { font-size: 18px; }
 .sidebar .music-control { margin: 0 !important; flex: none; }
 .sidebar .music-control input[type=range] { width: 86px; flex: none; }
 .user-chip { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border-radius: 14px; background: #ffffff10; border: 1px solid #ffffff1a; flex: none; }
@@ -1129,10 +1116,234 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 @keyframes cardPop { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
 .small-button:active, .button:active { transform: scale(.97) !important; }
 .sidebar .brand-icon, .sidebar .brand img { border-radius: 12px; }
+
+
+/* FIRST-RUN ACCOUNT AND BUILD SETUP */
+.setup-gate {
+    position: fixed; inset: 0; z-index: 10000; display: flex;
+    align-items: center; justify-content: center; padding: 24px;
+    background: radial-gradient(circle at 18% 15%, #302044 0, #100d18 48%, #08070c 100%);
+    backdrop-filter: blur(18px);
+}
+.setup-gate[hidden] { display: none !important; }
+.setup-card {
+    width: min(560px, 100%); padding: 34px; border-radius: 16px;
+    border: 1px solid #a477e955; background: linear-gradient(145deg, #1b1726, #100e17);
+    box-shadow: 0 25px 90px #000b;
+}
+.setup-eyebrow { color: #b99aff; font-size: 10px; font-weight: 900; letter-spacing: 2px; }
+.setup-card h1 { margin: 12px 0 8px; color: #fff; font-size: clamp(24px, 4vw, 34px); font-weight: 900; }
+.setup-card p { color: #aaa3b9; font-size: 12px; line-height: 1.7; margin: 0 0 22px; }
+.setup-step[hidden] { display: none !important; }
+.setup-choice-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+.setup-choice-row button { flex:1; min-width:180px; }
+.setup-fields { display: grid; gap: 12px; margin: 20px 0; }
+.setup-fields label { display: grid; gap: 7px; color: #ddd4ea; font-size: 11px; font-weight: 800; }
+.setup-fields input { width: 100%; min-height: 46px; padding: 0 13px; border-radius: 7px; border: 1px solid #ffffff25; background: #090811; color: #fff; outline: none; }
+.setup-fields input:focus { border-color: #a77af1; box-shadow: 0 0 0 3px #a77af122; }
+.setup-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.setup-actions button { min-height: 44px; padding: 0 18px; border-radius: 7px; border: 1px solid #a477e966; background: #251b35; color: #e2d2ff; font-size: 10px; font-weight: 900; cursor: pointer; }
+.setup-actions button.primary { color: #120d1b; background: linear-gradient(100deg, #bda0ff, #8f61db); border-color: transparent; }
+.setup-actions button:disabled { opacity: .5; cursor: wait; }
+.setup-message { min-height: 20px; margin-top: 14px; color: #f2c879; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.setup-note { color: #827a90 !important; font-size: 10px !important; margin-top: 18px !important; margin-bottom: 0 !important; }
+.setup-build-choice { padding: 16px; margin: 14px 0; border: 1px solid #ffffff19; border-radius: 9px; background: #ffffff06; }
+.setup-build-choice b { display: block; margin-bottom: 5px; color: #fff; font-size: 13px; }
+.setup-build-choice span { color: #aaa3b9; font-size: 11px; line-height: 1.6; }
+.setup-progress { height: 8px; overflow: hidden; margin-top: 14px; border-radius: 20px; background: #ffffff16; }
+.setup-progress > i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #8f61db, #c4a5ff); transition: width .2s; }
+@media(max-width:520px) { .setup-card { padding: 24px; } }
+
+</style>
+<style>
+:root {
+    --bg: #08111d;
+    --sidebar: #0b1725;
+    --panel: #101e2d;
+    --panel2: #162a3d;
+    --border: rgba(139, 195, 232, .15);
+    --purple: #3998d2;
+    --purple2: #86d3ff;
+    --text: #f4f8fc;
+    --muted: #91aabd;
+    --green: #67dda5;
+    --red: #ef7882;
+}
+body {
+    background:
+        radial-gradient(ellipse at 78% -18%, rgba(52, 145, 205, .19), transparent 42%),
+        radial-gradient(ellipse at 8% 100%, rgba(91, 93, 191, .10), transparent 38%),
+        var(--bg);
+}
+.sidebar {
+    background: linear-gradient(180deg, #0d1b2b 0%, #091421 100%);
+    border-right-color: rgba(116, 190, 235, .16);
+}
+.brand-icon {
+    border: 1px solid rgba(134, 211, 255, .24);
+    box-shadow: 0 6px 28px rgba(55, 153, 210, .24);
+}
+.brand-name { letter-spacing: 1.4px; }
+.nav button { border-radius: 10px; transition: background-color .18s ease, color .18s ease; }
+.nav button:hover { background: rgba(70, 159, 213, .12); color: #f5fbff; }
+.nav button.active {
+    color: #b5e6ff;
+    background: linear-gradient(100deg, rgba(57, 152, 210, .22), rgba(57, 152, 210, .07));
+    box-shadow: inset 3px 0 #62bdec;
+}
+.version {
+    border-color: rgba(134, 211, 255, .18);
+    border-radius: 999px;
+}
+.avatar { border-color: rgba(134, 211, 255, .65); box-shadow: 0 3px 18px rgba(57, 152, 210, .25); }
+.hero {
+    border-radius: 16px;
+    border-color: rgba(134, 211, 255, .2);
+    background: linear-gradient(120deg, #10243a, #12263a 48%, #1b2541);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .20);
+}
+.hero::after {
+    background:
+        linear-gradient(90deg, rgba(5, 13, 23, .91), rgba(5, 13, 23, .58) 43%, rgba(5, 13, 23, .06)),
+        linear-gradient(0deg, rgba(5, 13, 23, .48), transparent 60%);
+}
+.eyebrow, .tag, .panel-badge, .resource-version { color: var(--purple2); }
+.hero h1 { text-shadow: 0 8px 35px rgba(0, 0, 0, .24); }
+.button { border-radius: 9px; }
+.primary {
+    background: linear-gradient(110deg, #5ab9ec, #267bb9);
+    box-shadow: 0 7px 24px rgba(43, 137, 197, .25);
+}
+.primary:hover { filter: brightness(1.12); box-shadow: 0 10px 28px rgba(43, 137, 197, .34); }
+.secondary {
+    border-color: rgba(180, 220, 247, .25);
+    background: rgba(255, 255, 255, .07);
+}
+.secondary:hover { background: rgba(73, 160, 214, .18); }
+.stat, .panel, .settings-panel, .resource, .shop-card, .shop-section {
+    border-color: var(--border);
+    border-radius: 12px;
+    background-color: rgba(16, 30, 45, .92);
+}
+.stat-icon { background: rgba(69, 159, 213, .15); color: var(--purple2); }
+.mode {
+    border-radius: 10px;
+    border-color: rgba(139, 195, 232, .13);
+    background-color: rgba(22, 42, 61, .9);
+}
+.mode.open {
+    border-color: rgba(102, 203, 255, .65);
+    box-shadow: inset 0 0 0 1px rgba(102, 203, 255, .12), 0 0 22px rgba(58, 161, 220, .12);
+}
+.mode-sub.live { color: #74e3b2; }
+.resource {
+    border-color: rgba(103, 185, 235, .25);
+    background: linear-gradient(110deg, rgba(23, 53, 78, .96), rgba(16, 30, 45, .96));
+}
+.settings-panel { padding-left: 24px; padding-right: 24px; }
+.small-button {
+    border-color: rgba(104, 184, 231, .42);
+    border-radius: 8px;
+    background: rgba(36, 81, 112, .28);
+    color: #b8e6ff;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+.small-button:hover { background: rgba(52, 129, 180, .35); border-color: rgba(134, 211, 255, .65); }
+.set-tabs button.on, .set-tabs button.active {
+    color: #b8e6ff !important;
+    border-color: rgba(105, 194, 244, .42) !important;
+    background: rgba(57, 152, 210, .16) !important;
+}
+.switch input:checked + span { background: #348fc7 !important; }
+.field:focus, .prefs select:focus, .setup-fields input:focus {
+    border-color: #6ec5f3 !important;
+    box-shadow: 0 0 0 3px rgba(80, 177, 230, .16) !important;
+}
+.notification {
+    border-color: rgba(105, 194, 244, .45);
+    border-radius: 11px;
+    background: #12243a;
+}
+.footer { border-top-color: rgba(139, 195, 232, .13); }
+.setup-card {
+    border-color: rgba(134, 211, 255, .25) !important;
+    background: linear-gradient(145deg, rgba(16, 32, 49, .98), rgba(9, 20, 33, .99)) !important;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .6), 0 0 42px rgba(46, 135, 193, .12) !important;
+}
+.setup-eyebrow { color: #8bd7ff !important; }
+.setup-actions button {
+    border-color: rgba(104, 184, 231, .35);
+    background: #17334b;
+    color: #c4eaff;
+}
+.setup-actions button.primary {
+    color: #061421;
+    background: linear-gradient(100deg, #8edaff, #3998d2);
+}
+.setup-progress > i { background: linear-gradient(90deg, #3998d2, #99dcff); }
+#liveBg .lb-orb { filter: saturate(.9); }
+body.launcher-inactive *,
+body.launcher-inactive *::before,
+body.launcher-inactive *::after {
+    animation-play-state: paused !important;
+    transition: none !important;
+}
 </style>
 </head>
 
 <body>
+
+<div id="onboardingGate" class="setup-gate" hidden aria-modal="true" role="dialog" aria-labelledby="setupTitle">
+    <div class="setup-card">
+        <div class="setup-eyebrow">PROJECT LEGACY · FIRST-TIME SETUP</div>
+        <div id="setupLoginStep" class="setup-step" hidden>
+            <h1 id="setupTitle">Welcome to Project Legacy</h1>
+            <p>Set your launcher username and enter the game-account credentials used when starting the game. Complete setup once to continue.</p>
+            <div class="setup-fields">
+                <label>Launcher username
+                    <input id="setupDisplayName" type="text" maxlength="24" autocomplete="nickname" spellcheck="false" placeholder="The name shown in the launcher">
+                </label>
+                <label>Game account username / email
+                    <input id="setupUsername" type="text" maxlength="200" autocomplete="username" spellcheck="false" placeholder="Your game account username or email">
+                </label>
+                <label>Password
+                    <input id="setupPassword" type="password" maxlength="200" autocomplete="current-password" placeholder="Your game account password">
+                </label>
+            </div>
+            <div class="setup-actions">
+                <button id="setupLoginButton" class="primary" type="button">CONTINUE</button>
+            </div>
+            <div class="setup-note">Your password is protected with Windows DPAPI on this computer. The launcher stores these game credentials locally; this build does not verify them against a separate online account-login service.</div>
+        </div>
+        <div id="setupNotificationsStep" class="setup-step" hidden>
+            <h1 id="setupNotificationsTitle">Game match notifications</h1>
+            <p>Would you like Project Legacy to show a Windows notification when a game match opens and becomes joinable? You can change this later in Settings.</p>
+            <div class="setup-choice-row">
+                <button id="setupEnableNotifications" class="primary" type="button">ENABLE NOTIFICATIONS</button>
+                <button id="setupSkipNotifications" type="button">NOT NOW</button>
+            </div>
+        </div>
+        <div id="setupBuildStep" class="setup-step" hidden>
+            <h1 id="setupTitleBuild">Choose your build</h1>
+            <p>Your account details are saved. Next, select an existing installation or download the configured build.</p>
+            <div class="setup-build-choice">
+                <b>Build 4.5 · Chapter 1 Season 4</b>
+                <span>This is the build currently configured by the launcher server. Select an existing game folder or download this build.</span>
+            </div>
+            <div class="setup-actions">
+                <button id="setupExistingButton" type="button">SELECT EXISTING BUILD</button>
+                <button id="setupDownloadButton" class="primary" type="button">DOWNLOAD BUILD 4.5</button>
+            </div>
+            <div id="setupProgressArea" hidden>
+                <div class="setup-progress"><i id="setupProgressBar"></i></div>
+                <div id="setupProgressText" class="setup-message"></div>
+                <div class="setup-actions"><button id="setupCancelButton" type="button">CANCEL DOWNLOAD</button></div>
+            </div>
+        </div>
+        <div id="setupMessage" class="setup-message" role="status" aria-live="polite"></div>
+    </div>
+</div>
+
 <div id="liveBg" aria-hidden="true">
     <div class="lb-orb o1"></div><div class="lb-orb o2"></div><div class="lb-orb o3"></div>
     <div class="lb-wrap"><div class="lb-layer lb-a"></div><div class="lb-layer lb-b"></div></div>
@@ -1168,9 +1379,6 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
         </button>
         <button data-page="downloads">
             <span class="nav-icon">↓</span> Downloads
-        </button>
-        <button data-page="help">
-            <span class="nav-icon">✚</span> Help
         </button>
         <button data-page="settings">
             <span class="nav-icon">⚙</span> Settings
@@ -1251,12 +1459,11 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
                 <span class="panel-badge">GAME RUNNING</span>
             </div>
             <div class="description">
-                Once you are in the lobby, click INJECT CONSOLE, then press F3 in-game.
-                Use the anti-crash only if the game crashes.
+                The original injector and DLL assets are bundled and integrity-checked. The Redirector loads automatically after launch; unlock the Console below to inject it in the lobby.
             </div>
             <div class="install-buttons">
                 <button class="small-button" id="injectConsole">INJECT CONSOLE</button>
-                <button class="small-button" id="injectAnticrash">INJECT ANTI-CRASH</button>
+                <button class="small-button" id="injectAnticrash" disabled>ANTI-CRASH MODULE NOT INCLUDED</button>
             </div>
         </div>
 
@@ -1443,34 +1650,6 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
         </p>
     </section>
 
-    <!-- HELP -->
-    <section class="page" id="page-help">
-        <div class="section-heading">
-            <div>
-                <h2>FIX MY GAME</h2>
-                <p>Checks your game and repairs what can be repaired automatically.</p>
-            </div>
-            <button class="small-button" id="fixBtn">FIX MY GAME</button>
-        </div>
-        <div class="p-card">
-            <h3>WINDOWS DEFENDER</h3>
-            <div class="news-empty" style="margin-bottom:12px">Defender sometimes quarantines the injector or the DLLs, which breaks the console and anti-crash tools. Adding an exclusion needs admin rights, so Windows will ask you to confirm.</div>
-            <button class="small-button" id="defenderBtn">ADD WINDOWS DEFENDER EXCLUSION</button>
-            <div class="news-empty" id="defenderMsg" style="margin-top:10px"></div>
-        </div>
-        <div class="p-card">
-            <h3>IF THE GAME CRASHES AT STARTUP</h3>
-            <div class="news-empty" style="margin-bottom:12px">The loading screen shows another name? The game files come from another launcher. Choose a new empty folder, then download the build again.</div>
-            <div class="p-add">
-                <button class="small-button" id="cleanInstallBtn">CLEAN REINSTALL (NEW FOLDER)</button>
-                <button class="small-button" id="resetSettingsBtn">RESET GAME SETTINGS</button>
-                <label class="switch" style="margin-right:6px"><input type="checkbox" id="compatToggle"><span></span></label><label for="compatToggle" style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"> Compatibility mode (limit the game to the first 8 CPU threads)</label>
-            </div>
-            <div class="news-empty" id="resetMsg"></div>
-        </div>
-        <div class="p-card" id="fixReport"><span class="news-empty">Press FIX MY GAME. The launcher also repairs missing tools by itself every minute and relaunches the game automatically after a startup crash.</span></div>
-    </section>
-
     <!-- SETTINGS -->
     <section class="page" id="page-settings">
         <div class="section-heading">
@@ -1486,7 +1665,6 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
                 <label>Language <select id="langSelect"><option value="en">English</option><option value="fr">Français</option><option value="nl">Nederlands</option></select></label>
                 <label><input type="checkbox" id="liveToggle" checked> Live background</label>
                 <label><input type="checkbox" id="notifyToggle"> Match-open notifications</label>
-                <button class="small-button" id="copyLogs">COPY LOGS</button>
             </div>
             <div class="setting-row">
                 <div class="setting-info">
@@ -1502,50 +1680,16 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 
             <div class="setting-row">
                 <div class="setting-info">
-                    <strong>Folder verification</strong>
-                    <p>Check that the selected folder is accessible.</p>
-                    <div class="setting-path" id="folderStatus">Waiting for verification</div>
-                </div>
-                <button class="small-button" id="checkFolder">CHECK</button>
-            </div>
-
-            <div class="setting-row">
-                <div class="setting-info">
                     <strong>Account</strong>
-                    <p>Email and password used to sign in to the game. The password is stored encrypted on this computer.</p>
+                    <p>Launcher username and game-account credentials.</p>
                     <div class="field-group">
-                        <input class="field" id="accountNick" type="text" placeholder="Display name (shown on the dashboard)" autocomplete="off" spellcheck="false" maxlength="24">
-                        <input class="field" id="accountEmail" type="text" placeholder="Email" autocomplete="off" spellcheck="false">
+                        <input class="field" id="accountNick" type="text" placeholder="Launcher username (shown on the dashboard)" autocomplete="off" spellcheck="false" maxlength="24">
+                        <input class="field" id="accountEmail" type="text" placeholder="Game account username / email" autocomplete="off" spellcheck="false">
                         <input class="field" id="accountPassword" type="password" placeholder="Password" autocomplete="new-password">
                     </div>
                     <div class="setting-path" id="accountStatus"></div>
                 </div>
                 <button class="small-button" id="saveAccount">SAVE</button>
-            </div>
-
-            <div class="setting-row">
-                <div class="setting-info">
-                    <strong>Launch options</strong>
-                    <p>Arguments passed to the game. The sign-in arguments are added automatically.</p>
-                    <div class="field-group">
-                        <input class="field" id="launchArgs" type="text" spellcheck="false">
-                    </div>
-                    <label class="check">
-                        <input type="checkbox" id="useStubs">
-                        Start the launcher / anti-cheat placeholder processes (frozen)
-                    </label>
-                    <div class="setting-path" id="launchStatus"></div>
-                </div>
-                <button class="small-button" id="saveLaunch">SAVE</button>
-            </div>
-
-            <div class="setting-row">
-                <div class="setting-info">
-                    <strong>Launcher files</strong>
-                    <p>Check that the injector, the DLLs and the game build are all in place.</p>
-                    <div class="verify-list" id="verifyList"></div>
-                </div>
-                <button class="small-button" id="verifyFiles">VERIFY</button>
             </div>
 
             <div class="setting-row">
@@ -1561,7 +1705,7 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
     <footer class="footer">
         <div>
             <strong>PROJECT LEGACY</strong><br>
-            Community Launcher · Build 4.5 · UI v5.7
+            Community Launcher v4.3.2 · Build 4.5 · UI v5.7
         </div>
         <div>Community interface · Not affiliated with Epic Games.</div>
     </footer>
@@ -1570,13 +1714,32 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 
 <div class="notification" id="notification"></div>
 
+<script src="api.js"></script>
 <script>
 (function () {
 "use strict";
 
 const SITE_URL = "https://projectlegacy.pages.dev/";
+
+// The game takes focus while it is running. Pause visual work when this window
+// is inactive and resume it only when the user returns to the launcher.
+(function setupLauncherWindowActivity() {
+    const syncActivity = () => {
+        const active = !document.hidden && document.hasFocus();
+        if (window.__launcherWindowActive === active) return;
+        window.__launcherWindowActive = active;
+        document.body.classList.toggle("launcher-inactive", !active);
+        window.dispatchEvent(new CustomEvent("launcher-activity-change", { detail: { active } }));
+    };
+
+    window.__launcherWindowActive = !document.hidden && document.hasFocus();
+    document.body.classList.toggle("launcher-inactive", !window.__launcherWindowActive);
+    window.addEventListener("blur", syncActivity);
+    window.addEventListener("focus", syncActivity);
+    document.addEventListener("visibilitychange", syncActivity);
+})();
 const DISCORD_URL = "https://discord.gg/fx4Gu3MAK";
-const BUILD_URL = "https://projectlegacybuilds.streamxerosradio.duckdns.org/builds/4.5.rar";
+const BUILD_URL = "https://projectlegacybuilds.streamxerosradio.duckdns.org/builds/4.5.7z";
 const launcher = window.launcher;
 
 const $ = id => document.getElementById(id);
@@ -1616,15 +1779,8 @@ const I18N_ROWS = [
     ["Profile", "Profil", "Profiel"],
     ["Shop", "Boutique", "Winkel"],
     ["Edit on release", "Edit on release", "Edit on release"],
-    ["WINDOWS DEFENDER", "WINDOWS DEFENDER", "WINDOWS DEFENDER"],
-    ["Defender sometimes quarantines the injector or the DLLs, which breaks the console and anti-crash tools. Adding an exclusion needs admin rights, so Windows will ask you to confirm.",
-     "Defender met parfois l’injecteur ou les DLL en quarantaine, ce qui casse la console et l’anti-crash. Ajouter une exclusion demande les droits administrateur : Windows va te demander de confirmer.",
-     "Defender zet de injector of de DLL’s soms in quarantaine, waardoor de console en anti-crash stoppen met werken. Een uitzondering toevoegen vereist beheerdersrechten; Windows vraagt om bevestiging."],
-    ["ADD WINDOWS DEFENDER EXCLUSION", "AJOUTER UNE EXCLUSION WINDOWS DEFENDER", "WINDOWS DEFENDER-UITZONDERING TOEVOEGEN"],
-    ["A Windows security prompt should appear - accept it.", "Une fenêtre de sécurité Windows doit apparaître - accepte-la.", "Er zou een Windows-beveiligingsvenster moeten verschijnen - accepteer dit."],
-    ["WAITING FOR ADMIN CONFIRMATION...", "EN ATTENTE DE CONFIRMATION ADMINISTRATEUR...", "WACHTEN OP BEHEERDERSBEVESTIGING..."],
     ["Edit on release and console", "Edit on release et console", "Edit on release en console"],
-    ["Enter your access code to unlock the module, then use INJECT CONSOLE in game.", "Entre ton code d’accès pour débloquer le module, puis utilise INJECT CONSOLE en jeu.", "Voer je toegangscode in om de module te ontgrendelen en gebruik daarna INJECT CONSOLE in het spel."],
+    ["Verify your access code, then use INJECT CONSOLE in the lobby.", "Entre ton code d’accès, puis utilise INJECT CONSOLE dans le lobby.", "Controleer je toegangscode en gebruik daarna INJECT CONSOLE in de lobby."],
     ["UNLOCK", "DÉVERROUILLER", "ONTGRENDELEN"],
     ["LOCK", "VERROUILLER", "VERGRENDELEN"],
     ["Match", "Match", "Wedstrijd"],
@@ -1632,8 +1788,6 @@ const I18N_ROWS = [
     ["Appearance", "Apparence", "Uiterlijk"],
     ["Game", "Jeu", "Spel"],
     ["Audio", "Audio", "Audio"],
-    ["Expanded Navigation", "Navigation étendue", "Uitgebreide navigatie"],
-    ["Show the navigation labels in the top bar.", "Affiche les noms des pages dans la barre du haut.", "Toon de paginanamen in de bovenbalk."],
     ["Animated Background", "Fond animé", "Geanimeerde achtergrond"],
     ["Animate the drifting orbs, the starfield and the theme effects.", "Anime les lueurs, les particules et les effets du thème.", "Animeer de lichtbollen, de sterren en de thema-effecten."],
     ["Animation Speed", "Vitesse d’animation", "Animatiesnelheid"],
@@ -1644,8 +1798,6 @@ const I18N_ROWS = [
     ["Adjust the volume of UI sound effects.", "Règle le volume des sons de l’interface.", "Stel het volume van de interfacegeluiden in."],
     ["Match-open notifications", "Notifications d’ouverture de match", "Meldingen bij openen van wedstrijd"],
     ["Get a desktop notification when a match opens.", "Reçois une notification quand un match s’ouvre.", "Ontvang een melding wanneer een wedstrijd opent."],
-    ["Support", "Assistance", "Ondersteuning"],
-    ["Copy the launcher logs to send them to support.", "Copie les journaux du launcher pour les envoyer au support.", "Kopieer de logs van de launcher om ze naar support te sturen."],
     ["CLEAN REINSTALL (NEW FOLDER)", "RÉINSTALLATION PROPRE (NOUVEAU DOSSIER)", "SCHONE INSTALLATIE (NIEUWE MAP)"],
     ["The loading screen shows another name? The game files come from another launcher. Choose a new empty folder, then download the build again.", "L’écran de chargement affiche un autre nom ? Les fichiers du jeu viennent d’un autre launcher. Choisis un nouveau dossier vide, puis retélécharge le build.", "Toont het laadscherm een andere naam? De spelbestanden komen van een andere launcher. Kies een nieuwe lege map en download de build opnieuw."],
     ["Home", "Accueil", "Home"],
@@ -1658,8 +1810,6 @@ const I18N_ROWS = [
     ["Loading the shop...", "Chargement de la boutique...", "Shop laden..."],
     ["DOWNLOADS", "TÉLÉCHARGEMENTS", "DOWNLOADS"],
     ["Downloads", "Téléchargements", "Downloads"],
-    ["HELP", "AIDE", "HULP"],
-    ["Help", "Aide", "Hulp"],
     ["SETTINGS", "PARAMÈTRES", "INSTELLINGEN"],
     ["Settings", "Paramètres", "Instellingen"],
     ["COMMUNITY LAUNCHER", "LAUNCHER COMMUNAUTAIRE", "COMMUNITY-LAUNCHER"],
@@ -1684,11 +1834,11 @@ const I18N_ROWS = [
     ["RETRY", "RÉESSAYER", "OPNIEUW"],
     ["IN-GAME TOOLS", "OUTILS EN JEU", "TOOLS IN HET SPEL"],
     ["GAME RUNNING", "JEU EN COURS", "SPEL ACTIEF"],
-    ["Once you are in the lobby, click INJECT CONSOLE, then press F3 in-game. Use the anti-crash only if the game crashes.",
-        "Une fois dans le lobby, cliquez sur INJECTER LA CONSOLE, puis appuyez sur F3 en jeu. N’utilisez l’anti-crash que si le jeu plante.",
-        "Klik in de lobby op CONSOLE INJECTEREN en druk daarna in het spel op F3. Gebruik de anti-crash alleen als het spel crasht."],
+    ["The original injector and DLL assets are bundled and integrity-checked. The Redirector loads automatically after launch; unlock the Console below to inject it in the lobby.",
+        "Les fichiers originaux de l’injecteur et des DLL sont inclus et vérifiés. Le Redirector se charge au démarrage ; déverrouillez la Console ci-dessous pour l’injecter dans le lobby.",
+        "De originele injector- en DLL-bestanden zijn meegeleverd en gecontroleerd. De Redirector wordt na het starten geladen; ontgrendel hieronder de Console om deze in de lobby te injecteren."],
     ["INJECT CONSOLE", "INJECTER LA CONSOLE", "CONSOLE INJECTEREN"],
-    ["INJECT ANTI-CRASH", "INJECTER L’ANTI-CRASH", "ANTI-CRASH INJECTEREN"],
+    ["ANTI-CRASH MODULE NOT INCLUDED", "MODULE ANTI-CRASH NON INCLUS", "ANTI-CRASHMODULE NIET MEEGELEVERD"],
     ["PLAYERS ONLINE", "JOUEURS EN LIGNE", "SPELERS ONLINE"],
     ["Connected players", "Joueurs connectés", "Verbonden spelers"],
     ["CURRENT BUILD", "BUILD ACTUELLE", "HUIDIGE BUILD"],
@@ -1773,34 +1923,12 @@ const I18N_ROWS = [
         "La build est une grosse archive. Le launcher a besoin d’espace libre pour l’archive et le jeu extrait en même temps, et supprime l’archive une fois l’installation réussie.",
         "De build is een groot archief. De launcher heeft tegelijk vrije ruimte nodig voor het archief en het uitgepakte spel, en verwijdert het archief zodra de installatie is gelukt."],
 
-    /* ---- help ---- */
-    ["FIX MY GAME", "RÉPARER MON JEU", "MIJN SPEL REPAREREN"],
-    ["CHECKING...", "VÉRIFICATION...", "CONTROLEREN..."],
-    ["Checks your game and repairs what can be repaired automatically.",
-        "Vérifie votre jeu et répare automatiquement ce qui peut l’être.",
-        "Controleert je spel en repareert automatisch wat kan."],
-    ["IF THE GAME CRASHES AT STARTUP", "SI LE JEU PLANTE AU DÉMARRAGE", "ALS HET SPEL BIJ HET STARTEN CRASHT"],
-    ["RESET GAME SETTINGS", "RÉINITIALISER LES PARAMÈTRES DU JEU", "SPELINSTELLINGEN RESETTEN"],
-    ["COMPATIBILITY MODE", "MODE COMPATIBILITÉ", "COMPATIBILITEITSMODUS"],
-    ["Compatibility mode (limit the game to the first 8 CPU threads)",
-        "Mode compatibilité (limite le jeu aux 8 premiers threads du processeur)",
-        "Compatibiliteitsmodus (beperkt het spel tot de eerste 8 processorthreads)"],
-    ["Press FIX MY GAME. The launcher also repairs missing tools by itself every minute and relaunches the game automatically after a startup crash.",
-        "Appuyez sur RÉPARER MON JEU. Le launcher répare aussi tout seul les outils manquants chaque minute et relance automatiquement le jeu après un plantage au démarrage.",
-        "Druk op MIJN SPEL REPAREREN. De launcher repareert ook zelf elke minuut ontbrekende tools en start het spel automatisch opnieuw na een crash bij het opstarten."],
-    ["The check could not run.", "La vérification n’a pas pu s’exécuter.", "De controle kon niet worden uitgevoerd."],
-    ["Everything looks good. If the game still crashes, use COPY LOGS in Settings and send it to support.",
-        "Tout semble en ordre. Si le jeu plante encore, utilisez COPIER LES LOGS dans les paramètres et envoyez-les au support.",
-        "Alles ziet er goed uit. Crasht het spel nog steeds, gebruik dan LOGS KOPIËREN in de instellingen en stuur ze naar de support."],
-
     /* ---- settings ---- */
     ["LAUNCHER SETTINGS", "PARAMÈTRES DU LAUNCHER", "LAUNCHER-INSTELLINGEN"],
     ["Manage your local installation.", "Gérez votre installation locale.", "Beheer je lokale installatie."],
     ["CONFIGURATION", "CONFIGURATION", "CONFIGURATIE"],
     ["Language", "Langue", "Taal"],
     ["Match-open notifications", "Notifications d’ouverture de match", "Melding als een match opent"],
-    ["COPY LOGS", "COPIER LES LOGS", "LOGS KOPIËREN"],
-    ["COPIED", "COPIÉ", "GEKOPIEERD"],
     ["FAILED", "ÉCHEC", "MISLUKT"],
     ["Installation folder", "Dossier d’installation", "Installatiemap"],
     ["Select the folder containing your installation.", "Sélectionnez le dossier contenant votre installation.", "Selecteer de map met je installatie."],
@@ -1820,7 +1948,6 @@ const I18N_ROWS = [
     ["Password", "Mot de passe", "Wachtwoord"],
     ["Password saved (leave empty to keep it)", "Mot de passe enregistré (laissez vide pour le conserver)", "Wachtwoord opgeslagen (leeg laten om te behouden)"],
     ["SAVE", "ENREGISTRER", "OPSLAAN"],
-    ["Launch options", "Options de lancement", "Startopties"],
     ["Arguments passed to the game. The sign-in arguments are added automatically.",
         "Arguments transmis au jeu. Les arguments de connexion sont ajoutés automatiquement.",
         "Argumenten die aan het spel worden doorgegeven. De inlogargumenten worden automatisch toegevoegd."],
@@ -1902,7 +2029,6 @@ const I18N_ROWS = [
     ["Folder verification failed.", "Échec de la vérification du dossier.", "Mapcontrole mislukt."],
     ["Account saved.", "Compte enregistré.", "Account opgeslagen."],
     ["Could not save.", "Enregistrement impossible.", "Opslaan is mislukt."],
-    ["Launch options saved.", "Options de lancement enregistrées.", "Startopties opgeslagen."],
     ["Invalid email or password.", "E-mail ou mot de passe invalide.", "Ongeldig e-mailadres of wachtwoord."],
     ["Launch arguments are invalid.", "Les arguments de lancement sont invalides.", "De startargumenten zijn ongeldig."],
     ["A previous installation was interrupted. Use Download to finish it.", "Une installation précédente a été interrompue. Utilisez Télécharger pour la terminer.", "Een eerdere installatie is onderbroken. Gebruik Download om hem af te maken."],
@@ -1919,15 +2045,12 @@ const I18N_ROWS = [
     ["Enter your account email and password in Settings first.", "Saisissez d’abord l’e-mail et le mot de passe de votre compte dans les paramètres.", "Vul eerst het e-mailadres en wachtwoord van je account in bij de instellingen."],
     ["Game started, injecting modules...", "Jeu démarré, injection des modules...", "Spel gestart, modules worden geïnjecteerd..."],
     ["The game closed.", "Le jeu s’est fermé.", "Het spel is gesloten."],
-    ["The game keeps crashing at startup, and the injection timing is not the cause. This usually comes from the PC: update your graphics drivers, close overlays (Discord, GeForce Experience, MSI Afterburner), then open Help: RESET GAME SETTINGS, then try COMPATIBILITY MODE. If it continues, send COPY LOGS (Settings) to support.",
-        "Le jeu plante en boucle au démarrage, et le moment de l’injection n’en est pas la cause. Cela vient généralement du PC : mettez à jour vos pilotes graphiques, fermez les overlays (Discord, GeForce Experience, MSI Afterburner), puis ouvrez Aide : RÉINITIALISER LES PARAMÈTRES DU JEU, puis essayez le MODE COMPATIBILITÉ. Si cela continue, envoyez COPIER LES LOGS (Paramètres) au support.",
-        "Het spel blijft bij het opstarten crashen en het moment van injecteren is niet de oorzaak. Dit komt meestal door de pc: werk je grafische drivers bij, sluit overlays (Discord, GeForce Experience, MSI Afterburner), open Hulp: SPELINSTELLINGEN RESETTEN en probeer daarna de COMPATIBILITEITSMODUS. Blijft het gebeuren, stuur dan LOGS KOPIËREN (Instellingen) naar de support."],
     ["The game could not start: a Windows component is missing. Install the Microsoft Visual C++ Redistributable (x64), then press PLAY again.",
         "Le jeu n’a pas pu démarrer : un composant Windows est manquant. Installez le Microsoft Visual C++ Redistributable (x64), puis appuyez de nouveau sur JOUER.",
         "Het spel kon niet starten: er ontbreekt een Windows-component. Installeer de Microsoft Visual C++ Redistributable (x64) en druk daarna opnieuw op SPELEN."],
-    ["Game running, redirector loaded. In the lobby, use INJECT CONSOLE below (then press F3 in-game).",
-        "Jeu en cours, redirecteur chargé. Dans le lobby, utilisez INJECTER LA CONSOLE ci-dessous (puis appuyez sur F3 en jeu).",
-        "Spel actief, redirector geladen. Gebruik in de lobby hieronder CONSOLE INJECTEREN (druk daarna in het spel op F3)."],
+    ["Game running. Unlock the Console to use it in the lobby.",
+        "Jeu en cours. Déverrouillez la Console pour l’utiliser dans le lobby.",
+        "Spel actief. Ontgrendel de Console om deze in de lobby te gebruiken."],
     ["Already running.", "Déjà en cours.", "Draait al."],
     ["Unknown module.", "Module inconnu.", "Onbekende module."],
     ["Start the game first.", "Démarrez d’abord le jeu.", "Start eerst het spel."],
@@ -1958,25 +2081,6 @@ const I18N_ROWS = [
     ["The archive is empty.", "L’archive est vide.", "Het archief is leeg."],
     ["The archive is password protected.", "L’archive est protégée par un mot de passe.", "Het archief is met een wachtwoord beveiligd."],
 
-    /* ---- diagnostics (FIX MY GAME) ---- */
-    ["Game folder", "Dossier du jeu", "Spelmap"],
-    ["Game executable", "Exécutable du jeu", "Uitvoerbaar spelbestand"],
-    ["Game data (.pak files)", "Données du jeu (fichiers .pak)", "Spelgegevens (.pak-bestanden)"],
-    ["Only one copy of the game", "Une seule copie du jeu", "Slechts één kopie van het spel"],
-    ["Extraction finished", "Extraction terminée", "Uitpakken voltooid"],
-    ["Injector and DLLs", "Injecteur et DLL", "Injector en DLL’s"],
-    ["Launch arguments", "Arguments de lancement", "Startargumenten"],
-    ["Free disk space", "Espace disque libre", "Vrije schijfruimte"],
-    ["Stuck game processes", "Processus du jeu bloqués", "Vastgelopen spelprocessen"],
-    ["Project Legacy server", "Serveur Project Legacy", "Project Legacy-server"],
-    ["Not set or not found. Choose it in Settings.", "Non défini ou introuvable. Choisissez-le dans les paramètres.", "Niet ingesteld of niet gevonden. Kies de map in de instellingen."],
-    ["Missing. Use the Dashboard to download the build again.", "Manquant. Utilisez le tableau de bord pour retélécharger la build.", "Ontbreekt. Download de build opnieuw via het dashboard."],
-    ["Missing or incomplete. Re-download the build from the Dashboard.", "Manquant ou incomplet. Retéléchargez la build depuis le tableau de bord.", "Ontbreekt of is onvolledig. Download de build opnieuw via het dashboard."],
-    ["-HTTP=WinINet is missing. It is required by the redirector.", "-HTTP=WinINet est manquant. Il est requis par le redirecteur.", "-HTTP=WinINet ontbreekt. Het is nodig voor de redirector."],
-    ["Missing. Install the Microsoft Visual C++ Redistributable (x64).", "Manquant. Installez le Microsoft Visual C++ Redistributable (x64).", "Ontbreekt. Installeer de Microsoft Visual C++ Redistributable (x64)."],
-    ["The server does not answer. Wait a few minutes, it is not a problem on your PC.", "Le serveur ne répond pas. Patientez quelques minutes, ce n’est pas un problème de votre PC.", "De server reageert niet. Wacht een paar minuten, het ligt niet aan je pc."],
-    ["Nothing to reset: the game has no saved settings yet.", "Rien à réinitialiser : le jeu n’a pas encore de paramètres enregistrés.", "Niets om te resetten: het spel heeft nog geen opgeslagen instellingen."],
-
     /* ---- pre-flight problems ---- */
     ["The game folder cannot be found. Choose it again in Settings.", "Le dossier du jeu est introuvable. Choisissez-le de nouveau dans les paramètres.", "De spelmap is niet gevonden. Kies hem opnieuw in de instellingen."],
     ["The game executable is missing.", "L’exécutable du jeu est manquant.", "Het uitvoerbare spelbestand ontbreekt."],
@@ -1998,26 +2102,6 @@ const I18N_PATTERNS = [
     [/^Community Launcher · Build ([\d.]+) · UI (v[\d.]+)$/, "Launcher communautaire · Build $1 · UI $2", "Community-launcher · Build $1 · UI $2"],
     [/^(\d+) problem\(s\) need your action \(see above\)\.$/, "$1 problème(s) nécessitent votre action (voir ci-dessus).", "$1 probleem/problemen vragen om je aandacht (zie hierboven)."],
     [/^(.+) - fixed$/, "{1} - corrigé", "{1} - opgelost"],
-
-    /* diagnostics */
-    [/^Found (\d+) copies: (.+)\. Keep one, or choose an empty folder and use REINSTALL \/ REPAIR\.$/,
-        "$1 copies trouvées : $2. Gardez-en une seule, ou choisissez un dossier vide et utilisez RÉINSTALLER / RÉPARER.",
-        "$1 kopieën gevonden: $2. Bewaar er één, of kies een lege map en gebruik OPNIEUW INSTALLEREN / REPAREREN."],
-    [/^Leftover (.+): the download or extraction did not finish\. Use REINSTALL \/ REPAIR in Downloads \(in an empty folder\)\.$/,
-        "Reste $1 : le téléchargement ou l’extraction ne s’est pas terminé. Utilisez RÉINSTALLER / RÉPARER dans Téléchargements (dans un dossier vide).",
-        "Overblijfsel $1: de download of het uitpakken is niet voltooid. Gebruik OPNIEUW INSTALLEREN / REPAREREN bij Downloads (in een lege map)."],
-    [/^(.+) missing\. Restore them in Windows Security > Protection history, then add the launcher folder to the exclusions\.$/,
-        "$1 manquant(s). Restaurez-les dans Sécurité Windows > Historique de protection, puis ajoutez le dossier du launcher aux exclusions.",
-        "$1 ontbreekt. Herstel ze via Windows-beveiliging > Beveiligingsgeschiedenis en voeg daarna de launchermap toe aan de uitsluitingen."],
-    [/^Restored: (.+)$/, "Restauré : $1", "Hersteld: $1"],
-    [/^([\d.]+) GB free\. Free some space and try again\.$/, "$1 Go libres. Libérez de l’espace et réessayez.", "$1 GB vrij. Maak ruimte vrij en probeer het opnieuw."],
-    [/^([\d.]+) GB free$/, "$1 Go libres", "$1 GB vrij"],
-    [/^Closed: (.+)$/, "Fermés : $1", "Gesloten: $1"],
-    [/^Found: (.+)$/, "Trouvés : $1", "Gevonden: $1"],
-    [/^Game settings reset\. The old folder was kept as (.+) next to it\. Press PLAY to try again\.$/,
-        "Paramètres du jeu réinitialisés. L’ancien dossier a été conservé sous le nom $1 à côté. Appuyez sur JOUER pour réessayer.",
-        "Spelinstellingen gereset. De oude map is ernaast bewaard als $1. Druk op SPELEN om het opnieuw te proberen."],
-    [/^Could not reset the settings: (.+)$/, "Impossible de réinitialiser les paramètres : $1", "Instellingen resetten is mislukt: $1"],
 
     /* install */
     [/^Connection problem, retrying \((\d+)\/5\)\.\.\.$/, "Problème de connexion, nouvelle tentative ($1/5)...", "Verbindingsprobleem, opnieuw proberen ($1/5)..."],
@@ -2208,7 +2292,6 @@ const pageLabels = {
     profile: "PROFILE",
     shop: "SHOP",
     downloads: "DOWNLOADS",
-    help: "HELP",
     settings: "SETTINGS"
 };
 
@@ -2439,6 +2522,7 @@ $("cancelButton").addEventListener("click", async () => {
 if (launcher && typeof launcher.onInstallProgress === "function") {
     launcher.onInstallProgress(async data => {
         state.install = data;
+        setupUpdateProgress(data);
         if (data.phase === "done") {
             state.config = await launcher.getConfig();
             notify("Installation complete. You can play now.");
@@ -2651,23 +2735,35 @@ if (launcher && typeof launcher.onMatchEvent === "function") {
 
 /* SETTINGS */
 
+let notificationPreferenceRevision = 0;
+
 async function refreshConfig() {
+    const refreshRevision = notificationPreferenceRevision;
     try {
         if (!launcher) {
             setText("folderPath", "Configuration unavailable");
             return;
         }
-        state.config = await launcher.getConfig();
+        const fetchedConfig = await launcher.getConfig();
+        if (refreshRevision !== notificationPreferenceRevision && state.config) {
+            fetchedConfig.matchNotifications = Boolean(state.config.matchNotifications);
+            fetchedConfig.matchNotificationsConfigured = Boolean(state.config.matchNotificationsConfigured);
+        }
+        state.config = fetchedConfig;
         const c = state.config;
 
         setText("folderPath", c.gameFolder || "No folder selected");
+        if (document.activeElement !== $("accountNick")) $("accountNick").value = c.displayName || "";
+        if ($("notifyToggle")) $("notifyToggle").checked = Boolean(c.matchNotifications);
 
         // Don't overwrite what the user is typing.
         if (document.activeElement !== $("accountEmail")) $("accountEmail").value = c.email || "";
-        $("accountPassword").placeholder = c.hasPassword ? "Password saved (leave empty to keep it)" : "Password";
-        if (document.activeElement !== $("launchArgs")) $("launchArgs").value = c.extraArgs || "";
-        $("useStubs").checked = Boolean(c.useStubs);
-
+        $("accountPassword").placeholder = c.passwordReentryRequired
+            ? "Re-enter password to migrate Electron settings"
+            : c.hasPassword ? "Password saved (leave empty to keep it)" : "Password";
+        if (c.passwordReentryRequired) {
+            setText("accountStatus", "The saved Electron password could not be migrated on this account. Enter it once to move to Windows secure storage.");
+        }
         render();
     } catch (error) {
         console.error(error);
@@ -2701,55 +2797,248 @@ $("openFolder").addEventListener("click", async () => {
     if (!ok) notify("Choose a folder first.");
 });
 
-$("checkFolder").addEventListener("click", async () => {
-    try {
-        if (!launcher) return notify("Folder verification unavailable.");
-        setText("folderStatus", "Verification in progress...");
-        const result = await launcher.checkFolder();
-        setText("folderStatus", (result && result.message) || "Verification completed");
-        await refreshConfig();
-    } catch (error) {
-        console.error(error);
-        setText("folderStatus", "Verification error");
-        notify("Folder verification failed.");
-    }
-});
-
 $("saveAccount").addEventListener("click", async () => {
     if (!launcher) return;
     const result = await launcher.saveAccount({
+        displayName: $("accountNick").value.trim(),
         email: $("accountEmail").value,
         password: $("accountPassword").value
     });
     $("accountPassword").value = "";
     setText("accountStatus", result && result.ok ? "Account saved." : (result && result.message) || "Could not save.");
+    if (result && result.ok) { try { localStorage.setItem("nick", $("accountNick").value.trim().slice(0, 24)); } catch {} }
     await refreshConfig();
+    renderWelcome();
 });
 
-$("saveLaunch").addEventListener("click", async () => {
-    if (!launcher) return;
-    const result = await launcher.saveLaunchOptions({
-        extraArgs: $("launchArgs").value,
-        useStubs: $("useStubs").checked
-    });
-    setText("launchStatus", result && result.ok ? "Launch options saved." : (result && result.message) || "Could not save.");
-    await refreshConfig();
-});
+/* FIRST-RUN SETUP: account credentials first, then select or download Build 4.5. */
+let setupFlowActive = false;
+let setupFolderSelected = false;
 
-$("verifyFiles").addEventListener("click", async () => {
-    if (!launcher) return;
-    const result = await launcher.verifyFiles();
-    const list = $("verifyList");
-    list.textContent = "";
-    for (const line of result.lines) {
-        const row = document.createElement("div");
-        row.className = line.ok ? "ok" : "bad";
-        row.textContent = (line.ok ? "✓ " : "✗ ") + line.label;
-        list.appendChild(row);
+function setupSetMessage(message, isError = false) {
+    const target = $("setupMessage");
+    if (!target) return;
+    target.textContent = message || "";
+    target.style.color = isError ? "#ff8585" : "#f2c879";
+}
+
+function setupShowStep(step, message = "") {
+    const gate = $("onboardingGate");
+    if (!gate) return;
+    setupFlowActive = true;
+    gate.hidden = false;
+    gate.setAttribute("aria-labelledby", step === "login" ? "setupTitle" : step === "notifications" ? "setupNotificationsTitle" : "setupTitleBuild");
+    $("setupLoginStep").hidden = step !== "login";
+    $("setupNotificationsStep").hidden = step !== "notifications";
+    $("setupBuildStep").hidden = step !== "build";
+    $("setupProgressArea").hidden = true;
+    setupSetMessage(message);
+}
+
+function setupClose() {
+    const gate = $("onboardingGate");
+    if (gate) gate.hidden = true;
+    setupFlowActive = false;
+}
+
+function setupUpdateProgress(data) {
+    if (!setupFlowActive || !data) return;
+    const area = $("setupProgressArea");
+    const bar = $("setupProgressBar");
+    const detail = $("setupProgressText");
+    if (data.phase === "done") {
+        area.hidden = false;
+        bar.style.width = "100%";
+        detail.textContent = "Build 4.5 installed successfully. Preparing launcher...";
+        launcher.getConfig().then(async config => {
+            state.config = config;
+            await launcher.completeSetup();
+            state.config = await launcher.getConfig();
+            setupClose();
+            notify("Setup complete. Project Legacy is ready.");
+            render();
+        }).catch(error => setupSetMessage("The build finished, but setup could not be completed: " + String(error && error.message ? error.message : error), true));
+        return;
     }
-});
+    if (data.phase === "error") {
+        area.hidden = false;
+        detail.textContent = data.message || "The build download or installation failed.";
+        setupSetMessage(detail.textContent, true);
+        return;
+    }
+    if (data.phase === "downloading" || data.phase === "extracting" || data.phase === "paused") {
+        area.hidden = false;
+        const percent = Math.max(0, Math.min(100, Number(data.percent) || 0));
+        bar.style.width = percent + "%";
+        detail.textContent = data.phase.toUpperCase() + " · " + percent.toFixed(1) + "%" + (data.message ? " · " + data.message : "");
+    }
+}
 
-/* INITIALIZATION */
+async function setupLoginContinue() {
+    const button = $("setupLoginButton");
+    const displayName = $("setupDisplayName").value.trim();
+    const username = $("setupUsername").value.trim();
+    const password = $("setupPassword").value;
+    if (!displayName || !username || !password) {
+        setupSetMessage("Enter your launcher username, game-account username/email and password to continue.", true);
+        return;
+    }
+    if (!launcher || typeof launcher.saveAccount !== "function") {
+        setupSetMessage("Account setup is unavailable. Restart the launcher and try again.", true);
+        return;
+    }
+    button.disabled = true;
+    button.textContent = "SAVING ACCOUNT...";
+    try {
+        const result = await launcher.saveAccount({ displayName, email: username, password });
+        if (!result || !result.ok) {
+            setupSetMessage((result && result.message) || "The account details could not be saved.", true);
+            return;
+        }
+        try { localStorage.setItem("nick", displayName.slice(0, 24)); } catch {}
+        $("accountNick").value = displayName;
+        $("accountEmail").value = username;
+        $("accountPassword").value = "";
+        $("setupPassword").value = "";
+        await refreshConfig();
+        if (state.config && state.config.matchNotificationsConfigured) {
+            if (state.config.installed) {
+                await launcher.completeSetup();
+                state.config = await launcher.getConfig();
+                setupClose();
+                render();
+                notify("Setup complete. Project Legacy is ready.");
+            } else {
+                setupShowStep("build", "Account details saved. Select an existing build or download Build 4.5.");
+            }
+        } else {
+            setupShowStep("notifications", "Account details saved. Choose whether to receive game match notifications.");
+        }
+    } catch (error) {
+        console.error("Initial account setup failed:", error);
+        setupSetMessage("Could not save account details: " + String(error && error.message ? error.message : error), true);
+    } finally {
+        button.disabled = false;
+        button.textContent = "CONTINUE";
+    }
+}
+
+async function setupSaveNotificationChoice(requestEnabled) {
+    const enableButton = $("setupEnableNotifications");
+    const skipButton = $("setupSkipNotifications");
+    enableButton.disabled = true;
+    skipButton.disabled = true;
+    let enabled = Boolean(requestEnabled);
+    try {
+        if (enabled) {
+            try {
+                enabled = Boolean(await launcher.requestNotificationPermission());
+            } catch (permissionError) {
+                console.warn("Native notification permission request failed:", permissionError);
+                enabled = false;
+            }
+            if (!enabled) {
+                setupSetMessage("Windows notification permission was not granted. You can enable it later in Settings and Windows notifications.");
+            }
+        }
+        const saved = await launcher.saveMatchNotifications(enabled);
+        if (!saved || !saved.ok || saved.enabled !== enabled) {
+            throw new Error((saved && saved.message) || "Could not save notification preference.");
+        }
+        notificationPreferenceRevision++;
+        state.config = await launcher.getConfig();
+        if (state.config.installed && state.config.email && state.config.hasPassword && !state.config.passwordReentryRequired) {
+            await launcher.completeSetup();
+            state.config = await launcher.getConfig();
+            setupClose();
+            render();
+            notify("Setup complete. Project Legacy is ready.");
+        } else {
+            setupShowStep("build", enabled
+                ? "Match notifications are enabled. Choose an existing build or download Build 4.5."
+                : "Match notifications are disabled. Choose an existing build or download Build 4.5.");
+        }
+    } catch (error) {
+        console.error("Saving match notification preference failed:", error);
+        setupSetMessage("Could not save your notification preference: " + String(error && error.message ? error.message : error), true);
+    } finally {
+        enableButton.disabled = false;
+        skipButton.disabled = false;
+    }
+}
+
+async function setupSelectExistingBuild() {
+    const button = $("setupExistingButton");
+    button.disabled = true;
+    button.textContent = "CHECKING FOLDER...";
+    try {
+        const folder = await launcher.chooseFolder();
+        if (!folder) return;
+        setupFolderSelected = true;
+        await refreshConfig();
+        const check = await launcher.checkFolder();
+        if (check && check.installed) {
+            await launcher.completeSetup();
+            state.config = await launcher.getConfig();
+            setupClose();
+            notify("Existing Build 4.5 installation found.");
+            render();
+        } else {
+            setupSetMessage((check && check.message ? check.message + " " : "") + "You can download Build 4.5 into this folder, or choose another folder.");
+        }
+    } catch (error) {
+        console.error("Existing build selection failed:", error);
+        setupSetMessage("Could not check this folder: " + String(error && error.message ? error.message : error), true);
+    } finally {
+        button.disabled = false;
+        button.textContent = "SELECT EXISTING BUILD";
+    }
+}
+
+async function setupDownloadBuild() {
+    const button = $("setupDownloadButton");
+    button.disabled = true;
+    button.textContent = "PREPARING DOWNLOAD...";
+    try {
+        if (!state.config || !state.config.gameFolder || !setupFolderSelected) {
+            const folder = await launcher.chooseFolder();
+            if (!folder) return;
+            setupFolderSelected = true;
+            await refreshConfig();
+        }
+        const folderInfo = await launcher.folderInfo();
+        if (folderInfo && folderInfo.empty === false && !state.config.installed) {
+            const proceed = confirm("The selected folder is not empty and no complete build was detected. Download Build 4.5 into this folder anyway?");
+            if (!proceed) return;
+        }
+        $("setupProgressArea").hidden = false;
+        $("setupProgressBar").style.width = "0%";
+        $("setupProgressText").textContent = "Starting Build 4.5 download...";
+        const result = await launcher.installStart();
+        if (result && result.ok === false) {
+            setupSetMessage(result.message || "The build download could not start.", true);
+            $("setupProgressText").textContent = result.message || "Download could not start.";
+        }
+    } catch (error) {
+        console.error("Build setup failed:", error);
+        setupSetMessage("Could not start the build download: " + String(error && error.message ? error.message : error), true);
+    } finally {
+        button.disabled = false;
+        button.textContent = "DOWNLOAD BUILD 4.5";
+    }
+}
+
+$("setupLoginButton").addEventListener("click", setupLoginContinue);
+$("setupEnableNotifications").addEventListener("click", () => setupSaveNotificationChoice(true));
+$("setupSkipNotifications").addEventListener("click", () => setupSaveNotificationChoice(false));
+$("setupPassword").addEventListener("keydown", event => { if (event.key === "Enter") setupLoginContinue(); });
+$("setupUsername").addEventListener("keydown", event => { if (event.key === "Enter") $("setupPassword").focus(); });
+$("setupExistingButton").addEventListener("click", setupSelectExistingBuild);
+$("setupDownloadButton").addEventListener("click", setupDownloadBuild);
+$("setupCancelButton").addEventListener("click", async () => {
+    try { await launcher.installCancel(); } catch (error) { console.error(error); }
+    setupSetMessage("Download cancelled. Select a build folder or try the download again.", true);
+});
 
 async function initializeLauncher() {
     if (launcher) {
@@ -2763,6 +3052,43 @@ async function initializeLauncher() {
     }
     await refreshConfig();
     render();
+
+    const config = state.config || {};
+    const accountReady = Boolean(config.email && config.hasPassword && !config.passwordReentryRequired);
+    const displayNameReady = Boolean(String(config.displayName || "").trim());
+    const buildReady = Boolean(config.installed);
+
+    // Existing Electron/Tauri installs get one notification choice, not the
+    // full onboarding wizard on every launch. New users enter credentials first.
+    if (!accountReady || !displayNameReady) {
+        setupShowStep("login", "Enter your launcher username and game-account credentials to continue.");
+        return;
+    }
+    if (!config.matchNotificationsConfigured) {
+        setupShowStep("notifications", "Would you like desktop notifications when a game match opens?");
+        return;
+    }
+    // setupComplete is the persistent first-run marker returned by Rust.
+    // Once saved, do not replay the build selector on later launcher starts.
+    if (config.setupComplete) {
+        setupClose();
+        return;
+    }
+    if (!buildReady) {
+        setupShowStep("build", "Your account is saved. Select an existing build folder or download Build 4.5.");
+        return;
+    }
+    if (!config.setupComplete) {
+        try {
+            await launcher.completeSetup();
+            state.config = await launcher.getConfig();
+        } catch (error) {
+            console.error("Could not recover completed first-run setup:", error);
+            setupShowStep("build", "Your account and game build are present, but setup could not be finalized. Select the existing build again.");
+            return;
+        }
+    }
+    setupClose();
 }
 
 /* HERO SLIDESHOW: every image in assets/backgrounds/ rotates behind the title */
@@ -2773,7 +3099,6 @@ async function startHeroSlideshow() {
     const hero = document.querySelector(".hero");
     if (!first || !hero) return;
 
-    // Images from assets/backgrounds/ if available, otherwise the built-in ones.
     let slides = [];
     try {
         if (launcher && typeof launcher.listBackgrounds === "function") slides = await launcher.listBackgrounds();
@@ -2813,10 +3138,23 @@ async function startHeroSlideshow() {
         if (manual) restart();
     }
 
+    function stopRotation() {
+        if (timer !== null) {
+            clearInterval(timer);
+            timer = null;
+        }
+    }
+
     function restart() {
-        clearInterval(timer);
+        stopRotation();
+        if (window.__launcherWindowActive === false || document.hidden) return;
         timer = setInterval(() => show((index + 1) % slides.length), 5000);
     }
+
+    window.addEventListener("launcher-activity-change", event => {
+        if (event.detail && event.detail.active) restart();
+        else stopRotation();
+    });
 
     [...dots.children][0].classList.add("on");
     restart();
@@ -2858,26 +3196,38 @@ if (launcher && typeof launcher.onHealthStatus === "function") launcher.onHealth
 if (launcher && typeof launcher.onNews === "function") launcher.onNews(renderNews);
 
 /* PREFERENCES: language, notifications, logs, Discord count */
-const prevOpen = {};
+const prevOpen = Object.create(null);
+
 function notifyOpen(id, event) {
-    let on = false;
-    try { on = localStorage.getItem("notify") === "1"; } catch {}
+    const enabled = Boolean(state.config && state.config.matchNotifications);
     const open = Boolean(event.online && event.joinable);
-    if (on && open && prevOpen[id] === false && "Notification" in window && Notification.permission === "granted") {
-        new Notification("Project Legacy", { body: tr(String(event.mode).toUpperCase() + " match is open - join now!") });
+
+    // The native notification plugin sends a Windows toast, including while the game is foregrounded.
+    if (enabled && open && prevOpen[id] === false && launcher && launcher.sendMatchNotification) {
+        try {
+            launcher.sendMatchNotification(tr(String(event.mode).toUpperCase() + " match is open - join now!"));
+        } catch (error) {
+            console.warn("Could not send the match-open notification:", error);
+        }
     }
+
     prevOpen[id] = open;
     const card = $(id) && $(id).parentElement;
     if (card) card.classList.toggle("open", open);
     if (card && event.minPlayers > 0) {
         let bar = card.querySelector(".mode-bar");
-        if (!bar) { bar = document.createElement("div"); bar.className = "mode-bar"; bar.appendChild(document.createElement("i")); card.appendChild(bar); }
+        if (!bar) {
+            bar = document.createElement("div");
+            bar.className = "mode-bar";
+            bar.appendChild(document.createElement("i"));
+            card.appendChild(bar);
+        }
         bar.firstChild.style.width = Math.min(100, ((event.queued || 0) / event.minPlayers) * 100) + "%";
     }
 }
 
 (function setupPrefs() {
-    const sel = $("langSelect"), tog = $("notifyToggle"), copy = $("copyLogs");
+    const sel = $("langSelect"), tog = $("notifyToggle");
     if (sel) {
         sel.value = lang;
         sel.addEventListener("change", () => {
@@ -2887,26 +3237,61 @@ function notifyOpen(id, event) {
             try { if (window.__lastNews) renderNews(window.__lastNews); } catch {}
         });
     }
+
     if (tog) {
-        try { tog.checked = localStorage.getItem("notify") === "1"; } catch {}
+        tog.checked = Boolean(state.config && state.config.matchNotifications);
+        let savingNotifications = false;
         tog.addEventListener("change", async () => {
-            try { localStorage.setItem("notify", tog.checked ? "1" : "0"); } catch {}
-            if (tog.checked && "Notification" in window && Notification.permission === "default") await Notification.requestPermission();
+            if (savingNotifications) return;
+            savingNotifications = true;
+            tog.disabled = true;
+            const previous = Boolean(state.config && state.config.matchNotifications);
+            const requested = Boolean(tog.checked);
+
+            try {
+                if (requested) {
+                    const permitted = await launcher.requestNotificationPermission();
+                    if (!permitted) {
+                        tog.checked = previous;
+                        notify("Allow Project Legacy in Windows notification settings to enable match alerts.");
+                        return;
+                    }
+                }
+
+                const saved = await launcher.saveMatchNotifications(requested);
+                if (!saved || !saved.ok || saved.enabled !== requested) {
+                    throw new Error((saved && saved.message) || "The launcher did not confirm the saved preference.");
+                }
+
+                notificationPreferenceRevision++;
+                state.config = {
+                    ...(state.config || {}),
+                    matchNotifications: requested,
+                    matchNotificationsConfigured: true
+                };
+                tog.checked = requested;
+                notify(requested ? "Match-open notifications enabled." : "Match-open notifications disabled.");
+            } catch (error) {
+                tog.checked = previous;
+                console.error("Could not save match notification preference:", error);
+                notify("Could not save the notification setting. Your previous setting was kept.");
+            } finally {
+                savingNotifications = false;
+                tog.disabled = false;
+            }
         });
     }
-    if (copy && launcher && launcher.getLogs) {
-        copy.addEventListener("click", async () => {
-            try { await navigator.clipboard.writeText(await launcher.getLogs()); copy.textContent = "COPIED"; }
-            catch { copy.textContent = "FAILED"; }
-            setTimeout(() => { copy.textContent = "COPY LOGS"; }, 2000);
-        });
-    }
+
     if (launcher && launcher.onDiscordCount) {
         launcher.onDiscordCount(d => {
             document.querySelectorAll("button").forEach(b => {
                 if (b.textContent.trim().startsWith("JOIN DISCORD") || b.textContent.trim().startsWith("REJOINDRE DISCORD")) {
                     let span = b.querySelector(".dc");
-                    if (!span) { span = document.createElement("span"); span.className = "dc"; b.appendChild(span); }
+                    if (!span) {
+                        span = document.createElement("span");
+                        span.className = "dc";
+                        b.appendChild(span);
+                    }
                     span.textContent = " · " + d.online + " online";
                 }
             });
@@ -2923,7 +3308,7 @@ let profileName = "";
 function currentNick() {
     let nick = "";
     try { nick = localStorage.getItem("nick") || ""; } catch {}
-    nick = nick.trim() || profileName;
+    nick = nick.trim() || (state.config && state.config.displayName) || profileName;
     if (!nick && typeof state !== "undefined" && state.config && state.config.email) {
         nick = String(state.config.email).split("@")[0];
     }
@@ -2980,7 +3365,7 @@ function renderWelcome() {
 
 (function setupWelcome() {
     const input = $("accountNick");
-    if (input) input.value = currentNick();
+    if (input) input.value = (state.config && state.config.displayName) || currentNick();
     const save = $("saveAccount");
     if (save) save.addEventListener("click", () => {
         if (!input) return;
@@ -3008,23 +3393,78 @@ function hideLaunchScreen() {
     if (el) el.hidden = true;
 }
 
-/* LAUNCHER SELF-UPDATE */
-(function setupUpdates() {
-    if (!launcher || typeof launcher.onUpdate !== "function") return;
+/* TAURI LAUNCHER SELF-UPDATE — signed GitHub Releases */
+window.addEventListener("DOMContentLoaded", function setupUpdates() {
+    if (!launcher || typeof launcher.checkLauncherUpdate !== "function") return;
     const bar = $("updateBar"), text = $("updateText"), btn = $("updateBtn");
-    launcher.onUpdate(u => {
-        if (!u || !bar) return;
+    if (!bar || !text || !btn) return;
+
+    let availableVersion = "";
+    let busy = false;
+
+    function showUpdate(message, actionVisible) {
+        text.textContent = message;
         bar.hidden = false;
-        if (u.state === "ready") {
-            text.textContent = "Version " + u.version + " is ready to install.";
-            btn.hidden = false;
-        } else {
-            text.textContent = "Downloading launcher update..." + (u.percent ? " " + u.percent + "%" : "");
-            btn.hidden = true;
+        btn.hidden = !actionVisible;
+    }
+
+    if (typeof launcher.onLauncherUpdateProgress === "function") {
+        launcher.onLauncherUpdateProgress(event => {
+            if (!event) return;
+            if (event.state === "downloading") {
+                const progress = Number.isFinite(event.percent) ? ` ${event.percent}%` : "";
+                showUpdate("Downloading launcher update…" + progress, false);
+            } else if (event.state === "installing") {
+                showUpdate("Download verified. Installing launcher update…", false);
+            } else if (event.state === "installed") {
+                showUpdate("Update installed. Restarting…", false);
+            }
+        });
+    }
+
+    async function checkForUpdate() {
+        try {
+            const update = await launcher.checkLauncherUpdate();
+            if (!update) {
+                bar.hidden = true;
+                return;
+            }
+            availableVersion = String(update.version || "");
+            const notes = String(update.notes || "").trim();
+            const summary = notes ? " — " + notes.replace(/\s+/g, " ").slice(0, 180) : "";
+            showUpdate(`Launcher update ${availableVersion} is available${summary}`, true);
+            btn.textContent = "DOWNLOAD & INSTALL";
+            btn.disabled = false;
+        } catch (error) {
+            // The public key is intentionally a setup-time value. Until the
+            // owner configures it, update checks fail closed and do not block
+            // normal launcher startup.
+            console.warn("Launcher update check unavailable:", error);
+            bar.hidden = true;
+        }
+    }
+
+    btn.addEventListener("click", async () => {
+        if (busy || !availableVersion) return;
+        if (!confirm(`Install Project Legacy Launcher ${availableVersion} now? The launcher will close during installation.`)) return;
+        busy = true;
+        btn.disabled = true;
+        showUpdate("Preparing signed launcher update…", false);
+        try {
+            await launcher.installLauncherUpdate();
+        } catch (error) {
+            busy = false;
+            btn.disabled = false;
+            btn.textContent = "RETRY UPDATE";
+            showUpdate("Update failed: " + String(error && error.message ? error.message : error), true);
+            notify("The launcher update could not be installed.");
         }
     });
-    if (btn) btn.addEventListener("click", () => launcher.installUpdate());
-})();
+
+    // Check once after the UI has appeared. Update checks do not interrupt a
+    // game session; installation only starts after the user presses the button.
+    window.setTimeout(checkForUpdate, 3500);
+}, { once: true });
 
 /* PROFILE: stats, friends, players online */
 function loadJSON(key, fallback) {
@@ -3153,55 +3593,6 @@ function renderProfile() {
     renderProfile();
 })();
 
-/* FIX MY GAME */
-(function setupFix() {
-    const btn = $("fixBtn"), box = $("fixReport");
-    if (!btn || !box || !launcher || !launcher.runDiagnostics) return;
-    btn.addEventListener("click", async () => {
-        btn.textContent = "CHECKING...";
-        btn.disabled = true;
-        let res = null;
-        try { res = await launcher.runDiagnostics(true); } catch {}
-        btn.textContent = "FIX MY GAME";
-        btn.disabled = false;
-        box.textContent = "";
-        if (!res) { box.textContent = "The check could not run."; return; }
-        for (const c of res.checks) {
-            const row = document.createElement("div");
-            row.className = "fix-row " + (c.fixed ? "fix-fixed" : c.ok ? "fix-ok" : "fix-bad");
-            const ico = document.createElement("div");
-            ico.className = "fix-ico";
-            ico.textContent = c.fixed ? "✔" : c.ok ? "✔" : "✕";
-            const text = document.createElement("div");
-            const t = document.createElement("b");
-            t.textContent = c.label + (c.fixed ? " - fixed" : "");
-            text.appendChild(t);
-            if (c.detail) { const d = document.createElement("span"); d.className = "d"; d.textContent = c.detail; text.appendChild(d); }
-            row.append(ico, text);
-            box.appendChild(row);
-        }
-        const bad = res.checks.filter(c => !c.ok).length;
-        const sum = document.createElement("div");
-        sum.className = "fix-row";
-        sum.textContent = bad ? bad + " problem(s) need your action (see above)." : "Everything looks good. If the game still crashes, use COPY LOGS in Settings and send it to support.";
-        box.appendChild(sum);
-    });
-})();
-
-/* HELP: reset game settings + compatibility mode */
-(function setupCrashHelp() {
-    const reset = $("resetSettingsBtn"), msg = $("resetMsg"), compat = $("compatToggle");
-    if (reset && launcher && launcher.resetGameSettings) reset.addEventListener("click", async () => {
-        if (!confirm("Reset the game's saved settings? The old folder is kept as a backup.")) return;
-        const r = await launcher.resetGameSettings();
-        msg.textContent = r.message;
-    });
-    if (compat && launcher && launcher.getCompat) {
-        launcher.getCompat().then(v => { compat.checked = Boolean(v); }).catch(() => {});
-        compat.addEventListener("change", () => launcher.setCompat(compat.checked));
-    }
-})();
-
 /* ITEM SHOP: read from the backend catalog (through the main process) */
 const SHOP_TYPES = { AthenaCharacter: "OUTFIT", AthenaBackpack: "BACK BLING", AthenaPickaxe: "PICKAXE", AthenaGlider: "GLIDER", AthenaDance: "EMOTE", AthenaItemWrap: "WRAP", AthenaSkyDiveContrail: "CONTRAIL", AthenaLoadingScreen: "LOADING SCREEN", AthenaMusicPack: "MUSIC" };
 let shopTimerId = null, shopLoadedAt = 0;
@@ -3272,7 +3663,7 @@ async function loadShop(force) {
 
 if ($("shopRefresh")) $("shopRefresh").addEventListener("click", () => loadShop(true));
 
-/* LIVE BACKGROUND: images (Ken Burns + crossfade), optional video, particles, mouse parallax */
+/* LIVE BACKGROUND: focus-aware slideshow, video wallpaper and particles */
 (async function setupLiveBg() {
     const root = $("liveBg");
     if (!root) return;
@@ -3280,88 +3671,177 @@ if ($("shopRefresh")) $("shopRefresh").addEventListener("click", () => loadShop(
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.body.dataset.page = document.body.dataset.page || "home";
 
-    // on/off switch (saved)
     let enabled = true;
     try { enabled = localStorage.getItem("liveBg") !== "0"; } catch {}
     const toggle = $("liveToggle");
-    const apply = on => { root.hidden = !on; document.body.classList.toggle("no-live", !on); };
+    const video = $("lbVideo");
+    let imageTimer = null;
+    let particleFrame = 0;
+    let images = [];
+    let imageIndex = 0;
+    let imageFront = 0;
+    let layers = [];
+    let dots = [];
+    let ctx = null;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+
+    const canAnimate = () => enabled && !root.hidden &&
+        window.__launcherWindowActive !== false && !document.hidden;
+
+    function stopImageRotation() {
+        if (imageTimer !== null) {
+            clearInterval(imageTimer);
+            imageTimer = null;
+        }
+    }
+
+    function rotateImage() {
+        if (images.length < 2 || !canAnimate()) return;
+        imageIndex = (imageIndex + 1) % images.length;
+        const back = 1 - imageFront;
+        layers[back].style.backgroundImage = 'url("' + images[imageIndex] + '")';
+        layers[back].classList.add("show");
+        layers[imageFront].classList.remove("show");
+        imageFront = back;
+    }
+
+    function startImageRotation() {
+        if (imageTimer !== null || images.length < 2 || !canAnimate()) return;
+        imageTimer = setInterval(rotateImage, 9000);
+    }
+
+    const colors = ["177,138,255", "255,255,255", "120,180,255"];
+    let particles = [];
+
+    function fitCanvas() {
+        if (!ctx) return;
+        canvasWidth = $("lbCanvas").width = window.innerWidth;
+        canvasHeight = $("lbCanvas").height = window.innerHeight;
+    }
+
+    function drawParticles() {
+        particleFrame = 0;
+        if (!canAnimate() || !ctx) return;
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        for (const dot of particles) {
+            const speed = window.__lbSpeed || 1;
+            dot.x += dot.vx * speed;
+            dot.y += dot.vy * speed;
+            dot.a += .02 * speed;
+            if (dot.y < -5) {
+                dot.y = canvasHeight + 5;
+                dot.x = Math.random() * canvasWidth;
+            }
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(" + dot.c + "," + (0.25 + 0.35 * Math.abs(Math.sin(dot.a))) + ")";
+            ctx.arc(dot.x, dot.y, dot.r, 0, 6.2832);
+            ctx.fill();
+        }
+        particleFrame = requestAnimationFrame(drawParticles);
+    }
+
+    function stopParticles() {
+        if (particleFrame) {
+            cancelAnimationFrame(particleFrame);
+            particleFrame = 0;
+        }
+    }
+
+    function startParticles() {
+        if (reduce || particleFrame || !canAnimate() || !ctx) return;
+        particleFrame = requestAnimationFrame(drawParticles);
+    }
+
+    function pauseBackground() {
+        stopImageRotation();
+        stopParticles();
+        if (video && !video.paused) video.pause();
+    }
+
+    function resumeBackground() {
+        if (!canAnimate()) {
+            pauseBackground();
+            return;
+        }
+        if (video && video.src && video.paused) video.play().catch(() => {});
+        startImageRotation();
+        startParticles();
+    }
+
+    function apply(on) {
+        enabled = Boolean(on);
+        root.hidden = !enabled;
+        document.body.classList.toggle("no-live", !enabled);
+        if (enabled) resumeBackground();
+        else pauseBackground();
+    }
+
     apply(enabled);
     if (toggle) {
         toggle.checked = enabled;
-        toggle.addEventListener("change", () => { try { localStorage.setItem("liveBg", toggle.checked ? "1" : "0"); } catch {} apply(toggle.checked); });
+        toggle.addEventListener("change", () => {
+            try { localStorage.setItem("liveBg", toggle.checked ? "1" : "0"); } catch {}
+            apply(toggle.checked);
+        });
     }
 
-    // 1) video wallpaper: drop a .mp4/.webm in assets/live/
-    const video = $("lbVideo");
+    window.addEventListener("launcher-activity-change", event => {
+        if (event.detail && event.detail.active) resumeBackground();
+        else pauseBackground();
+    });
+
+    // 1) Optional video wallpaper: never keep decoding it behind the game.
     try {
         if (launcher && typeof launcher.listLive === "function") {
             const found = await launcher.listLive();
             if (found && found.length) {
                 video.src = found[0];
                 video.hidden = false;
-                video.play().catch(() => {});
                 root.classList.add("has-video");
             }
         }
     } catch {}
 
-    // 2) images: slow zoom + crossfade
+    // 2) Season 4 image wallpaper with a crossfade timer that only runs in focus.
     if (!root.classList.contains("has-video")) {
-        let images = [];
-        try { if (launcher && typeof launcher.listBackgrounds === "function") images = await launcher.listBackgrounds(); } catch {}
+        try {
+            if (launcher && typeof launcher.listBackgrounds === "function") images = await launcher.listBackgrounds();
+        } catch {}
         if (!Array.isArray(images) || !images.length) images = typeof BUILTIN_SLIDES !== "undefined" ? BUILTIN_SLIDES : [];
-
-        const layers = [root.querySelector(".lb-a"), root.querySelector(".lb-b")];
+        layers = [root.querySelector(".lb-a"), root.querySelector(".lb-b")];
         if (images.length) {
-            let index = 0, front = 0;
             layers[0].style.backgroundImage = 'url("' + images[0] + '")';
             layers[0].classList.add("show");
-            if (images.length > 1) setInterval(() => {
-                index = (index + 1) % images.length;
-                const back = 1 - front;
-                layers[back].style.backgroundImage = 'url("' + images[index] + '")';
-                layers[back].classList.add("show");
-                layers[front].classList.remove("show");
-                front = back;
-            }, 9000);
         }
     }
 
-    if (reduce) return;
-
-    // 3) floating embers / stars
-    const canvas = $("lbCanvas"), ctx = canvas.getContext("2d");
-    let w = 0, h = 0;
-    const fit = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
-    fit();
-    window.addEventListener("resize", fit);
-    const colors = ["177,138,255", "255,255,255", "120,180,255"];
-    const dots = Array.from({ length: 70 }, () => ({
-        x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .4,
-        vy: -(Math.random() * .35 + .08), vx: (Math.random() - .5) * .15,
-        a: Math.random() * Math.PI * 2, c: colors[Math.floor(Math.random() * colors.length)]
-    }));
-    const frame = () => {
-        if (!root.hidden && !document.hidden) {
-            ctx.clearRect(0, 0, w, h);
-            for (const d of dots) {
-                const sp = window.__lbSpeed || 1; d.x += d.vx * sp; d.y += d.vy * sp; d.a += .02 * sp;
-                if (d.y < -5) { d.y = h + 5; d.x = Math.random() * w; }
-                ctx.beginPath();
-                ctx.fillStyle = "rgba(" + d.c + "," + (0.25 + 0.35 * Math.abs(Math.sin(d.a))) + ")";
-                ctx.arc(d.x, d.y, d.r, 0, 6.2832);
-                ctx.fill();
-            }
+    if (!reduce) {
+        const canvas = $("lbCanvas");
+        if (canvas) {
+            ctx = canvas.getContext("2d");
+            fitCanvas();
+            window.addEventListener("resize", fitCanvas);
+            particles = Array.from({ length: 70 }, () => ({
+                x: Math.random() * canvasWidth,
+                y: Math.random() * canvasHeight,
+                r: Math.random() * 1.8 + .4,
+                vy: -(Math.random() * .35 + .08),
+                vx: (Math.random() - .5) * .15,
+                a: Math.random() * Math.PI * 2,
+                c: colors[Math.floor(Math.random() * colors.length)]
+            }));
         }
-        requestAnimationFrame(frame);
-    };
-    requestAnimationFrame(frame);
+    }
 
-    // 4) mouse parallax
-    window.addEventListener("mousemove", e => {
-        root.style.setProperty("--px", (e.clientX / window.innerWidth - .5) * -18 + "px");
-        root.style.setProperty("--py", (e.clientY / window.innerHeight - .5) * -12 + "px");
+    window.addEventListener("mousemove", event => {
+        if (!canAnimate()) return;
+        root.style.setProperty("--px", (event.clientX / window.innerWidth - .5) * -18 + "px");
+        root.style.setProperty("--py", (event.clientY / window.innerHeight - .5) * -12 + "px");
     });
+
+    resumeBackground();
 })();
 
 /* TOP BAR: user chip, hero sub-title, settings tabs, UI sounds, animation speed */
@@ -3399,9 +3879,7 @@ function updateUserChip() {
     // ----- preferences -----
     const get = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch { return d; } };
     const set = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
-    const applyNav = on => document.body.classList.toggle("nav-compact", !on);
     const applySpeed = v => { document.documentElement.style.setProperty("--lb-speed", v); window.__lbSpeed = Number(v); };
-    applyNav(get("navExpanded", "1") === "1");
     applySpeed(get("animSpeed", "1"));
 
     // ----- UI sounds (generated, no files) -----
@@ -3469,7 +3947,7 @@ function updateUserChip() {
     const codeMsg = document.createElement("span"); codeMsg.className = "d"; codeMsg.style.minWidth = "90px";
     const refreshCode = async () => {
         const st = launcher && launcher.consoleStatus ? await launcher.consoleStatus() : { unlocked: false };
-        codeMsg.textContent = st.unlocked ? "● Unlocked" : "○ Locked";
+        codeMsg.textContent = st.unlocked ? "● Code verified (Console ready)" : "○ Locked";
         codeMsg.style.color = st.unlocked ? "#53d18d" : "";
         codeInput.disabled = st.unlocked; codeBtn.textContent = st.unlocked ? "LOCK" : "UNLOCK";
         if (st.unlocked) codeInput.value = "";
@@ -3487,17 +3965,15 @@ function updateUserChip() {
     refreshCode();
 
     tabs.gameplay.append(h("Edit on release"),
-        opt("Edit on release and console", "Enter your access code to unlock the module, then use INJECT CONSOLE in game.", [codeInput, codeBtn, codeMsg]),
+        opt("Edit on release and console", "Unlock the Console module for use in the game lobby.", [codeInput, codeBtn, codeMsg]),
         h("Match"),
-        opt("Match-open notifications", "Get a desktop notification when a match opens.", swEl($("notifyToggle"))),
-        opt("Support", "Copy the launcher logs to send them to support.", $("copyLogs")));
+        opt("Match-open notifications", "Get a desktop notification when a match opens.", swEl($("notifyToggle"))));
     // Audio
     tabs.audio.append(h("Sound"),
         opt("UI Sound Effects", "Play sounds when navigating sections and launching the game.", swEl(null, soundOn(), v => { set("uiSound", v ? "1" : "0"); beep(660, .08); })),
         opt("Sound Volume", "Adjust the volume of UI sound effects.", range(0, 100, 1, get("uiVol", "50"), v => set("uiVol", v), v => v + "%")));
     // Appearance
     tabs.appearance.append(h("Interface"),
-        opt("Expanded Navigation", "Show the navigation labels in the top bar.", swEl(null, get("navExpanded", "1") === "1", v => { set("navExpanded", v ? "1" : "0"); applyNav(v); })),
         opt("Language", "Language of the launcher.", $("langSelect")),
         h("Theme"),
         opt("Animated Background", "Animate the drifting orbs, the starfield and the theme effects.", swEl($("liveToggle"))),
@@ -3535,20 +4011,6 @@ function updateUserChip() {
         const nav = document.querySelector('.nav button[data-page="downloads"]');
         if (nav) nav.click();
         if (typeof startInstall === "function") startInstall(); else launcher.installStart();
-    });
-})();
-
-/* Windows Defender exclusion (needs admin: Windows shows its own UAC prompt) */
-(function setupDefender() {
-    const btn = $("defenderBtn"), msg = $("defenderMsg");
-    if (!btn || !launcher || !launcher.addDefenderExclusion) return;
-    btn.addEventListener("click", async () => {
-        btn.disabled = true; btn.textContent = "WAITING FOR ADMIN CONFIRMATION...";
-        msg.textContent = "A Windows security prompt should appear - accept it.";
-        const r = await launcher.addDefenderExclusion();
-        btn.disabled = false; btn.textContent = "ADD WINDOWS DEFENDER EXCLUSION";
-        msg.textContent = r.message;
-        msg.style.color = r.ok ? "#53d18d" : "#ff6b6b";
     });
 })();
 

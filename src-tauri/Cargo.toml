@@ -1,0 +1,39 @@
+[package]
+name = "projectlegacy-launcher"
+version = "4.3.2"
+description = "Project Legacy community launcher"
+edition = "2021"
+rust-version = "1.90"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-notification = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["stream", "json", "rustls-tls"], default-features = false }
+tokio = { version = "1", features = ["full"] }
+futures-util = "0.3"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+aes-gcm = "0.10"
+scrypt = "0.11"
+fs2 = "0.4"
+urlencoding = "2"
+regex = "1"
+opener = "0.7"
+sevenz-rust2 = { version = "0.24", features = ["util"] }
+chrono = "0.4"
+zeroize = "1"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
