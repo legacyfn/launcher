@@ -67,7 +67,7 @@ Keep the other existing endpoint properties. The archive must be a genuine 7z ar
 
 ## Windows build validation
 
-GitHub Actions successfully ran the Rust tests and `cargo check`, and built a signed Windows NSIS installer on 2026-11-18. The repository owner has also confirmed clean Windows installation, Electron configuration migration, and existing game-folder tests. The current security hardening commit needs a fresh Windows CI run and a runtime UI check of the new Content Security Policy.
+GitHub Actions run #14 succeeded on 2026-11-18 after the CSP and password-memory changes: Rust tests, `cargo check`, and signed Windows NSIS packaging all passed. Both the Rust build cache and Tauri CLI cache were restored successfully; the CLI installation was skipped on a cache hit. The repository owner has confirmed clean Windows installation, Electron configuration migration, and existing game-folder tests. A runtime CSP regression check on the latest signed artifact is still required.
 
 New and migrated Windows credentials are stored with DPAPI CurrentUser. Plaintext strings held by the launcher are zeroized after use where possible. The legacy game client still requires `-AUTH_PASSWORD` as a process command-line argument, so sufficiently privileged local process-inspection tools may be able to read it while the game runs. A different supported client/server authentication interface is needed to remove that limitation.
 

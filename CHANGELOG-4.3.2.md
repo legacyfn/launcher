@@ -10,4 +10,6 @@
 
 ## Release status
 
-These are source-code changes for the 4.3.2 release candidate. The generated public key is now configured in `src-tauri/tauri.conf.json`. The updater becomes operational after the owner configures the two private-key GitHub Actions secrets, the Windows CI/build passes, and the signed `v4.3.2` release is published. This branch is not itself a published or signed updater release.
+These are source-code changes for the 4.3.2 release candidate. The public updater key and both private-key GitHub Actions secrets are configured. Windows CI run #14 passed Rust tests, `cargo check`, and signed NSIS packaging; the Rust and Tauri CLI caches were restored successfully. The signed test installer is available as a GitHub Actions artifact.
+
+The updater is not yet live because no Tauri `v4.3.2` release or `latest.json` feed has been published. After the Build 4.5 archive/hash and CSP runtime check are complete, publish the signed `v4.3.2` release, then publish a newer signed Tauri version (for example `v4.3.3`) to perform the real update test. This branch is still a draft release candidate, not a production release.
