@@ -27,7 +27,7 @@ The original injector and console binaries remain bundled and integrity checked.
 ## Release blockers / owner actions
 
 1. Publish a genuine `4.5.7z` archive and set its exact 64-character SHA-256 in `src-tauri/resources/endpoints.json`. Downloads are disabled until this is done.
-2. Re-run Windows CI after the current CSP and password-memory changes. Previous Windows CI run #11 passed Rust tests, cargo check, and signed NSIS packaging.
+2. Windows CI run #13 passed on 2026-11-18 after the CSP and password-memory changes: Rust tests, cargo check, signed NSIS packaging, and artifact upload all succeeded. The Rust build cache and Tauri CLI cache were both restored successfully. The remaining CSP check is a runtime UI smoke test on this exact build.
 3. The owner reports that clean Windows installation, Electron configuration migration, and an existing game installation have been tested. Repeat the UI smoke test on the new CSP build, including fonts, backgrounds, audio/video, controls, and Tauri IPC.
 4. Complete the updater-key and GitHub secret setup described in the Version 4.3.2 section below, then publish the signed `v4.3.2` release.
 5. Review and accept the remaining game-auth risk: DPAPI protects the saved config and launcher-owned plaintext copies are zeroized after use, but the legacy `-AUTH_PASSWORD` process argument can still be visible to sufficiently privileged local process-inspection tools.
@@ -41,7 +41,7 @@ Applied fixes for the four Rust diagnostics reported by the Windows build:
 - Changed `inject_module` to obtain managed state from its owned `AppHandle`, so the async Tauri command no longer has a borrowed `State` input while returning a plain JSON value.
 - Added the required 32-byte output length to `scrypt::Params::new(15, 8, 1, 32)`, matching the 32-byte derived key buffer.
 
-These edits address the diagnostics in the supplied build log. A Rust compiler is not installed in this working environment, so the patched source has not been compiled here; rerun `build.bat` or the Windows CI workflow to identify any subsequent diagnostics.
+These edits addressed the diagnostics in the supplied build log. They were subsequently compiled in Windows CI run #13, where `cargo test`, `cargo check`, and signed NSIS packaging all passed.
 
 ## Static checks performed
 
@@ -51,7 +51,7 @@ These edits address the diagnostics in the supplied build log. A Rust compiler i
 - Rust command registration and frontend API name cross-check.
 - SHA-256 comparison of the three bundled binaries against the source Electron ZIP.
 
-Windows CI run #11 succeeded on 2026-11-18: Rust tests, cargo check, and signed NSIS packaging passed. A fresh Windows CI run is required after the security hardening changes in this commit.
+Windows CI run #13 succeeded on 2026-11-18 after the security hardening changes: Rust tests, cargo check, signed NSIS packaging, and artifact upload passed. The Rust build cache and Tauri CLI cache both produced cache hits.
 
 
 ## Latest changes
@@ -126,7 +126,7 @@ The private signing key is deliberately not included in this package. The versio
 
 ### Remaining release gates
 1. Publish the genuine Build 4.5 archive after the RAR-to-7z conversion and set its actual 64-character SHA-256 in `src-tauri/resources/endpoints.json`.
-2. Run the new Windows CI build after this security commit.
+2. Windows CI run #13 after this security commit is complete and successful; repeat the UI smoke test on its signed artifact to confirm that CSP does not block any interface feature.
 3. Install that new build and confirm there are no CSP-blocked fonts, backgrounds, audio/video, UI controls, or Tauri IPC calls.
 4. Review and accept the documented legacy game command-line password exposure, or provide a supported client/server alternative authentication interface.
 5. Publish Tauri 4.3.2 only after the above checks and archive hash are complete. Then test a real update to a newer signed Tauri version.
