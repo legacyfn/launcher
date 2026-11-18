@@ -25,7 +25,8 @@ jobs:
       - name: Restore Rust build cache
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> src-tauri/target"
+          shared-key: tauri-windows
+          workspaces: "src-tauri -> target"
 
       - name: Cache Tauri CLI
         id: tauri-cli-cache
@@ -70,7 +71,8 @@ jobs:
       - name: Restore Rust build cache
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> src-tauri/target"
+          shared-key: tauri-windows
+          workspaces: "src-tauri -> target"
 
       - name: Cache Tauri CLI
         id: tauri-cli-cache
@@ -116,7 +118,8 @@ jobs:
       - name: Restore Rust build cache
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri -> src-tauri/target"
+          shared-key: tauri-windows
+          workspaces: "src-tauri -> target"
 
       - name: Cache Tauri CLI
         id: tauri-cli-cache
