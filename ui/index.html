@@ -1155,6 +1155,140 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 @media(max-width:520px) { .setup-card { padding: 24px; } }
 
 </style>
+<style>
+:root {
+    --bg: #08111d;
+    --sidebar: #0b1725;
+    --panel: #101e2d;
+    --panel2: #162a3d;
+    --border: rgba(139, 195, 232, .15);
+    --purple: #3998d2;
+    --purple2: #86d3ff;
+    --text: #f4f8fc;
+    --muted: #91aabd;
+    --green: #67dda5;
+    --red: #ef7882;
+}
+body {
+    background:
+        radial-gradient(ellipse at 78% -18%, rgba(52, 145, 205, .19), transparent 42%),
+        radial-gradient(ellipse at 8% 100%, rgba(91, 93, 191, .10), transparent 38%),
+        var(--bg);
+}
+.sidebar {
+    background: linear-gradient(180deg, #0d1b2b 0%, #091421 100%);
+    border-right-color: rgba(116, 190, 235, .16);
+}
+.brand-icon {
+    border: 1px solid rgba(134, 211, 255, .24);
+    box-shadow: 0 6px 28px rgba(55, 153, 210, .24);
+}
+.brand-name { letter-spacing: 1.4px; }
+.nav button { border-radius: 10px; transition: background-color .18s ease, color .18s ease; }
+.nav button:hover { background: rgba(70, 159, 213, .12); color: #f5fbff; }
+.nav button.active {
+    color: #b5e6ff;
+    background: linear-gradient(100deg, rgba(57, 152, 210, .22), rgba(57, 152, 210, .07));
+    box-shadow: inset 3px 0 #62bdec;
+}
+.version {
+    border-color: rgba(134, 211, 255, .18);
+    border-radius: 999px;
+}
+.avatar { border-color: rgba(134, 211, 255, .65); box-shadow: 0 3px 18px rgba(57, 152, 210, .25); }
+.hero {
+    border-radius: 16px;
+    border-color: rgba(134, 211, 255, .2);
+    background: linear-gradient(120deg, #10243a, #12263a 48%, #1b2541);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .20);
+}
+.hero::after {
+    background:
+        linear-gradient(90deg, rgba(5, 13, 23, .91), rgba(5, 13, 23, .58) 43%, rgba(5, 13, 23, .06)),
+        linear-gradient(0deg, rgba(5, 13, 23, .48), transparent 60%);
+}
+.eyebrow, .tag, .panel-badge, .resource-version { color: var(--purple2); }
+.hero h1 { text-shadow: 0 8px 35px rgba(0, 0, 0, .24); }
+.button { border-radius: 9px; }
+.primary {
+    background: linear-gradient(110deg, #5ab9ec, #267bb9);
+    box-shadow: 0 7px 24px rgba(43, 137, 197, .25);
+}
+.primary:hover { filter: brightness(1.12); box-shadow: 0 10px 28px rgba(43, 137, 197, .34); }
+.secondary {
+    border-color: rgba(180, 220, 247, .25);
+    background: rgba(255, 255, 255, .07);
+}
+.secondary:hover { background: rgba(73, 160, 214, .18); }
+.stat, .panel, .settings-panel, .resource, .shop-card, .shop-section {
+    border-color: var(--border);
+    border-radius: 12px;
+    background-color: rgba(16, 30, 45, .92);
+}
+.stat-icon { background: rgba(69, 159, 213, .15); color: var(--purple2); }
+.mode {
+    border-radius: 10px;
+    border-color: rgba(139, 195, 232, .13);
+    background-color: rgba(22, 42, 61, .9);
+}
+.mode.open {
+    border-color: rgba(102, 203, 255, .65);
+    box-shadow: inset 0 0 0 1px rgba(102, 203, 255, .12), 0 0 22px rgba(58, 161, 220, .12);
+}
+.mode-sub.live { color: #74e3b2; }
+.resource {
+    border-color: rgba(103, 185, 235, .25);
+    background: linear-gradient(110deg, rgba(23, 53, 78, .96), rgba(16, 30, 45, .96));
+}
+.settings-panel { padding-left: 24px; padding-right: 24px; }
+.small-button {
+    border-color: rgba(104, 184, 231, .42);
+    border-radius: 8px;
+    background: rgba(36, 81, 112, .28);
+    color: #b8e6ff;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+.small-button:hover { background: rgba(52, 129, 180, .35); border-color: rgba(134, 211, 255, .65); }
+.set-tabs button.on, .set-tabs button.active {
+    color: #b8e6ff !important;
+    border-color: rgba(105, 194, 244, .42) !important;
+    background: rgba(57, 152, 210, .16) !important;
+}
+.switch input:checked + span { background: #348fc7 !important; }
+.field:focus, .prefs select:focus, .setup-fields input:focus {
+    border-color: #6ec5f3 !important;
+    box-shadow: 0 0 0 3px rgba(80, 177, 230, .16) !important;
+}
+.notification {
+    border-color: rgba(105, 194, 244, .45);
+    border-radius: 11px;
+    background: #12243a;
+}
+.footer { border-top-color: rgba(139, 195, 232, .13); }
+.setup-card {
+    border-color: rgba(134, 211, 255, .25) !important;
+    background: linear-gradient(145deg, rgba(16, 32, 49, .98), rgba(9, 20, 33, .99)) !important;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .6), 0 0 42px rgba(46, 135, 193, .12) !important;
+}
+.setup-eyebrow { color: #8bd7ff !important; }
+.setup-actions button {
+    border-color: rgba(104, 184, 231, .35);
+    background: #17334b;
+    color: #c4eaff;
+}
+.setup-actions button.primary {
+    color: #061421;
+    background: linear-gradient(100deg, #8edaff, #3998d2);
+}
+.setup-progress > i { background: linear-gradient(90deg, #3998d2, #99dcff); }
+#liveBg .lb-orb { filter: saturate(.9); }
+body.launcher-inactive *,
+body.launcher-inactive *::before,
+body.launcher-inactive *::after {
+    animation-play-state: paused !important;
+    transition: none !important;
+}
+</style>
 </head>
 
 <body>
@@ -1586,6 +1720,24 @@ body { font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
 "use strict";
 
 const SITE_URL = "https://projectlegacy.pages.dev/";
+
+// The game takes focus while it is running. Pause visual work when this window
+// is inactive and resume it only when the user returns to the launcher.
+(function setupLauncherWindowActivity() {
+    const syncActivity = () => {
+        const active = !document.hidden && document.hasFocus();
+        if (window.__launcherWindowActive === active) return;
+        window.__launcherWindowActive = active;
+        document.body.classList.toggle("launcher-inactive", !active);
+        window.dispatchEvent(new CustomEvent("launcher-activity-change", { detail: { active } }));
+    };
+
+    window.__launcherWindowActive = !document.hidden && document.hasFocus();
+    document.body.classList.toggle("launcher-inactive", !window.__launcherWindowActive);
+    window.addEventListener("blur", syncActivity);
+    window.addEventListener("focus", syncActivity);
+    document.addEventListener("visibilitychange", syncActivity);
+})();
 const DISCORD_URL = "https://discord.gg/fx4Gu3MAK";
 const BUILD_URL = "https://projectlegacybuilds.streamxerosradio.duckdns.org/builds/4.5.7z";
 const launcher = window.launcher;
@@ -2583,13 +2735,21 @@ if (launcher && typeof launcher.onMatchEvent === "function") {
 
 /* SETTINGS */
 
+let notificationPreferenceRevision = 0;
+
 async function refreshConfig() {
+    const refreshRevision = notificationPreferenceRevision;
     try {
         if (!launcher) {
             setText("folderPath", "Configuration unavailable");
             return;
         }
-        state.config = await launcher.getConfig();
+        const fetchedConfig = await launcher.getConfig();
+        if (refreshRevision !== notificationPreferenceRevision && state.config) {
+            fetchedConfig.matchNotifications = Boolean(state.config.matchNotifications);
+            fetchedConfig.matchNotificationsConfigured = Boolean(state.config.matchNotificationsConfigured);
+        }
+        state.config = fetchedConfig;
         const c = state.config;
 
         setText("folderPath", c.gameFolder || "No folder selected");
@@ -2771,19 +2931,21 @@ async function setupSaveNotificationChoice(requestEnabled) {
     let enabled = Boolean(requestEnabled);
     try {
         if (enabled) {
-            if (!("Notification" in window)) {
+            try {
+                enabled = Boolean(await launcher.requestNotificationPermission());
+            } catch (permissionError) {
+                console.warn("Native notification permission request failed:", permissionError);
                 enabled = false;
-                setupSetMessage("Windows notifications are not available in this WebView. Continuing with notifications disabled.");
-            } else {
-                const permission = Notification.permission === "granted"
-                    ? "granted"
-                    : await Notification.requestPermission();
-                enabled = permission === "granted";
-                if (!enabled) setupSetMessage("Notification permission was not granted. You can enable it later in Windows settings.");
+            }
+            if (!enabled) {
+                setupSetMessage("Windows notification permission was not granted. You can enable it later in Settings and Windows notifications.");
             }
         }
         const saved = await launcher.saveMatchNotifications(enabled);
-        if (!saved || !saved.ok) throw new Error((saved && saved.message) || "Could not save notification preference.");
+        if (!saved || !saved.ok || saved.enabled !== enabled) {
+            throw new Error((saved && saved.message) || "Could not save notification preference.");
+        }
+        notificationPreferenceRevision++;
         state.config = await launcher.getConfig();
         if (state.config.installed && state.config.email && state.config.hasPassword && !state.config.passwordReentryRequired) {
             await launcher.completeSetup();
@@ -2792,7 +2954,9 @@ async function setupSaveNotificationChoice(requestEnabled) {
             render();
             notify("Setup complete. Project Legacy is ready.");
         } else {
-            setupShowStep("build", enabled ? "Match notifications are enabled. Choose an existing build or download Build 4.5." : "Match notifications are disabled. Choose an existing build or download Build 4.5.");
+            setupShowStep("build", enabled
+                ? "Match notifications are enabled. Choose an existing build or download Build 4.5."
+                : "Match notifications are disabled. Choose an existing build or download Build 4.5.");
         }
     } catch (error) {
         console.error("Saving match notification preference failed:", error);
@@ -2935,7 +3099,6 @@ async function startHeroSlideshow() {
     const hero = document.querySelector(".hero");
     if (!first || !hero) return;
 
-    // Images from assets/backgrounds/ if available, otherwise the built-in ones.
     let slides = [];
     try {
         if (launcher && typeof launcher.listBackgrounds === "function") slides = await launcher.listBackgrounds();
@@ -2975,10 +3138,23 @@ async function startHeroSlideshow() {
         if (manual) restart();
     }
 
+    function stopRotation() {
+        if (timer !== null) {
+            clearInterval(timer);
+            timer = null;
+        }
+    }
+
     function restart() {
-        clearInterval(timer);
+        stopRotation();
+        if (window.__launcherWindowActive === false || document.hidden) return;
         timer = setInterval(() => show((index + 1) % slides.length), 5000);
     }
+
+    window.addEventListener("launcher-activity-change", event => {
+        if (event.detail && event.detail.active) restart();
+        else stopRotation();
+    });
 
     [...dots.children][0].classList.add("on");
     restart();
@@ -3020,19 +3196,32 @@ if (launcher && typeof launcher.onHealthStatus === "function") launcher.onHealth
 if (launcher && typeof launcher.onNews === "function") launcher.onNews(renderNews);
 
 /* PREFERENCES: language, notifications, logs, Discord count */
-const prevOpen = {};
+const prevOpen = Object.create(null);
+
 function notifyOpen(id, event) {
-    const on = Boolean(state.config && state.config.matchNotifications);
+    const enabled = Boolean(state.config && state.config.matchNotifications);
     const open = Boolean(event.online && event.joinable);
-    if (on && open && prevOpen[id] === false && "Notification" in window && Notification.permission === "granted") {
-        new Notification("Project Legacy", { body: tr(String(event.mode).toUpperCase() + " match is open - join now!") });
+
+    // The native notification plugin sends a Windows toast, including while the game is foregrounded.
+    if (enabled && open && prevOpen[id] === false && launcher && launcher.sendMatchNotification) {
+        try {
+            launcher.sendMatchNotification(tr(String(event.mode).toUpperCase() + " match is open - join now!"));
+        } catch (error) {
+            console.warn("Could not send the match-open notification:", error);
+        }
     }
+
     prevOpen[id] = open;
     const card = $(id) && $(id).parentElement;
     if (card) card.classList.toggle("open", open);
     if (card && event.minPlayers > 0) {
         let bar = card.querySelector(".mode-bar");
-        if (!bar) { bar = document.createElement("div"); bar.className = "mode-bar"; bar.appendChild(document.createElement("i")); card.appendChild(bar); }
+        if (!bar) {
+            bar = document.createElement("div");
+            bar.className = "mode-bar";
+            bar.appendChild(document.createElement("i"));
+            card.appendChild(bar);
+        }
         bar.firstChild.style.width = Math.min(100, ((event.queued || 0) / event.minPlayers) * 100) + "%";
     }
 }
@@ -3048,35 +3237,61 @@ function notifyOpen(id, event) {
             try { if (window.__lastNews) renderNews(window.__lastNews); } catch {}
         });
     }
+
     if (tog) {
         tog.checked = Boolean(state.config && state.config.matchNotifications);
+        let savingNotifications = false;
         tog.addEventListener("change", async () => {
-            let enabled = tog.checked;
-            if (enabled && "Notification" in window && Notification.permission === "default") {
-                enabled = (await Notification.requestPermission()) === "granted";
-            } else if (enabled && (! ("Notification" in window) || Notification.permission !== "granted")) {
-                enabled = false;
-            }
+            if (savingNotifications) return;
+            savingNotifications = true;
+            tog.disabled = true;
+            const previous = Boolean(state.config && state.config.matchNotifications);
+            const requested = Boolean(tog.checked);
+
             try {
-                const saved = await launcher.saveMatchNotifications(enabled);
-                state.config = state.config || {};
-                state.config.matchNotifications = enabled;
-                state.config.matchNotificationsConfigured = true;
-                tog.checked = enabled;
-                if (!saved || !saved.ok) throw new Error((saved && saved.message) || "Could not save notification preference.");
+                if (requested) {
+                    const permitted = await launcher.requestNotificationPermission();
+                    if (!permitted) {
+                        tog.checked = previous;
+                        notify("Allow Project Legacy in Windows notification settings to enable match alerts.");
+                        return;
+                    }
+                }
+
+                const saved = await launcher.saveMatchNotifications(requested);
+                if (!saved || !saved.ok || saved.enabled !== requested) {
+                    throw new Error((saved && saved.message) || "The launcher did not confirm the saved preference.");
+                }
+
+                notificationPreferenceRevision++;
+                state.config = {
+                    ...(state.config || {}),
+                    matchNotifications: requested,
+                    matchNotificationsConfigured: true
+                };
+                tog.checked = requested;
+                notify(requested ? "Match-open notifications enabled." : "Match-open notifications disabled.");
             } catch (error) {
-                tog.checked = Boolean(state.config && state.config.matchNotifications);
-                notify("Could not save notification preference.");
-                console.error(error);
+                tog.checked = previous;
+                console.error("Could not save match notification preference:", error);
+                notify("Could not save the notification setting. Your previous setting was kept.");
+            } finally {
+                savingNotifications = false;
+                tog.disabled = false;
             }
         });
     }
+
     if (launcher && launcher.onDiscordCount) {
         launcher.onDiscordCount(d => {
             document.querySelectorAll("button").forEach(b => {
                 if (b.textContent.trim().startsWith("JOIN DISCORD") || b.textContent.trim().startsWith("REJOINDRE DISCORD")) {
                     let span = b.querySelector(".dc");
-                    if (!span) { span = document.createElement("span"); span.className = "dc"; b.appendChild(span); }
+                    if (!span) {
+                        span = document.createElement("span");
+                        span.className = "dc";
+                        b.appendChild(span);
+                    }
                     span.textContent = " · " + d.online + " online";
                 }
             });
@@ -3448,7 +3663,7 @@ async function loadShop(force) {
 
 if ($("shopRefresh")) $("shopRefresh").addEventListener("click", () => loadShop(true));
 
-/* LIVE BACKGROUND: images (Ken Burns + crossfade), optional video, particles, mouse parallax */
+/* LIVE BACKGROUND: focus-aware slideshow, video wallpaper and particles */
 (async function setupLiveBg() {
     const root = $("liveBg");
     if (!root) return;
@@ -3456,88 +3671,177 @@ if ($("shopRefresh")) $("shopRefresh").addEventListener("click", () => loadShop(
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.body.dataset.page = document.body.dataset.page || "home";
 
-    // on/off switch (saved)
     let enabled = true;
     try { enabled = localStorage.getItem("liveBg") !== "0"; } catch {}
     const toggle = $("liveToggle");
-    const apply = on => { root.hidden = !on; document.body.classList.toggle("no-live", !on); };
+    const video = $("lbVideo");
+    let imageTimer = null;
+    let particleFrame = 0;
+    let images = [];
+    let imageIndex = 0;
+    let imageFront = 0;
+    let layers = [];
+    let dots = [];
+    let ctx = null;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+
+    const canAnimate = () => enabled && !root.hidden &&
+        window.__launcherWindowActive !== false && !document.hidden;
+
+    function stopImageRotation() {
+        if (imageTimer !== null) {
+            clearInterval(imageTimer);
+            imageTimer = null;
+        }
+    }
+
+    function rotateImage() {
+        if (images.length < 2 || !canAnimate()) return;
+        imageIndex = (imageIndex + 1) % images.length;
+        const back = 1 - imageFront;
+        layers[back].style.backgroundImage = 'url("' + images[imageIndex] + '")';
+        layers[back].classList.add("show");
+        layers[imageFront].classList.remove("show");
+        imageFront = back;
+    }
+
+    function startImageRotation() {
+        if (imageTimer !== null || images.length < 2 || !canAnimate()) return;
+        imageTimer = setInterval(rotateImage, 9000);
+    }
+
+    const colors = ["177,138,255", "255,255,255", "120,180,255"];
+    let particles = [];
+
+    function fitCanvas() {
+        if (!ctx) return;
+        canvasWidth = $("lbCanvas").width = window.innerWidth;
+        canvasHeight = $("lbCanvas").height = window.innerHeight;
+    }
+
+    function drawParticles() {
+        particleFrame = 0;
+        if (!canAnimate() || !ctx) return;
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        for (const dot of particles) {
+            const speed = window.__lbSpeed || 1;
+            dot.x += dot.vx * speed;
+            dot.y += dot.vy * speed;
+            dot.a += .02 * speed;
+            if (dot.y < -5) {
+                dot.y = canvasHeight + 5;
+                dot.x = Math.random() * canvasWidth;
+            }
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(" + dot.c + "," + (0.25 + 0.35 * Math.abs(Math.sin(dot.a))) + ")";
+            ctx.arc(dot.x, dot.y, dot.r, 0, 6.2832);
+            ctx.fill();
+        }
+        particleFrame = requestAnimationFrame(drawParticles);
+    }
+
+    function stopParticles() {
+        if (particleFrame) {
+            cancelAnimationFrame(particleFrame);
+            particleFrame = 0;
+        }
+    }
+
+    function startParticles() {
+        if (reduce || particleFrame || !canAnimate() || !ctx) return;
+        particleFrame = requestAnimationFrame(drawParticles);
+    }
+
+    function pauseBackground() {
+        stopImageRotation();
+        stopParticles();
+        if (video && !video.paused) video.pause();
+    }
+
+    function resumeBackground() {
+        if (!canAnimate()) {
+            pauseBackground();
+            return;
+        }
+        if (video && video.src && video.paused) video.play().catch(() => {});
+        startImageRotation();
+        startParticles();
+    }
+
+    function apply(on) {
+        enabled = Boolean(on);
+        root.hidden = !enabled;
+        document.body.classList.toggle("no-live", !enabled);
+        if (enabled) resumeBackground();
+        else pauseBackground();
+    }
+
     apply(enabled);
     if (toggle) {
         toggle.checked = enabled;
-        toggle.addEventListener("change", () => { try { localStorage.setItem("liveBg", toggle.checked ? "1" : "0"); } catch {} apply(toggle.checked); });
+        toggle.addEventListener("change", () => {
+            try { localStorage.setItem("liveBg", toggle.checked ? "1" : "0"); } catch {}
+            apply(toggle.checked);
+        });
     }
 
-    // 1) video wallpaper: drop a .mp4/.webm in assets/live/
-    const video = $("lbVideo");
+    window.addEventListener("launcher-activity-change", event => {
+        if (event.detail && event.detail.active) resumeBackground();
+        else pauseBackground();
+    });
+
+    // 1) Optional video wallpaper: never keep decoding it behind the game.
     try {
         if (launcher && typeof launcher.listLive === "function") {
             const found = await launcher.listLive();
             if (found && found.length) {
                 video.src = found[0];
                 video.hidden = false;
-                video.play().catch(() => {});
                 root.classList.add("has-video");
             }
         }
     } catch {}
 
-    // 2) images: slow zoom + crossfade
+    // 2) Season 4 image wallpaper with a crossfade timer that only runs in focus.
     if (!root.classList.contains("has-video")) {
-        let images = [];
-        try { if (launcher && typeof launcher.listBackgrounds === "function") images = await launcher.listBackgrounds(); } catch {}
+        try {
+            if (launcher && typeof launcher.listBackgrounds === "function") images = await launcher.listBackgrounds();
+        } catch {}
         if (!Array.isArray(images) || !images.length) images = typeof BUILTIN_SLIDES !== "undefined" ? BUILTIN_SLIDES : [];
-
-        const layers = [root.querySelector(".lb-a"), root.querySelector(".lb-b")];
+        layers = [root.querySelector(".lb-a"), root.querySelector(".lb-b")];
         if (images.length) {
-            let index = 0, front = 0;
             layers[0].style.backgroundImage = 'url("' + images[0] + '")';
             layers[0].classList.add("show");
-            if (images.length > 1) setInterval(() => {
-                index = (index + 1) % images.length;
-                const back = 1 - front;
-                layers[back].style.backgroundImage = 'url("' + images[index] + '")';
-                layers[back].classList.add("show");
-                layers[front].classList.remove("show");
-                front = back;
-            }, 9000);
         }
     }
 
-    if (reduce) return;
-
-    // 3) floating embers / stars
-    const canvas = $("lbCanvas"), ctx = canvas.getContext("2d");
-    let w = 0, h = 0;
-    const fit = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
-    fit();
-    window.addEventListener("resize", fit);
-    const colors = ["177,138,255", "255,255,255", "120,180,255"];
-    const dots = Array.from({ length: 70 }, () => ({
-        x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + .4,
-        vy: -(Math.random() * .35 + .08), vx: (Math.random() - .5) * .15,
-        a: Math.random() * Math.PI * 2, c: colors[Math.floor(Math.random() * colors.length)]
-    }));
-    const frame = () => {
-        if (!root.hidden && !document.hidden) {
-            ctx.clearRect(0, 0, w, h);
-            for (const d of dots) {
-                const sp = window.__lbSpeed || 1; d.x += d.vx * sp; d.y += d.vy * sp; d.a += .02 * sp;
-                if (d.y < -5) { d.y = h + 5; d.x = Math.random() * w; }
-                ctx.beginPath();
-                ctx.fillStyle = "rgba(" + d.c + "," + (0.25 + 0.35 * Math.abs(Math.sin(d.a))) + ")";
-                ctx.arc(d.x, d.y, d.r, 0, 6.2832);
-                ctx.fill();
-            }
+    if (!reduce) {
+        const canvas = $("lbCanvas");
+        if (canvas) {
+            ctx = canvas.getContext("2d");
+            fitCanvas();
+            window.addEventListener("resize", fitCanvas);
+            particles = Array.from({ length: 70 }, () => ({
+                x: Math.random() * canvasWidth,
+                y: Math.random() * canvasHeight,
+                r: Math.random() * 1.8 + .4,
+                vy: -(Math.random() * .35 + .08),
+                vx: (Math.random() - .5) * .15,
+                a: Math.random() * Math.PI * 2,
+                c: colors[Math.floor(Math.random() * colors.length)]
+            }));
         }
-        requestAnimationFrame(frame);
-    };
-    requestAnimationFrame(frame);
+    }
 
-    // 4) mouse parallax
-    window.addEventListener("mousemove", e => {
-        root.style.setProperty("--px", (e.clientX / window.innerWidth - .5) * -18 + "px");
-        root.style.setProperty("--py", (e.clientY / window.innerHeight - .5) * -12 + "px");
+    window.addEventListener("mousemove", event => {
+        if (!canAnimate()) return;
+        root.style.setProperty("--px", (event.clientX / window.innerWidth - .5) * -18 + "px");
+        root.style.setProperty("--py", (event.clientY / window.innerHeight - .5) * -12 + "px");
     });
+
+    resumeBackground();
 })();
 
 /* TOP BAR: user chip, hero sub-title, settings tabs, UI sounds, animation speed */

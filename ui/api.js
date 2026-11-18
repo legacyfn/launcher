@@ -44,6 +44,21 @@
     openFolder: () => invoke("open_folder"),
     saveAccount: (data) => invoke("save_account", data),
     saveMatchNotifications: (enabled) => invoke("save_match_notifications", { enabled: Boolean(enabled) }),
+    requestNotificationPermission: async () => {
+      const notifications = T && T.notification;
+      if (!notifications || typeof notifications.isPermissionGranted !== "function" ||
+          typeof notifications.requestPermission !== "function") return false;
+      let granted = await notifications.isPermissionGranted();
+      if (!granted) granted = (await notifications.requestPermission()) === "granted";
+      return Boolean(granted);
+    },
+    sendMatchNotification: (body) => {
+      const notifications = T && T.notification;
+      if (!notifications || typeof notifications.sendNotification !== "function") {
+        throw new Error("Windows notifications are not available in this launcher build.");
+      }
+      notifications.sendNotification({ title: "Project Legacy", body: String(body || "") });
+    },
 
     // background slideshow / live video
     listBackgrounds: () => invoke("list_backgrounds"),
