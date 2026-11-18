@@ -1,0 +1,11 @@
+/target/
+/src-tauri/target/
+/dist/
+/node_modules/
+/.tauri/
+*.key
+*.sig
+*.p12
+*.pfx
+.env
+.env.*
