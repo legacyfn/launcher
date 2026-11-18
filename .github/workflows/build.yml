@@ -22,7 +22,20 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> src-tauri/target"
+
+      - name: Cache Tauri CLI
+        id: tauri-cli-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri.exe
+          key: tauri-cli-v2-${{ runner.os }}
+
       - name: Install Tauri CLI
+        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: cargo install tauri-cli --version "^2" --locked
 
@@ -54,7 +67,20 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> src-tauri/target"
+
+      - name: Cache Tauri CLI
+        id: tauri-cli-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri.exe
+          key: tauri-cli-v2-${{ runner.os }}
+
       - name: Install Tauri CLI
+        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: cargo install tauri-cli --version "^2" --locked
 
@@ -87,7 +113,20 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> src-tauri/target"
+
+      - name: Cache Tauri CLI
+        id: tauri-cli-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri.exe
+          key: tauri-cli-v2-${{ runner.os }}
+
       - name: Install Tauri CLI
+        if: steps.tauri-cli-cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: cargo install tauri-cli --version "^2" --locked
 
