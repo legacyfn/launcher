@@ -27,10 +27,10 @@ The original injector and console binaries remain bundled and integrity checked.
 ## Release blockers / owner actions
 
 1. Publish a genuine `4.5.7z` archive and set its exact 64-character SHA-256 in `src-tauri/resources/endpoints.json`. Downloads are disabled until this is done.
-2. Run `cargo test --manifest-path src-tauri/Cargo.toml` and `cargo tauri build` on Windows. This environment does not have Rust installed, so no Rust build is claimed here.
-3. Install and smoke-test the NSIS package on a clean Windows 10/11 machine: first run, config migration, folder chooser, download/pause/resume/cancel, extraction, launch/stop, notification preferences and offline news.
+2. Re-run Windows CI after the current CSP and password-memory changes. Previous Windows CI run #11 passed Rust tests, cargo check, and signed NSIS packaging.
+3. The owner reports that clean Windows installation, Electron configuration migration, and an existing game installation have been tested. Repeat the UI smoke test on the new CSP build, including fonts, backgrounds, audio/video, controls, and Tauri IPC.
 4. Complete the updater-key and GitHub secret setup described in the Version 4.3.2 section below, then publish the signed `v4.3.2` release.
-5. Review the game-auth command-line argument behavior: the legacy password argument can be visible to local process-inspection tools even though the stored config is DPAPI-protected.
+5. Review and accept the remaining game-auth risk: DPAPI protects the saved config and launcher-owned plaintext copies are zeroized after use, but the legacy `-AUTH_PASSWORD` process argument can still be visible to sufficiently privileged local process-inspection tools.
 
 ## Follow-up compile-error patch (2026-11-18)
 
@@ -86,14 +86,13 @@ Windows CI run #11 succeeded on 2026-11-18: Rust tests, cargo check, and signed 
 
 **Implemented in source:** `tauri-plugin-updater` v2 is registered, signed updater artifacts are enabled for release builds, and Rust commands check the configured GitHub `latest.json`, download and install updates, and emit progress events. The frontend checks on startup and lets the user choose when to install. The GitHub Actions workflow tests the project and publishes the Windows NSIS installer plus `latest.json` on a `v*` tag.
 
-**Still requires repository-owner setup before publication:**
+**Current release status:**
 
-1. The generated Tauri key pair's public key is now configured in `src-tauri/tauri.conf.json`.
-2. Add `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` as GitHub Actions secrets in `legacyfn/launcher`. Never commit the private key.
-3. Back up the private key file and its password securely.
-4. Re-run Windows CI after the CSP and password-memory changes, then repeat the UI smoke test with that installer. The initial clean-install, Electron migration, and existing-game-folder tests are owner-confirmed as complete.
-5. Only after the checks pass and secrets are configured, publish tag `v4.3.2`.
-6. Ensure the GitHub Release and `latest.json` are publicly readable. A private repository cannot serve a public update feed to unauthenticated launcher clients.
+1. The updater public key is configured in `src-tauri/tauri.conf.json`.
+2. The signing secrets have been configured and were verified by a successful signed Windows installer build in GitHub Actions.
+3. Keep a secure backup of the private key and password; do not commit or share them.
+4. A Tauri `latest.json` feed is not published yet. The public latest release remains Electron 4.3.1.
+5. A real updater install test requires the published Tauri 4.3.2 and then a newer signed Tauri release (for example 4.3.3).
 
 The private signing key is deliberately not included in this package. The version bump and source integration are prepared, but an actual signed release has not been published from this environment.
 

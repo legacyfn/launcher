@@ -174,8 +174,8 @@ jobs:
           $release = Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$repo/releases/tags/$tag"
           $assetNames = @($release.assets | ForEach-Object { $_.name })
           if ($assetNames -notcontains "latest.json") { throw "The published release does not contain latest.json." }
-          if (-not ($assetNames | Where-Object { $_ -match '\\.exe$' })) { throw "The release has no Windows installer." }
-          if (-not ($assetNames | Where-Object { $_ -match '\\.exe\\.sig$' })) { throw "The release has no Windows installer signature." }
+          if (-not ($assetNames | Where-Object { $_ -match '\.exe$' })) { throw "The release has no Windows installer." }
+          if (-not ($assetNames | Where-Object { $_ -match '\.exe\.sig$' })) { throw "The release has no Windows installer signature." }
           $manifestAsset = $release.assets | Where-Object { $_.name -eq "latest.json" } | Select-Object -First 1
           $manifest = Invoke-RestMethod -Uri $manifestAsset.browser_download_url
           $expectedVersion = $tag -replace '^v', ''
