@@ -14,6 +14,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter, Manager, State};
+use zeroize::Zeroizing;
 
 const CONSOLE_FILE: &str = "edit.dll.enc";
 const EXPECTED_BIN_HASHES: [(&str, &str); 3] = [
@@ -346,7 +347,7 @@ pub fn folder_info(state: State<AppState>) -> serde_json::Value {
 pub fn save_account(app: AppHandle, state: State<AppState>, display_name: Option<String>, email: Option<String>, password: Option<String>) -> serde_json::Value {
     let display_name = display_name.unwrap_or_default().trim().to_string();
     let email = email.unwrap_or_default().trim().to_string();
-    let password = password.unwrap_or_default();
+    let password = Zeroizing::new(password.unwrap_or_default());
     if display_name.len() > 24 || email.len() > 200 || password.len() > 200
         || display_name.chars().any(|c| c == '\r' || c == '\n') || email.chars().any(|c| c == '\r' || c == '\n') || password.chars().any(|c| c == '\r' || c == '\n') {
         return serde_json::json!({"ok":false,"message":"Invalid username or account credentials."});
@@ -356,7 +357,7 @@ pub fn save_account(app: AppHandle, state: State<AppState>, display_name: Option
         if !display_name.is_empty() { cfg.display_name = display_name; }
         cfg.email = email.clone();
         if !password.is_empty() {
-            match config::store_password(&password) {
+            match config::store_password(password.as_str()) {
                 Ok((enc, mode)) => { cfg.password_enc = enc; cfg.password_mode = mode; }
                 Err(message) => return serde_json::json!({"ok":false,"message":message}),
             }
@@ -654,17 +655,23 @@ pub fn game_launch(app: AppHandle, state: State<AppState>) -> serde_json::Value 
     };
     if cfg.email.is_empty() || cfg.password_enc.is_empty() { return serde_json::json!({"ok":false,"needAccount":true,"message":"Enter your account email and password in Settings first."}); }
     let password = match config::read_password(&cfg.password_enc,&cfg.password_mode) {
-        Ok(password)=>password,
+        Ok(password)=>Zeroizing::new(password),
         Err(message)=>return serde_json::json!({"ok":false,"needAccount":true,"message":message}),
     };
     if password.is_empty() { return serde_json::json!({"ok":false,"needAccount":true,"message":"Enter your account password in Settings first."}); }
     let exe = root.join(crate::buildroot::GAME_EXE_REL.replace('/',std::path::MAIN_SEPARATOR_STR));
     if !exe.is_file() { return serde_json::json!({"ok":false,"message":"The game executable is missing."}); }
-    let args = build_launch_args(DEFAULT_ARGS,&cfg.email,&password);
+    let args = Zeroizing::new(build_launch_args(DEFAULT_ARGS,&cfg.email,password.as_str()));
     set_game_status(&app,&state,"launching","Starting the game...");
-    let mut command = std::process::Command::new(&exe);
-    command.args(args).current_dir(exe.parent().unwrap_or(&root));
-    match command.spawn() {
+    // Drop the Command and its owned argument copies immediately after CreateProcess.
+    // The legacy client still requires AUTH_PASSWORD on its command line; this OS-level
+    // visibility remains until the client supports another authentication interface.
+    let spawn_result = {
+        let mut command = std::process::Command::new(&exe);
+        command.args(args.iter().map(String::as_str)).current_dir(exe.parent().unwrap_or(&root));
+        command.spawn()
+    };
+    match spawn_result {
         Ok(mut child) => {
             let pid = child.id();
             *state.game_pid.lock().unwrap() = Some(pid);
@@ -922,7 +929,6 @@ pub async fn install_launcher_update(app: AppHandle) -> Result<(), String> {
     // On Windows the updater's NSIS installer will close the app as part of
     // the installation flow. Explicit restart is still needed on other OSes.
     app.restart();
-    Ok(())
 }
 
 #[cfg(test)]

@@ -51,7 +51,7 @@ These edits address the diagnostics in the supplied build log. A Rust compiler i
 - Rust command registration and frontend API name cross-check.
 - SHA-256 comparison of the three bundled binaries against the source Electron ZIP.
 
-A successful Windows CI build remains mandatory before release.
+Windows CI run #11 succeeded on 2026-11-18: Rust tests, cargo check, and signed NSIS packaging passed. A fresh Windows CI run is required after the security hardening changes in this commit.
 
 
 ## Latest changes
@@ -59,7 +59,7 @@ A successful Windows CI build remains mandatory before release.
 - Added a mandatory persisted first-run account-details gate before the launcher dashboard (tracked by `setupComplete`, including when importing an older Electron configuration). It securely saves the supplied game-account password with Windows DPAPI, then presents existing-build selection or Build 4.5 download. Setup is marked complete only after the backend confirms that the selected folder contains a complete build.
 - The current server configuration has no launcher-authentication endpoint, so the first-run form stores game-account credentials but does not validate a remote launcher identity. Do not describe this as server-side authentication until an auth API is connected.
 - Folder checking, file verification, and diagnostics now run filesystem work on blocking workers; scans are bounded and avoid symlink traversal. The UI displays command errors rather than swallowing them.
-- Rust/Windows compilation and interactive installer testing remain required on a Windows machine with the Rust toolchain.
+- Windows compilation and signed NSIS packaging passed in GitHub Actions. The repository owner reports that clean installation, Electron configuration migration, and existing game-folder tests are complete. Re-test the interface against the new CSP.
 
 
 ## UX follow-up changes (2026-11-18)
@@ -68,7 +68,7 @@ A successful Windows CI build remains mandatory before release.
 - Added a persisted launcher display username and match-notification opt-in/out flow.
 - Removed user-editable game launch arguments; the backend always uses `DEFAULT_ARGS`.
 - Removed the expanded-navigation toggle and hid diagnostics, log-copy and verification controls from the normal user interface while retaining the in-game Console unlock.
-- Rust compilation and end-to-end Windows installer tests still need to be run on a Windows host with the Rust toolchain.
+- Windows compilation and signed NSIS packaging passed in GitHub Actions. The repository owner reports that clean installation, Electron configuration migration, and existing game-folder tests are complete. Re-test the interface against the new CSP.
 
 
 ## User-facing settings and first-run update
@@ -91,8 +91,44 @@ A successful Windows CI build remains mandatory before release.
 1. The generated Tauri key pair's public key is now configured in `src-tauri/tauri.conf.json`.
 2. Add `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` as GitHub Actions secrets in `legacyfn/launcher`. Never commit the private key.
 3. Back up the private key file and its password securely.
-4. Run the Windows CI/build and installer smoke tests.
+4. Re-run Windows CI after the CSP and password-memory changes, then repeat the UI smoke test with that installer. The initial clean-install, Electron migration, and existing-game-folder tests are owner-confirmed as complete.
 5. Only after the checks pass and secrets are configured, publish tag `v4.3.2`.
 6. Ensure the GitHub Release and `latest.json` are publicly readable. A private repository cannot serve a public update feed to unauthenticated launcher clients.
 
 The private signing key is deliberately not included in this package. The version bump and source integration are prepared, but an actual signed release has not been published from this environment.
+
+
+## Security, updater, and final review — 2026-11-18
+
+### Content Security Policy
+- Added a Tauri-enforced CSP in `tauri.conf.json`: local scripts only, Google Fonts CSS/font hosts only, local/data/blob images, local media, Tauri IPC for WebView connections, and no plugins/objects or external form actions.
+- The application has one inline application script and one inline style block; no inline event-handler attributes were found. Tauri adds hashes/nonces to bundled scripts/styles at build time.
+- Dynamic style attributes remain allowed because the existing UI sets slideshow and layout styles at runtime.
+- The CSP still needs a runtime regression test on the new installer: fonts, backgrounds, audio/video, buttons, and Tauri IPC must all work.
+
+### Password and login handling review
+- Newly saved and migrated Windows credentials use DPAPI CurrentUser. The frontend receives only password-presence/re-entry flags, not the decrypted password.
+- Plaintext password strings and launcher-built argument vectors are now held in zeroizing wrappers to reduce the lifetime of launcher-owned copies.
+- **Residual risk:** the legacy game client still requires `-AUTH_PASSWORD=...` as a process command-line argument. Local process-inspection tools running with sufficient rights may be able to read it while the game is running. Zeroizing launcher memory does not remove that operating-system command-line exposure.
+- The current server configuration has no launcher-authentication endpoint. Saving credentials is therefore not server-side launcher login validation.
+- Removing the command-line exposure requires a supported alternative authentication interface in the game client/server. The legacy auth arguments must not be changed blindly because that could break game login. This limitation remains a documented release decision.
+
+### Updater review and validation
+- GitHub Actions successfully built a signed NSIS installer and generated its signature with the configured private-key secrets.
+- The configured updater feed is the public GitHub Releases `latest.json` endpoint. The latest published release is still Electron 4.3.1 and contains `latest.yml`, not a Tauri `latest.json` feed.
+- Added a post-release CI job that checks for `latest.json`, the Windows installer, its signature, a matching release/manifest version, and an HTTPS `windows-x86_64` updater entry after a version tag is published.
+- **A real updater installation is not yet tested.** It requires Tauri 4.3.2 to be published and a newer signed Tauri version (for example 4.3.3) to be published afterwards, or a separate test feed. No public release/tag has been created in this pass.
+
+### Owner-confirmed Windows tests
+- Clean Windows installation: completed.
+- Existing Electron configuration migration: completed.
+- Existing game installation selection/use: completed.
+- These are manual tests confirmed by the repository owner on 2026-11-18, separate from automated CI.
+
+### Remaining release gates
+1. Publish the genuine Build 4.5 archive after the RAR-to-7z conversion and set its actual 64-character SHA-256 in `src-tauri/resources/endpoints.json`.
+2. Run the new Windows CI build after this security commit.
+3. Install that new build and confirm there are no CSP-blocked fonts, backgrounds, audio/video, UI controls, or Tauri IPC calls.
+4. Review and accept the documented legacy game command-line password exposure, or provide a supported client/server alternative authentication interface.
+5. Publish Tauri 4.3.2 only after the above checks and archive hash are complete. Then test a real update to a newer signed Tauri version.
+6. Keep PR #1 in Draft until the remaining checks and product-owner decisions are complete.

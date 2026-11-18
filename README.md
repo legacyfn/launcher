@@ -65,9 +65,11 @@ Edit `src-tauri/resources/endpoints.json` after publishing the build archive:
 
 Keep the other existing endpoint properties. The archive must be a genuine 7z archive; changing a `.rar` filename to `.7z` does not convert it. The launcher checks both the 7z signature and SHA-256. Downloads intentionally stay disabled while the SHA-256 is blank or malformed. Do not publish a guessed hash.
 
-## Rust compile-error patch
+## Windows build validation
 
-The follow-up patch for the Windows compiler output removes an unused import, compares the installation-phase mutex guard using `as_str()`, retrieves app state from `AppHandle` inside the async module command (avoiding a borrowed command input), and supplies the 32-byte scrypt output length. These changes match the reported diagnostics, but still need a real Windows build because this environment does not include `cargo` or `rustc`.
+GitHub Actions successfully ran the Rust tests and `cargo check`, and built a signed Windows NSIS installer on 2026-11-18. The repository owner has also confirmed clean Windows installation, Electron configuration migration, and existing game-folder tests. The current security hardening commit needs a fresh Windows CI run and a runtime UI check of the new Content Security Policy.
+
+New and migrated Windows credentials are stored with DPAPI CurrentUser. Plaintext strings held by the launcher are zeroized after use where possible. The legacy game client still requires `-AUTH_PASSWORD` as a process command-line argument, so sufficiently privileged local process-inspection tools may be able to read it while the game runs. A different supported client/server authentication interface is needed to remove that limitation.
 
 ## Windows build
 
@@ -89,15 +91,15 @@ GitHub Actions runs Rust tests and a Windows `cargo check` for pull requests and
 
 ## Production items that still need owner action
 
-1. **Build archive:** publish the genuine `.7z` file and fill in its real SHA-256 in `endpoints.json`.
-2. **Windows validation:** this working environment has no `cargo` or `rustc`, so a real compile/test could not be run here. Let the Windows CI workflow pass and install the NSIS package on a clean Windows 10/11 machine before distributing it.
-3. **Launcher self-update:** the Tauri updater is integrated for GitHub Releases (`legacyfn/launcher`) in version 4.3.2. The generated public key is now configured in `src-tauri/tauri.conf.json`. Publishing remains blocked until the owner adds the private-key GitHub Actions secrets and pushes the `v4.3.2` tag.
-4. **Credential command line:** the original game authentication contract passes the password as a game command-line argument. DPAPI protects it at rest, but Windows process inspection can still expose command-line arguments while the game is starting/running. Use a test account until the game authentication flow can be changed to avoid this legacy interface.
-5. **Legacy process/security behavior:** the normal Redirector and unlocked Console injector flow is restored. Anti-cheat placeholder processes/suspension and Defender exclusions remain inactive.
+1. **Build archive:** finish the genuine RAR-to-7z conversion, publish the `.7z` file, and fill in its actual SHA-256 in `endpoints.json`.
+2. **CSP validation:** build the new Tauri CSP and check it in the installed app; verify fonts, backgrounds, audio/video, controls, and Tauri IPC.
+3. **Credential decision:** DPAPI protects saved credentials and launcher-owned plaintext copies are zeroized after use. The legacy game client still receives `-AUTH_PASSWORD` on its process command line; accept/document that residual risk or provide a supported alternative authentication flow.
+4. **Self-updater:** signing secrets are configured and have successfully produced a signed installer. A real update cycle still requires the Tauri 4.3.2 release and a newer signed Tauri release to update to.
+5. **Final publication:** only after the archive hash, CSP regression test, credential-risk decision, and CI pass should PR #1 be marked ready, merged, and tagged for release.
 
 ## What was not claimed
 
-This is a source-level migration package, not a certified production build. The project includes Rust unit tests and CI configuration, but the current environment could only run static JSON/YAML/JavaScript checks; it could not compile the Rust backend or produce a Windows installer.
+This is a release candidate, not yet a published production release. Windows CI has passed and a signed NSIS test installer has been built. The repository owner reports that clean installation, Electron configuration migration, and existing-game-folder testing are complete. The new CSP still needs a fresh runtime check, and the updater has not yet completed a real version-to-version installation.
 
 
 ## First-run setup and folder-check recovery
@@ -140,17 +142,7 @@ This repository path is taken from the supplied original Electron `package.json`
 
 ### One-time signing-key setup
 
-Tauri updates must be signed; this cannot be disabled. The public key is embedded in the app. The private key is used only by the release workflow and must never be committed to Git or included in a ZIP/installer. The updater public key must remain the same for all future releases, otherwise users of already-installed versions cannot verify updates.
-
-1. Install the Tauri CLI if needed: `cargo install tauri-cli --version "^2" --locked`.
-2. Run PowerShell: `./scripts/generate-updater-key.ps1`.
-3. Copy the **public** key printed by the command into `plugins.updater.pubkey` in `src-tauri/tauri.conf.json`, replacing `REPLACE_WITH_TAURI_UPDATER_PUBLIC_KEY`.
-4. In GitHub repository Settings → Secrets and variables → Actions, add:
-   - `TAURI_SIGNING_PRIVATE_KEY`: the full contents of the generated private key file.
-   - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`: the password used when generating the key.
-5. Commit and push the changed `tauri.conf.json` and workflow to `legacyfn/launcher`.
-
-The private key file is stored under `%USERPROFILE%\\.tauri\\projectlegacy-updater.key` by the helper and is excluded by `.gitignore`. Back it up securely. Losing it prevents publishing updates that existing installs can verify. Never generate a replacement key after users have installed a release signed by the original key.
+The updater public key is configured in `src-tauri/tauri.conf.json`. The private-key GitHub Actions secrets have been configured and verified by a successful signed Windows installer build. Keep a secure backup of the private key file and password. Never commit or share the private key, and never replace the public key after users have installed a release signed with it.
 
 ### Publishing version 4.3.2
 
@@ -163,7 +155,7 @@ git tag v4.3.2
 git push origin v4.3.2
 ```
 
-The release workflow publishes the update. The public key is already committed in `tauri.conf.json`. Do not push the tag until both signing secrets are configured.
+The release workflow publishes the update. The public key and signing secrets are already configured. Do not push the tag until the genuine Build 4.5 archive hash, CSP regression test, credential-risk decision, and fresh CI checks are complete.
 
 ### Local builds
 
