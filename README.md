@@ -85,13 +85,13 @@ The script checks for Rust, installs the Tauri CLI when missing, runs `cargo tes
 src-tauri/target/release/bundle/nsis/
 ```
 
-GitHub Actions runs Rust tests and a Windows `cargo check` for pull requests and tags. A tag beginning with `v` additionally builds the Windows NSIS installer, creates the signed updater artifact, and publishes a GitHub Release with `latest.json` after the signing secrets and public key are configured.
+GitHub Actions runs Rust tests and a Windows `cargo check` for pull requests and tags. A tag beginning with `v` additionally builds the Windows NSIS installer, creates the signed updater artifact, and publishes a GitHub Release with `latest.json` after both signing secrets are configured.
 
 ## Production items that still need owner action
 
 1. **Build archive:** publish the genuine `.7z` file and fill in its real SHA-256 in `endpoints.json`.
 2. **Windows validation:** this working environment has no `cargo` or `rustc`, so a real compile/test could not be run here. Let the Windows CI workflow pass and install the NSIS package on a clean Windows 10/11 machine before distributing it.
-3. **Launcher self-update:** the Tauri updater is integrated for GitHub Releases (`legacyfn/launcher`) in version 4.3.2. Publishing is not active until the owner generates the permanent signing key, installs the public key in `tauri.conf.json`, adds the private-key GitHub Actions secrets, and pushes the project changes plus the `v4.3.2` tag.
+3. **Launcher self-update:** the Tauri updater is integrated for GitHub Releases (`legacyfn/launcher`) in version 4.3.2. The generated public key is now configured in `src-tauri/tauri.conf.json`. Publishing remains blocked until the owner adds the private-key GitHub Actions secrets and pushes the `v4.3.2` tag.
 4. **Credential command line:** the original game authentication contract passes the password as a game command-line argument. DPAPI protects it at rest, but Windows process inspection can still expose command-line arguments while the game is starting/running. Use a test account until the game authentication flow can be changed to avoid this legacy interface.
 5. **Legacy process/security behavior:** the normal Redirector and unlocked Console injector flow is restored. Anti-cheat placeholder processes/suspension and Defender exclusions remain inactive.
 
@@ -154,7 +154,7 @@ The private key file is stored under `%USERPROFILE%\\.tauri\\projectlegacy-updat
 
 ### Publishing version 4.3.2
 
-The workflow `.github/workflows/build.yml` first runs Rust tests and `cargo check`. After the public key and GitHub Actions secrets are configured, a push of tag `v4.3.2` runs `tauri-apps/tauri-action@v1`, builds the signed Windows NSIS installer and updater artifact, creates the GitHub Release, and uploads `latest.json` with the signed platform metadata. The release tag, `Cargo.toml` version and `tauri.conf.json` version are checked for an exact match.
+The workflow `.github/workflows/build.yml` first runs Rust tests and `cargo check`. After the GitHub Actions signing secrets are configured, a push of tag `v4.3.2` runs `tauri-apps/tauri-action@v1`, builds the signed Windows NSIS installer and updater artifact, creates the GitHub Release, and uploads `latest.json` with the signed platform metadata. The release tag, `Cargo.toml` version and `tauri.conf.json` version are checked for an exact match.
 
 After the project changes and signing secrets are in GitHub:
 
@@ -163,7 +163,7 @@ git tag v4.3.2
 git push origin v4.3.2
 ```
 
-The release workflow publishes the update. Do not push the tag until the public key is in `tauri.conf.json` and both signing secrets are configured.
+The release workflow publishes the update. The public key is already committed in `tauri.conf.json`. Do not push the tag until both signing secrets are configured.
 
 ### Local builds
 
