@@ -1,5 +1,40 @@
 # Project Legacy Launcher — release readiness
 
+## Version 4.3.5 release preparation
+
+The `release/v4.3.5` branch is prepared from the current `main` branch. This is a release candidate preparation only; no tag or public release has been created.
+
+### Included changes carried into this release
+
+- Fixed native Windows match-open notifications and made the notification preference save/restore reliably.
+- Pauses launcher animations, slideshow timers, particle rendering and background video while the launcher window is inactive; resumes them when the launcher returns to focus.
+- Updated the launcher frontend styling to match the Project Legacy web design.
+- Added dedicated Solo, Duos and Squad artwork under `ui/assets/gamemodes/`.
+- Fixed the Tauri async `open_link` command to return `Result<bool, String>`, resolving the async command compile error.
+- Kept the updater signing public key, HTTPS release feed and Build 4.5 archive SHA-256 configuration unchanged.
+
+### v4.3.5 version alignment
+
+- `src-tauri/Cargo.toml`: package version must be `4.3.5`.
+- `src-tauri/tauri.conf.json`: Tauri app version must be `4.3.5`.
+- `.github/workflows/build.yml`: signed test artifact name is `tauri-4.3.5-signed-windows-test`.
+- The release workflow validates the pushed `v4.3.5` tag against both version fields and verifies the published `latest.json`, installer and signature.
+
+### Checks still required before publishing
+
+1. Run the Windows GitHub Actions workflow on this branch; require Rust tests, `cargo check` and signed NSIS packaging to pass.
+2. Install the resulting signed artifact on Windows and smoke-test first-run setup, existing-install migration, game-folder selection, launch/stop, downloads, update UI and Tauri IPC.
+3. Verify Windows notification permission, enabling/disabling the match-notification toggle, and a real match-open toast.
+4. Verify the Solo, Duos and Squad images load from the packaged WebView assets.
+5. Confirm animations/video pause when the launcher loses focus and resume when it becomes active.
+6. Verify the signed updater release contains `latest.json`, the Windows installer and `.exe.sig`; perform a real update test only after the release is published.
+
+Do not publish the tag until the Windows CI and manual smoke tests pass. The updater private signing key must remain in GitHub Actions secrets and must never be committed.
+
+---
+
+# Project Legacy Launcher — release readiness
+
 ## Implemented in this migration pass
 
 - Tauri v2 backend and Electron-compatible `window.launcher` bridge.
