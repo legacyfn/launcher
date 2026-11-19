@@ -489,11 +489,27 @@ pub async fn get_shop(state: State<'_, AppState>) -> Result<serde_json::Value, S
 }
 
 #[tauri::command]
-pub async fn open_link(url: String) -> bool {
-    match reqwest::Url::parse(&url) {
-        Ok(parsed) if parsed.scheme() == "https" && parsed.host_str().is_some() => opener::open(parsed.as_str()).is_ok(),
-        _ => false,
-    }
+pub async fn open_link(state: State<'_, AppState>, url: String) -> bool {
+    let requested = match reqwest::Url::parse(&url) {
+        Ok(parsed) if parsed.scheme() == "https" && parsed.host_str().is_some() => parsed,
+        _ => return false,
+    };
+
+    // The Downloads page may still contain an older hard-coded archive URL.
+    // Always resolve archive links from the same endpoint configuration used
+    // by install_start(), so the browser link and the in-launcher download
+    // cannot drift apart.
+    let target = if requested.path().to_ascii_lowercase().ends_with(".7z") {
+        match reqwest::Url::parse(&state.endpoints.build_archive_url) {
+            Ok(configured) if configured.scheme() == "https" && configured.host_str().is_some()
+                && configured.path().to_ascii_lowercase().ends_with(".7z") => configured,
+            _ => return false,
+        }
+    } else {
+        requested
+    };
+
+    opener::open(target.as_str()).is_ok()
 }
 
 #[tauri::command]
