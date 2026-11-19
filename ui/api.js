@@ -4,19 +4,35 @@
 // frontend file needed to change.
 (function () {
   "use strict";
-  // Load the visual-only Project Legacy desktop theme. This does not alter launcher APIs or behavior.
-  const loadProjectLegacyTheme = () => {
-    if (document.getElementById("project-legacy-theme")) return;
-    const link = document.createElement("link");
-    link.id = "project-legacy-theme";
-    link.rel = "stylesheet";
-    link.href = new URL("./theme.css", window.location.href).toString();
-    document.head.appendChild(link);
+  // Load locally-built UI assets. Tailwind is loaded before the existing theme
+  // so Project Legacy's own palette and component overrides remain authoritative.
+  const loadProjectLegacyAssets = () => {
+    if (!document.getElementById("project-legacy-tailwind")) {
+      const tailwind = document.createElement("link");
+      tailwind.id = "project-legacy-tailwind";
+      tailwind.rel = "stylesheet";
+      tailwind.href = new URL("./assets/tailwind.css", window.location.href).toString();
+      document.head.appendChild(tailwind);
+    }
+    if (!document.getElementById("project-legacy-theme")) {
+      const theme = document.createElement("link");
+      theme.id = "project-legacy-theme";
+      theme.rel = "stylesheet";
+      theme.href = new URL("./theme.css", window.location.href).toString();
+      document.head.appendChild(theme);
+    }
+    if (!document.getElementById("project-legacy-lucide")) {
+      const script = document.createElement("script");
+      script.id = "project-legacy-lucide";
+      script.src = new URL("./assets/libraries.js", window.location.href).toString();
+      script.defer = true;
+      document.head.appendChild(script);
+    }
   };
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadProjectLegacyTheme, { once: true });
+    document.addEventListener("DOMContentLoaded", loadProjectLegacyAssets, { once: true });
   } else {
-    loadProjectLegacyTheme();
+    loadProjectLegacyAssets();
   }
 
   const T = window.__TAURI__;
