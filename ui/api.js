@@ -35,6 +35,35 @@
     loadProjectLegacyAssets();
   }
 
+  // Navigation fallback: the legacy page controller normally handles these
+  // clicks. This delegated handler keeps page switching functional if a future
+  // frontend script fails before its per-button listeners are registered.
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".nav button[data-page]");
+    if (!button) return;
+
+    const name = button.dataset.page;
+    const page = document.getElementById("page-" + name);
+    if (!page || page.classList.contains("active")) return;
+
+    document.querySelectorAll(".page").forEach((item) => item.classList.remove("active"));
+    page.classList.add("active");
+    document.querySelectorAll(".nav button[data-page]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.page === name);
+    });
+    const labels = {
+      home: "DASHBOARD",
+      community: "COMMUNITY",
+      profile: "PROFILE",
+      shop: "SHOP",
+      downloads: "DOWNLOADS",
+      settings: "SETTINGS",
+    };
+    const breadcrumb = document.getElementById("breadcrumbPage");
+    if (breadcrumb) breadcrumb.textContent = labels[name] || "DASHBOARD";
+    document.body.dataset.page = name;
+  });
+
   const T = window.__TAURI__;
   const invoke = (cmd, args) => T.core.invoke(cmd, args);
 
