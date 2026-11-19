@@ -125,3 +125,19 @@ input:focus, select:focus, textarea:focus { border-color: var(--pl-purple); }
 .input, .select, textarea { color: var(--pl-text); background-color: #0d0f16; }
 .checkbox { border-color: rgba(255,255,255,.35); }
 .checkbox:checked { color: #10120b; background-color: var(--pl-lime); border-color: var(--pl-lime); }
+
+/* Center the Discord CTA label consistently in the fixed-height button. */
+.discord-card .join {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  padding: 0 16px;
+  gap: 4px;
+}
+.discord-card .join .dc {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
