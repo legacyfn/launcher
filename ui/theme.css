@@ -23,6 +23,13 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+/* Prevent browser/default component styles from rendering ordinary text black. */
+body :where(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,td,th,legend,summary,figcaption) {
+  color: var(--pl-text);
+}
+body :where(.muted,.secondary,.description,[class*="muted"],[class*="secondary"],[data-muted="true"]) {
+  color: var(--pl-muted);
+}
 ::selection { color: #090a0f; background: var(--pl-lime); }
 * { scrollbar-color: #343746 transparent; scrollbar-width: thin; }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -78,6 +85,10 @@ button[data-variant="primary"], [role="button"][data-variant="primary"] {
   background: var(--pl-lime);
   border-color: var(--pl-lime);
   font-weight: 700;
+}
+button[class*="primary"] :where(span,svg), button[class*="Primary"] :where(span,svg),
+[class*="primary"] button :where(span,svg), button[data-variant="primary"] :where(span,svg) {
+  color: inherit;
 }
 button[class*="primary"]:hover, button[class*="Primary"]:hover, [class*="primary"] button:hover,
 button[data-variant="primary"]:hover {
