@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+}
+
+/* The launcher is a desktop WebView; scan its existing markup for utility classes. */
+@source "./index.html";
+
+@theme {
+  --color-legacy-lime: #b8ff3d;
+  --color-legacy-purple: #8f6bff;
+  --color-legacy-bg: #090a0f;
+  --color-legacy-surface: #11131b;
+  --color-legacy-raised: #171a25;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+/* DaisyUI components inherit the launcher's established palette. */
+[data-theme="light"] {
+  color-scheme: dark;
+}
