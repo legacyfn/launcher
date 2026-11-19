@@ -4,20 +4,65 @@
 // frontend file needed to change.
 (function () {
   "use strict";
-  // Load the visual-only Project Legacy desktop theme. This does not alter launcher APIs or behavior.
-  const loadProjectLegacyTheme = () => {
-    if (document.getElementById("project-legacy-theme")) return;
-    const link = document.createElement("link");
-    link.id = "project-legacy-theme";
-    link.rel = "stylesheet";
-    link.href = new URL("./theme.css", window.location.href).toString();
-    document.head.appendChild(link);
+  // Load locally-built UI assets. Tailwind is loaded before the existing theme
+  // so Project Legacy's own palette and component overrides remain authoritative.
+  const loadProjectLegacyAssets = () => {
+    if (!document.getElementById("project-legacy-tailwind")) {
+      const tailwind = document.createElement("link");
+      tailwind.id = "project-legacy-tailwind";
+      tailwind.rel = "stylesheet";
+      tailwind.href = new URL("./assets/tailwind.css", window.location.href).toString();
+      document.head.appendChild(tailwind);
+    }
+    if (!document.getElementById("project-legacy-theme")) {
+      const theme = document.createElement("link");
+      theme.id = "project-legacy-theme";
+      theme.rel = "stylesheet";
+      theme.href = new URL("./theme.css", window.location.href).toString();
+      document.head.appendChild(theme);
+    }
+    if (!document.getElementById("project-legacy-lucide")) {
+      const script = document.createElement("script");
+      script.id = "project-legacy-lucide";
+      script.src = new URL("./assets/libraries.js", window.location.href).toString();
+      script.defer = true;
+      document.head.appendChild(script);
+    }
   };
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadProjectLegacyTheme, { once: true });
+    document.addEventListener("DOMContentLoaded", loadProjectLegacyAssets, { once: true });
   } else {
-    loadProjectLegacyTheme();
+    loadProjectLegacyAssets();
   }
+
+  // Navigation fallback: the legacy page controller normally handles these
+  // clicks. This delegated handler keeps page switching functional if a future
+  // frontend script fails before its per-button listeners are registered.
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest(".nav button[data-page]");
+    if (!button) return;
+
+    const name = button.dataset.page;
+    const page = document.getElementById("page-" + name);
+    if (!page || page.classList.contains("active")) return;
+
+    document.querySelectorAll(".page").forEach((item) => item.classList.remove("active"));
+    page.classList.add("active");
+    document.querySelectorAll(".nav button[data-page]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.page === name);
+    });
+    const labels = {
+      home: "DASHBOARD",
+      community: "COMMUNITY",
+      profile: "PROFILE",
+      shop: "SHOP",
+      downloads: "DOWNLOADS",
+      settings: "SETTINGS",
+    };
+    const breadcrumb = document.getElementById("breadcrumbPage");
+    if (breadcrumb) breadcrumb.textContent = labels[name] || "DASHBOARD";
+    document.body.dataset.page = name;
+  });
 
   const T = window.__TAURI__;
   const invoke = (cmd, args) => T.core.invoke(cmd, args);

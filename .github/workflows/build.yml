@@ -65,6 +65,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install UI dependencies and build frontend assets
+        run: |
+          npm install --no-package-lock
+          npm run build:ui
+
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
@@ -111,6 +121,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install UI dependencies and build frontend assets
+        run: |
+          npm install --no-package-lock
+          npm run build:ui
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
