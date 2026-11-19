@@ -1,6 +1,6 @@
 [package]
 name = "projectlegacy-launcher"
-version = "4.3.5"
+version = "4.3.6"
 description = "Project Legacy community launcher"
 edition = "2021"
 rust-version = "1.90"
