@@ -489,10 +489,10 @@ pub async fn get_shop(state: State<'_, AppState>) -> Result<serde_json::Value, S
 }
 
 #[tauri::command]
-pub async fn open_link(state: State<'_, AppState>, url: String) -> bool {
+pub async fn open_link(state: State<'_, AppState>, url: String) -> Result<bool, String> {
     let requested = match reqwest::Url::parse(&url) {
         Ok(parsed) if parsed.scheme() == "https" && parsed.host_str().is_some() => parsed,
-        _ => return false,
+        _ => return Ok(false),
     };
 
     // The Downloads page may still contain an older hard-coded archive URL.
@@ -503,13 +503,13 @@ pub async fn open_link(state: State<'_, AppState>, url: String) -> bool {
         match reqwest::Url::parse(&state.endpoints.build_archive_url) {
             Ok(configured) if configured.scheme() == "https" && configured.host_str().is_some()
                 && configured.path().to_ascii_lowercase().ends_with(".7z") => configured,
-            _ => return false,
+            _ => return Ok(false),
         }
     } else {
         requested
     };
 
-    opener::open(target.as_str()).is_ok()
+    Ok(opener::open(target.as_str()).is_ok())
 }
 
 #[tauri::command]
