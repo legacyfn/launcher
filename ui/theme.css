@@ -79,21 +79,17 @@ button:focus-visible, [role="button"]:focus-visible, input:focus-visible, select
   outline: 2px solid var(--pl-purple);
   outline-offset: 2px;
 }
-button[class*="primary"], button[class*="Primary"], [class*="primary"] button,
-button[data-variant="primary"], [role="button"][data-variant="primary"] {
-  color: #10120b;
-  background: var(--pl-lime);
-  border-color: var(--pl-lime);
+/* Keep primary action labels white; the original purple button treatment remains. */
+.button.primary, button.button.primary, button.primary, .btn-primary {
+  color: #fff !important;
+  background: linear-gradient(110deg, #8f6bff, #6540ad);
+  border-color: rgba(184,255,61,.45);
   font-weight: 700;
 }
-button[class*="primary"] :where(span,svg), button[class*="Primary"] :where(span,svg),
-[class*="primary"] button :where(span,svg), button[data-variant="primary"] :where(span,svg) {
-  color: inherit;
-}
-button[class*="primary"]:hover, button[class*="Primary"]:hover, [class*="primary"] button:hover,
-button[data-variant="primary"]:hover {
-  background: #caff70;
-  box-shadow: 0 5px 18px rgba(184,255,61,.16);
+.button.primary:hover, button.button.primary:hover, button.primary:hover, .btn-primary:hover {
+  color: #fff !important;
+  background: linear-gradient(110deg, #a184ff, #7952c6);
+  box-shadow: 0 5px 18px rgba(143,107,255,.22);
   transform: translateY(-1px);
 }
 button:not(:disabled):active, [role="button"]:not([aria-disabled="true"]):active { transform: translateY(0); }
@@ -117,3 +113,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--pl-purple); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* Lucide and DaisyUI polish for the existing launcher controls. */
+.nav .nav-icon { display: inline-flex !important; width: 21px; align-items: center; justify-content: center; }
+.nav .nav-icon svg, .stat-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+.stat-icon { display: grid; place-items: center; }
+.btn { min-height: 2.25rem; }
+.btn-outline { color: var(--pl-text); border-color: rgba(255,255,255,.16); }
+.btn-outline:hover { color: #fff; border-color: var(--pl-purple); background: rgba(143,107,255,.12); }
+.btn-primary { color: #fff !important; }
+.input, .select, textarea { color: var(--pl-text); background-color: #0d0f16; }
+.checkbox { border-color: rgba(255,255,255,.35); }
+.checkbox:checked { color: #10120b; background-color: var(--pl-lime); border-color: var(--pl-lime); }
