@@ -3871,9 +3871,14 @@ function updateUserChip() {
         h1.after(sub);
     }
 
-    // server cards get a picture
+    // Use the dedicated artwork for each game mode in the Servers tab.
+    const modeArtwork = ["solo", "duos", "squad"];
     document.querySelectorAll("#page-community .modes .mode").forEach((card, i) => {
-        if (typeof BUILTIN_SLIDES !== "undefined" && BUILTIN_SLIDES.length) card.style.backgroundImage = 'url("' + BUILTIN_SLIDES[(i + 1) % BUILTIN_SLIDES.length] + '")';
+        const mode = modeArtwork[i];
+        if (!mode) return;
+        card.style.backgroundImage = 'url("assets/gamemodes/' + mode + '.webp")';
+        card.style.backgroundSize = "cover";
+        card.style.backgroundPosition = "center";
     });
 
     // ----- preferences -----
