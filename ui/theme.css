@@ -1,0 +1,108 @@
+/* Project Legacy desktop theme — visual-only overrides.
+   The original launcher markup and behavior remain untouched. */
+:root {
+  color-scheme: dark;
+  --pl-bg: #090a0f;
+  --pl-surface: #11131b;
+  --pl-surface-raised: #171a25;
+  --pl-surface-hover: #1d2030;
+  --pl-border: rgba(255,255,255,.075);
+  --pl-text: #f4f5f8;
+  --pl-muted: #9297a8;
+  --pl-lime: #b8ff3d;
+  --pl-purple: #8f6bff;
+  --pl-radius: 13px;
+  --pl-shadow: 0 12px 32px rgba(0,0,0,.24);
+  accent-color: var(--pl-lime);
+}
+html { background: var(--pl-bg); }
+body {
+  color: var(--pl-text);
+  background-color: var(--pl-bg);
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { color: #090a0f; background: var(--pl-lime); }
+* { scrollbar-color: #343746 transparent; scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #343746; border: 2px solid transparent; border-radius: 99px; background-clip: padding-box; }
+a { color: var(--pl-lime); text-decoration-color: rgba(184,255,61,.35); }
+a:hover { color: #d0ff83; }
+
+/* Compact desktop navigation */
+[class*="sidebar"], [class*="Sidebar"], [class*="side-nav"], [class*="sidenav"] {
+  background: rgba(12,14,21,.96);
+  border-color: var(--pl-border);
+}
+[class*="nav-item"], [class*="NavItem"], [class*="navigation-item"], [class*="menu-item"] {
+  border-radius: 9px;
+  transition: background .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
+}
+[class*="nav-item"]:hover, [class*="NavItem"]:hover, [class*="navigation-item"]:hover, [class*="menu-item"]:hover {
+  background: rgba(143,107,255,.10);
+}
+[class*="nav-item"].active, [class*="nav-item"][aria-current="page"],
+[class*="NavItem"].active, [class*="navigation-item"].active, [class*="menu-item"].active {
+  color: var(--pl-lime);
+  background: rgba(184,255,61,.085);
+  box-shadow: inset 2px 0 0 var(--pl-lime);
+}
+
+/* Restrained surfaces and cards */
+[class*="card"], [class*="Card"], [class*="panel"], [class*="Panel"],
+[class*="section"], [class*="Section"], [class*="modal"], [class*="Modal"] {
+  border-color: var(--pl-border);
+}
+[class*="card"], [class*="Card"], [class*="panel"], [class*="Panel"] {
+  border-radius: var(--pl-radius);
+}
+[class*="card"]:hover, [class*="Card"]:hover {
+  border-color: rgba(143,107,255,.32);
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+/* Buttons: bright lime for primary actions, quiet secondary actions */
+button, [role="button"] {
+  font: inherit;
+  border-radius: 9px;
+  transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+button:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--pl-purple);
+  outline-offset: 2px;
+}
+button[class*="primary"], button[class*="Primary"], [class*="primary"] button,
+button[data-variant="primary"], [role="button"][data-variant="primary"] {
+  color: #10120b;
+  background: var(--pl-lime);
+  border-color: var(--pl-lime);
+  font-weight: 700;
+}
+button[class*="primary"]:hover, button[class*="Primary"]:hover, [class*="primary"] button:hover,
+button[data-variant="primary"]:hover {
+  background: #caff70;
+  box-shadow: 0 5px 18px rgba(184,255,61,.16);
+  transform: translateY(-1px);
+}
+button:not(:disabled):active, [role="button"]:not([aria-disabled="true"]):active { transform: translateY(0); }
+input, select, textarea {
+  color: var(--pl-text);
+  background: #0d0f16;
+  border: 1px solid var(--pl-border);
+  border-radius: 9px;
+}
+input:hover, select:hover, textarea:hover { border-color: rgba(143,107,255,.38); }
+input:focus, select:focus, textarea:focus { border-color: var(--pl-purple); }
+
+/* Status and selected states */
+[class*="active"], [aria-selected="true"], [aria-pressed="true"] {
+  --pl-state-accent: var(--pl-lime);
+}
+[class*="online"], [class*="success"], [data-status="online"] { color: var(--pl-lime); }
+[class*="warning"], [class*="purple"], [data-accent="purple"] { --pl-state-accent: var(--pl-purple); }
+
+/* Reduced motion remains respected, including when the game is active. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

@@ -4,6 +4,21 @@
 // frontend file needed to change.
 (function () {
   "use strict";
+  // Load the visual-only Project Legacy desktop theme. This does not alter launcher APIs or behavior.
+  const loadProjectLegacyTheme = () => {
+    if (document.getElementById("project-legacy-theme")) return;
+    const link = document.createElement("link");
+    link.id = "project-legacy-theme";
+    link.rel = "stylesheet";
+    link.href = new URL("./theme.css", window.location.href).toString();
+    document.head.appendChild(link);
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadProjectLegacyTheme, { once: true });
+  } else {
+    loadProjectLegacyTheme();
+  }
+
   const T = window.__TAURI__;
   const invoke = (cmd, args) => T.core.invoke(cmd, args);
 
