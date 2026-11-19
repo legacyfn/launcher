@@ -10,7 +10,7 @@ function enhanceLauncherUi() {
   document.querySelectorAll(".nav button[data-page]").forEach((button) => {
     const slot = button.querySelector(".nav-icon");
     const name = iconForPage[button.dataset.page];
-    if (!slot || !name) return;
+    if (!slot || !name || slot.querySelector("svg")) return;
     slot.replaceChildren();
     const icon = document.createElement("i");
     icon.setAttribute("data-lucide", name);
