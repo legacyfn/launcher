@@ -1,0 +1,17 @@
+{
+  "name": "project-legacy-launcher-ui",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build:icons": "esbuild ui/libraries.js --bundle --format=iife --outfile=ui/assets/libraries.js",
+    "build:css": "tailwindcss -i ui/tailwind.css -o ui/assets/tailwind.css --minify",
+    "build:ui": "npm run build:icons && npm run build:css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "daisyui": "^5.4.7",
+    "esbuild": "^0.27.0",
+    "lucide": "^0.468.0",
+    "tailwindcss": "^4.1.17"
+  }
+}
